@@ -281,6 +281,7 @@ public class GenericControllers implements Serializable {
                 break;
             case 11:
                 url1 = "/upload/ConfigurationFile.xhtml";
+                break;
             default:
                 url1 = "/upload/StatUploadView.xhtml";
         }
