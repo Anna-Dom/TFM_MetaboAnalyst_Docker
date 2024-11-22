@@ -8,3 +8,23 @@ The project was developed as a Final Master's Project and aims to improve some f
 2. Improves PDF report capabilities
 3. Improves the usability of Dockerfile and upgrades the JDK version to be able to run v 5.0.0 of the application
 
+### Run the Application
+
+There are two options to run the application.
+
+1. Build the docker image and then run it
+
+```sh
+# Build the image
+docker build -t metaboanalyst .
+# Run it
+docker run -p 8080:8080 --name metabo-app metaboanalyst
+```
+
+2. Download the image and run it directly
+
+```sh
+# TODO
+```
+
+
