@@ -1,0 +1,105 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                template="#{applicationBean1.templateUrl}/_doc_template.xhtml">
+    <ui:define name="content">
+        <h:panelGrid style="padding: 30px 40px 20px 40px; width: 100%; font-size: 13px; line-height: 23px">
+            <h2>External Requests</h2>
+            <p>
+                MetaboAnalyst now accepts compound lists for ID conversion. Please use the API defined below:   
+            </p>
+            
+            <font style="font-size: 16px; color: #F5A623; font-weight: bold">POST</font> <font style="font-size: 14px; font-weight: bold">mapcompounds</font>
+            <br></br>
+            <div style="border:1px solid lightgray; width: 600px;">         
+                &nbsp;&nbsp;http://api.xialab.ca/mapcompounds
+            </div>
+            <br></br>
+            <font style="font-size: 14px; font-weight: bold">Headers</font>
+            <div style="border:1px solid lightgray; width: 600px;">         
+                &nbsp;&nbsp;<font style="font-size: 12px; font-weight: bold">Content-Type</font>&nbsp;&nbsp;&nbsp;&nbsp;application/json
+            </div>
+            <br></br>
+            <font style="font-size: 14px; font-weight: bold">Body</font><font style="font-size: 14px; font-weight: bold; color: grey">&nbsp;&nbsp;&nbsp;&nbsp;raw (application/json</font>
+            <div style="border:1px solid lightgray; width: 600px;">  
+                <p>
+                &nbsp;&nbsp;{
+                <br></br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;"queryList": "1,3-Diaminopropane;2-Ketobutyric acid;2-Hydroxybutyric acid;2-Methoxyestrone;",<br></br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;"inputType": "name"<br></br>
+                &nbsp;&nbsp;}
+                </p>
+                <pre>
+    The different options for input.type are given below:
+        name - Compound name (e.g., 1,3-Diaminopropane)
+        hmdb - Human Metabolome Database (e.g., HMDB0000002)
+        pubchem - PubChem Substance and Compound databases(e.g., 428)
+        chebi - Chemical Entities of Biological Interest(e.g., 15725)
+        metlin - Metabolite and Chemical Entity Database (e.g., 5081)
+        kegg - KEGG COMPOUND Database (e.g., C00986)
+                </pre>
+            </div>
+            <br></br>
+
+            <pre>
+         
+<font style="font-size: 13px;">A list of examples for calling <font style="font-weight: bold">mapcompounds</font> using several programming languages is shown below:</font>
+
+<b>JavaScript Jquery AJAX</b> 
+var settings = {
+  "async": true,
+  "crossDomain": true,
+  "url": "http://api.xialab.ca/mapcompounds",
+  "method": "POST",
+  "headers": {
+    "Content-Type": "application/json",
+    "cache-control": "no-cache"
+  },
+  "processData": false,
+  "data": "{\n\t\"queryList\": \"1,3-Diaminopropane;2-Ketobutyric acid;2-Hydroxybutyric acid;\",\n\t\"inputType\": \"name\"\n}"
+}
+
+$.ajax(settings).done(function (response) {
+  console.log(response);
+});
+
+<b>cURL (command line)</b>  
+curl -X POST \
+  http://api.xialab.ca/mapcompounds \
+  -H 'Content-Type: application/json' \
+  -H 'cache-control: no-cache' \
+  -d '{
+	"queryList": "1,3-Diaminopropane;2-Ketobutyric acid;2-Hydroxybutyric acid;",
+	"inputType": "name"
+}'
+
+<b>Java Unirest</b>
+HttpResponse&lt;String&gt; response = Unirest.post("http://api.xialab.ca/mapcompounds")
+  .header("Content-Type", "application/json")
+  .header("cache-control", "no-cache")
+  .body("{\n\t\"queryList\": \"1,3-Diaminopropane;2-Ketobutyric acid;2-Hydroxybutyric acid;\",\n\t\"inputType\": \"name\"\n}")
+  .asString();
+  
+<b>Python Requests</b>
+import requests
+
+url = "http://api.xialab.ca/mapcompounds"
+
+payload = "{\n\t\"queryList\": \"1,3-Diaminopropane;2-Ketobutyric acid;2-Hydroxybutyric acid;\",\n\t\"inputType\": \"name\"\n}"
+headers = {
+    'Content-Type': "application/json",
+    'cache-control': "no-cache",
+    }
+
+response = requests.request("POST", url, data=payload, headers=headers)
+
+print(response.text)
+            </pre>                   
+
+        </h:panelGrid>
+    </ui:define>
+</ui:composition>

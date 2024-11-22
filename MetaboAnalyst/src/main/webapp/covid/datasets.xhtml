@@ -1,0 +1,41 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                template="#{applicationBean1.templateUrl}/_doc_template.xhtml">
+    <ui:define name="metaInfo">        
+        <f:event type="preRenderView" listener="#{covids.redirect2covid()}"/>
+    </ui:define>
+    <ui:define name="header"/>
+    <ui:define name="content">
+        <h:form id="form1">
+            <h:panelGrid style="padding: 4% 5% 2% 5%; font-size: 14px; line-height: 24px; margin:auto; text-align: center">
+                <img src="#{facesContext.externalContext.requestContextPath}/resources/images/covidhome_s.png" 
+                     style="margin-left: auto; padding-left: auto; width:900px"/>
+
+                <p style="width:70%; margin: auto; padding-top: 30px; color: #606060; text-align: left">
+                    The COVID-19 metabolomics data center includes publicly available metabolomics datasets on COVID-19 studies generated during the pandemic
+                    from different platforms (7 platforms covered) and populations (16 countries so far). A total of 12,114 samples collected from over 6,000 COVID-19 patients 
+                    and corresponding controls (<i>healthy control</i> and <i>nonCOVID</i>, which shows similar symptoms as COVID-19 but tested as negative). 
+                    The COVID-19 patients are also further classified as <i>mild_moderate</i> and <i>severe_critical</i> based on the degree of severity. 
+                </p>
+
+                <h:panelGrid columns="2" style="padding: 30px 40px 10px 10px; width: 400px; margin: auto">
+                    <p:button value="Download Data" 
+                              icon="pi pi-download"
+                              href="#{covids.covidURL}covid/studies.xhtml"/> 
+                    <p:commandButton value="Start Exploring" 
+                                     icon="pi pi-caret-right"
+                                     onclick="PF('statusDialog').show()"
+                                     oncomplete="PF('statusDialog').hide()"
+                                     action="#{covids.doCovidTsne}"/>                    
+                </h:panelGrid>
+
+            </h:panelGrid>
+
+        </h:form>
+    </ui:define>
+</ui:composition>

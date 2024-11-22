@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>       
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+        <title>Scatter 3D Viewer</title>    
+        <link rel="stylesheet" type="text/css" href="../resources/css/easyui.min.css"/>
+        <link rel="stylesheet" type="text/css" href="../resources/css/easyui.covid.css"/>
+        <link rel="stylesheet" type="text/css" href="../resources/css/spectrum.min.css"/>
+        <link rel="stylesheet" type="text/css" href="../resources/css/style.css"/>        
+        <script src="../resources/jscripts/jquery.min.js"></script>
+        <script src="../resources/jscripts/jquery.easyui.min.js"></script> 
+        <script src="../resources/jscripts/3dscatter/tween.min.js"></script>
+        <script src="../resources/jscripts/3dscatter/rainbowvis.js"></script>
+        <script src="../resources/jscripts/spectrum_attr.js"></script>
+        <script src="../resources/jscripts/3dscatter/string_to_color.min.js"></script>    
+        <script src="../resources/jscripts/3dscatter/three_new.js"></script>
+        <script src="../resources/jscripts/3dscatter/three-spritetext.js"></script>
+        <script src="../resources/jscripts/3dscatter/3d-force-graph.js"></script>   
+        <script src="../resources/jscripts/3dscatter/colour_utils.js"></script>
+        <script src="../resources/jscripts/3dscatter/convexthree.js"></script>
+        <script src="../resources/jscripts/3dscatter/covid.analyst.scatter.js"></script>        
+        <script type="x-shader/x-vertex" id="vertexshader">
+            attribute float size;
+            attribute vec3 customColor;
+            varying vec3 vColor;
+            void main() {
+            vColor = customColor;
+            vec4 mvPosition = modelViewMatrix * vec4( position, 1.0 );
+            gl_PointSize = size * ( 300.0 / -mvPosition.z );
+            gl_Position = projectionMatrix * mvPosition;
+            }
+        </script>
+
+        <script type="x-shader/x-fragment" id="fragmentshader">
+            uniform vec3 color;
+            uniform sampler2D pointTexture;
+            varying vec3 vColor;
+            void main() {
+            gl_FragColor = vec4( color * vColor, 1.0 );
+            gl_FragColor = gl_FragColor * texture2D( pointTexture, gl_PointCoord );
+            if ( gl_FragColor.a < ALPHATEST ) discard;
+            }
+        </script>
+        <style>
+            .window,.window-shadow,.window-body{
+                background: rgba(255,255,255,0.35);
+            }
+            .dialog-toolbar, .dialog-button {
+                background: rgba(255,255,255,0.35) !important;
+
+            }
+            .tabs-header, .tabs-tool {
+                background: rgba(255,255,255,0.35) !important;
+            }
+        </style>
+    </head>
+    <body class="easyui-layout" id="bd">
+        <div id="loader" class="overlay2">
+            <div class="overlay_loading">  
+            </div>    
+        </div>
+        <div id="loader_init" class="overlay">
+            <div class="overlay_loading">  
+                <div class="loading">  
+                </div> 
+            </div> 
+        </div>
+        <!--north-->
+        <div data-options="region:'north'" style="height:35px; padding-top: 2px; padding-bottom: 2px">
+            <div id="options">
+                <table>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <a style="width: 23px; height: 0px; display: inline-block;" onclick = "gohome()" href="..">
+                                    <img style="width: 22px; height:21px" src="../resources/images/home.png" alt="Home"/>
+                                </a>
+                            </td>
+                            <td>
+                                <div>
+                                    <label for="loadingOpt">Data Type:</label>
+                                    <select id="loadingOpt">
+                                    </select> &nbsp;
+                                    
+                                    <label for="generalOpt">Background:</label>
+                                    <select id="generalOpt">
+                                        <option value="na">- Specify -</option>
+                                        <option value="white">White</option>
+                                        <option value="black">Black</option>
+                                    </select> &nbsp;
+                                    
+                                    <label for="axisType">Axis Style:</label>
+                                    <select id="axisType">
+                                        <option value="center">Center</option>
+                                        <option value="bottom">Bottom</option>
+                                        <option value="na">None</option>
+                                    </select> &nbsp;                                    
+                                    
+                                    <label for="styleOpt">Node Style</label>
+                                    <select id="styleOpt">
+                                        <option value="na">- Specify -</option>
+                                        <optgroup label="Display">
+                                            <option value="default">Default</option>
+                                            <option value="text">Text (Name)</option>
+                                            <option value="textMeta">Text (Meta)</option>
+                                            <option value="plain">Plain</option>
+                                        </optgroup>
+                                        <optgroup label="Style">
+                                            <option value="size">Size</option>
+                                            <option value="opacity">Opacity</option> 
+                                        </optgroup>
+                                    </select> &nbsp;
+                                    
+                                    <label for="exportOpt">Download:</label>
+                                    <select id="exportOpt">
+                                        <option value="na">-- Specify --</option>
+                                        <option value="png">PNG</option>
+                                        <option value="gif">GIF animation</option>
+                                    </select> &nbsp;
+                                    <a href="#" id="moreOpts" class="easyui-linkbutton">Advanced Options</a>&nbsp;
+                                    <a href="#" class="easyui-tooltip" data-options="
+                                       content: $('<div>xxxxx</div>'),
+                                       position: 'bottom',
+                                       onShow: function(){
+                                       $(this).tooltip('tip').css({  
+                                       backgroundColor: '#FFFEE6',  
+                                       borderColor: '#FFFEE6'  
+                                       });
+                                       },
+                                       onUpdate: function(cc){
+                                       cc.panel({
+                                       width: 350,
+                                       height: 'auto',
+                                       border: false,
+                                       href: '../tooltip/_help_scatterview.html'
+                                       });
+                                       }
+                                       ">
+                                        <img src="../resources/images/ui-help.png" alt="Help Info"/>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>                    
+                    </tbody>                    
+                </table>
+            </div>
+        </div>
+        
+        <!--west-->
+        <div id ="west" data-options="region:'west',split:false, collapsible:true" style="width:280px;">
+            <div class="easyui-layout" data-options="fit:true">
+                <div data-options="region:'north', split:false, border:false, collapsible:true" title='Metadata Overview' style="height:340px">
+                    <div id="metatb" style="padding:4px 20px 6px 6px; line-height: 23px">
+                        <label for="metaopt" style="width: 10px; padding:5px">Primary Metadata:</label>
+                        <select id="metaopt"></select>
+                    </div>
+                    <form id="ff" style="height:277.5px">
+                        <table id="metadg" class="easyui-datagrid"
+                               data-options="border:false,fit:true,checkOnSelect:true,selectOnCheck:true, fitColumns:true, pagination:true, pageSize:10" 
+                               style="padding-bottom:1px">  
+                            <thead>
+                                <tr>
+                                    <th field="ck" checkbox="true"/>
+                                    <th data-options="field:'name',width:45">Name</th>
+                                    <th data-options="field:'size',width:35">Size</th>
+                                    <th data-options="field:'color',width:30">Color</th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </form>
+                </div>
+                
+                <div data-options="region:'center',split:false, border:false, tools:'#hl_tip'" title="Dataset Customization" style="height:550px;">                                       
+                    <table style = "padding-top: 7px; padding-left:15px; border-spacing: 0px; line-height: 4px" cellspacing="4">
+                        <tr>
+                            <td><p style = "font-size:13px; color: #003972; padding-right: 17px"><strong>Platforms</strong>: </p></td>                            
+                            <td> 
+                                <select id="platformType" class="textbox combo selectboxStyle" style = "width: 60px">
+                                    <option value="all">All</option>
+                                    <option value="lcmsu">LC-MSu</option>
+                                    <option value="lcmst">LC-MSt</option>
+                                    <option value="gcms">GC-MS</option>
+                                    <option value="dims">DI-MS</option>
+                                    <option value="nmr">NMR</option>
+                                    <option value="cems">CE-MS</option>
+                                    <option value="mix">Mix</option>
+                                    <option value="multiple" style = "display: none" disabled>Multiple</option>
+                                </select>
+                            </td>
+                            <td><a id = "platformm" href="#" style = "margin-left: 25px; font-size:13px">Multiple</a></td>                                
+                        </tr>
+                    </table>
+                    
+                    <table style = "padding-left:15px; border-spacing: 0px; line-height: 4px" cellspacing="4">
+                        <tr>
+                            <td><p style = "font-size:13px; color: #003972; padding-right: 10px"><strong>Blood Type</strong>: </p></td>                            
+                            <td> 
+                                <select id="sampleType" class="textbox combo selectboxStyle" style = "width: 100px">
+                                    <option value="All">Unspecified</option>
+                                    <option value="Plasma">Plasma</option>
+                                    <option value="Serum">Serum</option>
+                                </select>
+                            </td>
+                        </tr>
+                    </table>
+                    
+                    <table style = "padding-left:15px; border-spacing: 0px; line-height: 4px" cellspacing="4">
+                        <tr>
+                            <td><p style = "font-size:13px; color: #003972; padding-right: 20px"><strong>Polarities</strong>: </p></td>                            
+                            <td> 
+                                <select id="chemiType" class="textbox combo selectboxStyle" style = "width: 100px">
+                                    <option value="All">Unspecified</option>
+                                    <option value="Both">Both</option>
+                                    <option value="Polar">Polar</option>
+                                    <option value="Lipid">Lipid</option>
+                                </select>
+                            </td>
+                        </tr>
+                    </table>
+                                        
+                    <table style = "padding-left:15px; border-spacing: 0px; line-height: 4px" cellspacing="4">
+                        <tr>
+                            <td><p style = "font-size:13px; color: #003972; padding-right: 20px"><strong>Countries</strong>: </p></td>
+                            <td><label for="ctoptbox" style = "font-size:12px">All </label></td>
+                            <td><input type="checkbox" id="ctoptbox" checked></td>
+                            <td><a id = "ctopt" href="#" style = "margin-left: 20px; font-size:13px">Specify</a></td>                                
+                        </tr>
+                    </table>
+                                        
+                    <table style = "padding-left:15px; border-spacing: 0px; line-height: 4px" cellspacing="4">
+                        <tr>
+                            <td><p style = "font-size:13px; padding-right: 12px; color: #003972"><strong>Age Group</strong>: </p></td>
+                            <td>
+                                <select id="agepopu" class="easyui-combobox" name="dept" style="width:135px;" data-options="					
+                                        textField:'text',
+                                        multiple:true,
+                                        value:['Both', 'Adults', 'Children'],
+                                        panelHeight:'auto'">
+                                    <option value="Both">All</option>
+                                    <option value="Adults">Adults</option>
+                                    <option value="Children">Children</option>
+                                </select>
+                            </td>
+                        </tr>
+                    </table>
+
+                    <div style = "padding-left: 15px; padding-top: 6.5px; padding-bottom: 4px">
+                        <label for = "compariType" 
+                               style = "font-size:13px; color: #003972">
+                            <strong>Comparisons</strong>: 
+                        </label>
+                        <select id="compariType" class="textbox combo selectboxStyle" style = "width:90px">
+                            <option value="none">None</option>
+                            <option value="diseases">Diseases</option>
+                            <option value="severities">Severities</option>
+                            <option value="outcomes">OutComes</option>
+                        </select> 
+                    </div>
+                    <table id = "diseasetable" style = "padding-left:27px; border-spacing: 0px; line-height: 0px; display: none" cellspacing="4">
+                        <tr>
+                            <td><label for="dise1">COVID</label></td>
+                            <td><input id = "dise1" type="checkbox"></td>
+                            <td style = "padding-left:28px"><label for="dise2">nonCOVID</label></td>
+                            <td><input id = "dise2" type="checkbox"></td>
+                        </tr>
+                        <tr>
+                            <td><label for="dise3">HC</label></td>
+                            <td><input id = "dise3" type="checkbox"></td>
+                            <td style = "padding-left:28px"><label for="dise4">Recovered</label></td>
+                            <td><input id = "dise4" type="checkbox"></td>
+                        </tr>
+                    </table>
+                    <table id = "severitytable" style = "padding-left:27px; border-spacing: 0px; line-height: 0px; display: none" cellspacing="4">
+                        <tr>
+                            <td><label for="severi1">Asymptomatic</label></td>
+                            <td><input id = "severi1" type="checkbox"></td>
+                            <td style = "padding-left:18px"><label for="severi2">Severe</label></td>
+                            <td><input id = "severi2" type="checkbox"></td>
+                        </tr>
+                        <tr>
+                            <td><label for="severi3">Mild_Moderate</label></td>
+                            <td><input id = "severi3" type="checkbox"></td>
+                            <td style = "padding-left:18px"><label for="severi4">Critical</label></td>
+                            <td><input id = "severi4" type="checkbox"></td>
+                        </tr>
+                    </table>
+                    <table id = "outcometable" style = "padding-left:27px; border-spacing: 0px; line-height: 0px; display: none" cellspacing="4">
+                        <tr>
+                            <td><label for="outc1">Survived</label></td>
+                            <td><input id = "outc1" type="checkbox"></td>
+                            <td style = "padding-left:28px"><label for="outc2">Deceased</label></td>
+                            <td><input id = "outc2" type="checkbox"></td>
+                        </tr>
+                    </table>
+                    
+                    <div style = "text-align: center; margin-top: 10px">
+                        <button style = "font-size:11px" type="button" onclick="confirmDataset()">Confirm</button>
+                        <button style = "font-size:11px; margin-left: 10px; margin-right: 10px" type="button" onclick="downloadDataset()">Download</button>
+                        <button style = "font-size:11px" type="button" onclick="resetallparams()">Reset</button>
+                    </div>
+                    
+                </div>
+                
+                <div data-options="region:'south',split:false, border:false, collapsible:true, tools:'#tarhl_tip'" 
+                     title="Summary" style='height:225px;'>
+                    <ul id="stats">
+
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <!--hekp tip for data customization-->
+        <div id="hl_tip">
+            <a href="#" class="easyui-tooltip" data-options="
+               content: $('<div>Select specific datasets from this panel based on different conditions and click <strong>\'Confirm\'</strong> for further analysis or Click <strong>\'Download\'</strong> to download the dataset(s).</div>'),
+               position: 'left',
+               onShow: function(){
+               $(this).tooltip('arrow').css('right', 20);
+               $(this).tooltip('tip').css('right', $(this).offset().right);
+               $(this).tooltip('tip').css({  
+               backgroundColor: '#FFFEE6',  
+               borderColor: '#FFFEE6'  
+               });
+               }
+               ">
+                <img src="../resources/images/tip.png"/>
+            </a>
+        </div>
+        
+        <!--center-->
+        <div id="network" data-options="region:'center', split: false, collapsible:false" style="overflow:hidden">
+
+            <div class="control-panel" style="height: 240px; width: 36px; padding-left: 2px; background: rgba(211,211,211,0.7); float:left; z-index: 100;">
+                <table border="0px">
+                    <tr> <td style="height:28px;"> 
+                            <a href="#" id="colorBn" style="position: absolute; top: 0;left: 0;"
+                               title="Set highlight color for next selection">
+                                <input type='text' id="custom" style="width:30px"/>
+                            </a>
+                        </td></tr>
+                    <tr> <td style="height:25px; padding-left: 5px;"><a href="#" id="resetBn" title="Reset to default view">
+                                <img style="width: 22px; height:21px" border="0" src="../resources/images/reset.png" alt="Reset"/></a></td></tr>
+                    <tr> <td style="height:25px; padding-left: 5px;"><a href="#" id="rotateMoveBn" title="Rotate move mode">
+                                <img style="width: 22px; height:21px" border="0" src="../resources/images/3dscatter/rotatemove.png" alt="Reset"/></a></td></tr>
+                    <tr> <td style="height:25px; padding-left: 5px;"><a href="#" id="planeMoveBn" title="Plane move mode">
+                                <img style="width: 22px; height:21px" border="0" src="../resources/images/3dscatter/arrowcross.png" alt="Reset"/></a></td></tr>
+                    <tr> <td style="height:30px; padding-left: 5px;"><a href="#" id="zoomInBn" title="Zoom in">
+                                <img style="width: 22px; height:20px" border="0" src="../resources/images/zoomin.png" alt="Zoom in"/></a></td></tr>
+                    <tr> <td style="height:30px; padding-left: 5px;"><a href="#" id="zoomOutBn" title="Zoom out">
+                                <img style="width: 22px; height:20px" border="0" src="../resources/images/zoomout.png" alt="Zoom out"/></a></td></tr>
+                    <tr> <td style="height:25px; padding-left: 5px; padding-top: 5px"><a href="#" id="animationBn" title="Animation">
+                                <img style="width: 22px; height:21px" border="0" src="../resources/images/3dscatter/animation.png" alt="Animation"/></a></td></tr>
+                </table>
+            </div>
+
+            <div id="3d-graph" style="width:100%">
+
+            </div>
+            <div id="labels" style="hyphens:none"></div>
+        </div>
+
+        <!--TODO: Will modify for user's uploading-->
+        <div id="uploaddlg" class="easyui-dialog" title="Highlight Settings" data-options="iconCls:'icon-close',resizable:true, closed:true, modal:true"  
+             style="width:400px; height:320px; padding:10px; line-height: 20px">
+            <div style="padding:10px 20px 10px 20px;"> 
+                <table style="margin-left: 10px; width:300px; background: none; overflow:hidden; border-collapse: collapse;">
+                    <tr style="border-bottom: 1px dotted lightgray;">
+                        <td>
+                            Size 
+                        </td>
+                        <td>
+                            <input id="nodeSliderSize" type="range" min="1" value="2" max="8" step="0.1" style="width:60px;" onchange="updateTextInputSize(this.value);">
+                        </td>
+                        <td style="text-align: center;">
+                            <input id="nsize" style="padding:5px; line-height:12px; width:26px; border:1px solid #ccc"/>
+                        </td>
+                    </tr>
+                    <tr style="border-bottom: 1px dotted lightgray;">
+                        <td>Boundary</td>
+                        <td>
+                            <select id="encasingType">
+                                <option value="na">None</option>
+                                <option value="ellipse">Ellipse</option>
+                                <option value="contour">Contour</option>
+                                <!--<option value="alpha">ConvexHull</option>-->
+                            </select> 
+                        </td>
+                        <td style="text-align: center;">
+                            <input type='text' id="customEncasing" style="width:30px"/>
+                        </td>
+                    </tr>
+                    <tr id="clusterRow" style="border-bottom: 1px dotted lightgray; display:none">
+                        <td>Clustering</td>
+                        <td>
+                            Identify clusters within selected group of nodes
+                        </td>
+                        <td>
+                            <select id="customClusterOpt">
+                                <option value="NA">None</option>
+                                <option value="kmeans">K-means</option>
+                                <option value="peak">Density Peak</option>
+                                <option value="meanshift">Mean Shift</option>
+                            </select> 
+                        </td>
+                    </tr>
+
+                </table>
+                <div align="center" style="width: 320px;padding-top:10px">
+                    <a href="#" class="easyui-linkbutton" onclick="updateCustomSelection(); $('#highlightdlg').dialog('close')">Update</a> 
+                </div>
+            </div>
+        </div>
+
+        <!--Keep: Will use this for animation of tsne downloading -->
+        <div id="animationdlg" class="easyui-dialog" title="Warning" data-options="iconCls:'icon-close',resizable:true, closed:true, modal:true"  style="width:350px; padding:10px; line-height: 20px">
+            <div style="padding:10px 20px 10px 20px;">
+                <label>
+                    Please note: exporting animation is a resource intensive process, it will take a few minutes and network manipulation will be disabled for the meanwhile. Do you still want to proceed?
+                </label>
+                <br />
+                <b>
+                    Important! After downloading the file please rename the file extension from .xml to .gif
+                </b>
+                <br/>
+                <div align="center" style="width: 280px; padding-top: 10px">
+                    <a href="#" onclick="startAnimation();" class="easyui-linkbutton">Confirm</a> &nbsp;&nbsp;
+                    <a href="#" class="easyui-linkbutton" onclick="$('#animationdlg').dialog('close')">Cancel</a> 
+                </div>
+            </div>
+        </div>
+        
+        <!--Advanced Options Dialog-->
+        <div id="optdlg" class="easyui-dialog" title="Advanced Options" data-options="iconCls:'icon-close',resizable:true, closed:true, modal:true" 
+             style="width:560px;height:390px;padding:10px">
+            <div id="tt2" class="easyui-tabs" data-options="border:false" style="margin:auto; background:rgba(0,0,0,0)">
+                <div title="Background" style="padding-left: 20px; margin-bottom:10px; padding-top:10px; background:rgba(0,0,0,0)">
+                    <label>Type: </label>
+                    <select id="bgColType">
+                        <option value="plain">Plain</option>
+                        <option value="gradient_dark">Gradient (dark-top)</option>
+                        <option value="gradient_light">Gradient (light-top)</option>
+                        <option value="gradient_dark_bottom">Gradient (dark-bottom)</option>
+                        <option value="gradient_light_bottom">Gradient (light-bottom)</option>
+                    </select>
+                    <br />
+                    <input type='text' id="customBgg" style="width:30px"/>
+                </div>
+                
+                <div title="Text Display" style="padding:10px 20px 10px 20px; background:rgba(0,0,0,0)">
+                    <p>
+                        You can hide all labels The "current" option will show current labels only, without showing new labels on camera movement.
+                    </p>
+                    <div style="width:280px;">
+                        <label>Display option: </label>
+                        <select id="labelOpt">
+                            <option value="show">Show</option>
+                            <option value="hide">Hide</option>
+                        </select> &nbsp;&nbsp;&nbsp;&nbsp;
+                    </div> 
+                    <div style="margin:auto;text-align: center;padding-top:15px">
+                        <a href="#" class="easyui-linkbutton" id="nodeLabelBn">Submit</a>
+                    </div>
+                </div>
+
+                <div title="Upload my data" style="padding:10px 20px 10px 20px; background:rgba(0,0,0,0)">
+                    <br/>
+                    <label for="batch">Please upload the csv file from below:</label>  
+                    <br/>
+<!--                    <textarea id="batch" style="height:180px; width: 240px"></textarea>  -->
+                    <div align="center" style="width: 280px; padding-top: 10px">
+                        UNDER DEVELOPMENT: Will be availabe soon.
+                    </div>
+                    <br/>
+                </div>
+                
+            </div>
+        </div>
+
+        <!--Download Dialog-->
+        <div id="pngdialog" class="easyui-dialog" title="Download Dialog" 
+             data-options="iconCls:'icon-save',resizable:true, closed:true, modal:true" 
+             style="width:630px;height:400px;padding:5px">
+            Right click the PNG image to save as your preferred name
+            <image id="downloadimage"/> 
+        </div> 
+
+        <!--Node Opacity Dialog-->
+        <div id="nodeopacitydlg" class="easyui-dialog" title="Node Opacity" data-options="iconCls:'icon-close',resizable:true, closed:true, modal:true" style="width:360px;height:300px;padding:10px">
+            <div title="Edge Opacity" style="padding:10px 20px 10px 20px;">
+                <div style="margin-bottom:10px; padding-top: 25px">
+                    <label>Opacity</label>
+                    <input id="nodeSliderOpa" type="range" min="0" max="1" value="0.5" step="0.1" style="width:40%;" onchange="updateTextInputOpaNode(this.value);">
+                    <input type="text" id="textInputOpaNode" value="0.5" style="width:30px;">
+                </div>
+                <div align="center" style="width: 240px; padding-top: 10px; padding-bottom: 20px">
+                    <a id="updateNodeOpacity" href="#" class="easyui-linkbutton">Submit</a>
+                </div>
+
+                <label>Tip: consider reducing opacity value for larger networks to improve viewing experience</label>
+            </div>
+        </div>
+        
+        <!--Node Size Dialog-->
+        <div id="nodesizedlg" class="easyui-dialog" title="Node Size" data-options="iconCls:'icon-close',resizable:true, closed:true, modal:true"  
+             style="width:400px;height:250px;padding:10px">
+            <div title="Node Size" style="padding:8px 4px 4px 10px;"> 
+                <br />
+                <div style="margin-bottom:10px">
+                    <label>Node scope: </label>
+                    <select id="nodeOpt">
+                        <option value="all">All nodes</option>
+                        <option value="highlighted">Highlighted nodes</option>
+                    </select>
+                </div>
+
+                <div style="margin-bottom:10px">
+                    <label>Node size: </label>
+                    <select id="sizeOpt">
+                        <option value="increase">Increase ++ </option>
+                        <option value="decrease">Decrease -- </option>
+                    </select>
+                    <div align="center" style="width: 320px; padding-top:20px">
+                        <a href="#" class="easyui-linkbutton" id="nodeSizeBn">Submit</a>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!--Initial Dialog-->
+        <div id="initdialog" class="easyui-dialog" title="Tips" data-options="iconCls:'icon-save',resizable:true, closed:true, modal:true" style="width:560px;">  
+            <div style="text-align:left;padding:10px; font-size: 13px !important">
+                <ol style="margin-left: 0; padding-left: 20px">
+                    <li>
+                        From the top menu bar:
+                        <ul style="margin-left: 0;">
+
+                            <li>
+                                <b>Advanced Options</b>: various functions such as setting color background, adjusting node style and download images.
+                            </li>
+                        </ul>
+                    </li>
+                    <li>
+                        From the central scatter plot area:
+                        <ul style="margin-left: 0;">
+                            <li>
+                                To navigate in the 3D space, click-and-drag to rotate the current view. mouse wheel forward and backward to zoom in and out.
+                            </li>
+
+                            <li>
+                                Click a node from the 3D space to view the properties of the sample.
+                            </li>
+                        </ul>
+                    </li>
+                    <li>
+                        From the left panel:
+                        <ul style="margin-left: 0;">
+                            <li>
+                                <b>Metadata OverView</b>: User could visulize their data based on different meta information.
+                            </li>
+                            <li>
+                                <b>Data Customization</b>: Visulize the data based on multiple and customized conditions.
+                            </li>
+                            <li>
+                                <b>Summary</b>: Showing the summary/explanations of current selected/cutomized datasets.
+                            </li>
+                        </ul>
+                    </li>
+                    <li>
+                        From the right panel:
+                        <ul style="margin-left: 0;">
+                            <li>
+                                <b>Single analysis</b>: Choose one specific customized dataset for statistical, biomarker, functional and network analysis.
+                            </li>
+                            <li>
+                                <b>Meta-analysis</b>: Choose multiple datasets for meta-analysis.
+                            </li>
+                        </ul>
+                    </li>
+
+                </ol>
+            </div>
+            <div style="width:480; text-align: center; padding-bottom: 10px">
+                <a href="#" class="easyui-linkbutton" iconCls="icon-ok" onclick='$("#initdialog").dialog("close")'>Ok</a>
+            </div>
+        </div>
+        
+        <!--platform Dialog-->
+        <div id="platformdlg" class="easyui-dialog" title="Platform Customization" 
+             data-options="iconCls:'icon-close',resizable:true, closed:true, modal:true" 
+             style="width:275px;height:310px;padding:10px">
+            <div id="ptfmm" class="easyui-tabs" data-options="border:false" style="margin:auto; background:rgba(0,0,0,0)">
+                <label><strong>Choose one or more platforms: </strong></label>
+                <table style = "padding-left:18px">
+                    <tr>
+                        <td><label for="platformType1">LC-MS (untargeted)</label></td>
+                        <td><input id = "platformType1" type="checkbox"></td>
+                    </tr>
+                    <tr>
+                        <td><label for="platformType2">LC-MS (targeted)</label></td>
+                        <td><input id = "platformType2" type="checkbox"></td>
+                    </tr>
+                    <tr>
+                        <td><label for="platformType3">GC-MS</label></td>
+                        <td><input id = "platformType3" type="checkbox"></td>
+                    </tr>
+                    <tr>
+                        <td><label for="platformType4">NMR (untargeted)</label></td>
+                        <td><input id = "platformType4" type="checkbox"></td>
+                    </tr>
+                    <tr>
+                        <td><label for="platformType5">DI-MS (untargeted)</label></td>
+                        <td><input id = "platformType5" type="checkbox"></td>
+                    </tr>
+                    <tr>
+                        <td><label for="platformType6">CE-MS (untargeted)</label></td>
+                        <td><input id = "platformType6" type="checkbox"></td>
+                    </tr>
+                    <tr>
+                        <td><label for="platformType7">Mix (untargeted)</label></td>
+                        <td><input id = "platformType7" type="checkbox"></td>
+                    </tr>
+                </table>
+            </div>
+            <div style="text-align: center; padding-bottom: 10px">
+                <a href="#" class="easyui-linkbutton" iconCls="icon-ok" onclick='finishmultiplePlatform()'>Finish</a>
+            </div>            
+        </div>
+        
+        <!--country Dialog-->
+        <div id="countrydlg" class="easyui-dialog" title="Countries Customization" data-options="iconCls:'icon-close',resizable:true, closed:true, modal:true" 
+             style="width:335px;height:340px;padding:10px">
+            <div id="countrymm" class="easyui-tabs" data-options="border:false" style="margin:auto; background:rgba(0,0,0,0)">
+                <label><strong>Choose one or more countries: </strong></label>
+                <table style = "padding-left:25px">
+                    <tr>
+                        <td><label for="ct1">Australia</label></td>
+                        <td><input id = "ct1" type="checkbox"></td>
+                        <td style = "padding-left:50px"><label for="ct12">Brazil</label></td>
+                        <td><input id = "ct12" type="checkbox"></td>
+                    </tr>
+                    <tr>
+                        <td><label for="ct2">China</label></td>
+                        <td><input id = "ct2" type="checkbox"></td>
+                        <td style = "padding-left:50px"><label for="ct22">Colombia</label></td>
+                        <td><input id = "ct22" type="checkbox"></td>
+                    </tr>
+                    <tr>
+                        <td><label for="ct3">France</label></td>
+                        <td><input id = "ct3" type="checkbox"></td>
+                        <td style = "padding-left:50px"><label for="ct32">Germany</label></td>
+                        <td><input id = "ct32" type="checkbox"></td>
+                    </tr>
+                    <tr>
+                        <td><label for="ct4">India</label></td>
+                        <td><input id = "ct4" type="checkbox"></td>
+                        <td style = "padding-left:50px"><label for="ct42">Italy</label></td>
+                        <td><input id = "ct42" type="checkbox"></td>
+                    </tr>
+                    <tr>
+                        <td><label for="ct5">Kenya</label></td>
+                        <td><input id = "ct5" type="checkbox"></td>
+                        <td style = "padding-left:50px"><label for="ct52">Latvia</label></td>
+                        <td><input id = "ct52" type="checkbox"></td>
+                    </tr>
+                    <tr>
+                        <td><label for="ct6">Mexico</label></td>
+                        <td><input id = "ct6" type="checkbox"></td>
+                        <td style = "padding-left:50px"><label for="ct62">Sweden</label></td>
+                        <td><input id = "ct62" type="checkbox"></td>
+                    </tr>
+                    <tr>
+                        <td><label for="ct7">Turkey</label></td>
+                        <td><input id = "ct7" type="checkbox"></td>
+                        <td style = "padding-left:50px"><label for="ct72">Spain</label></td>
+                        <td><input id = "ct72" type="checkbox"></td>
+                    </tr>
+                    <tr>
+                        <td><label for="ct8">UK</label></td>
+                        <td><input id = "ct8" type="checkbox"></td>
+                        <td style = "padding-left:50px"><label for="ct82">USA</label></td>
+                        <td><input id = "ct82" type="checkbox"></td>
+                    </tr>
+                </table>
+            </div>
+            <div style="text-align: center; padding-bottom: 10px">
+                <a href="#" class="easyui-linkbutton" iconCls="icon-ok" onclick='finishmultiplecountry()'>Finish</a>
+            </div>            
+        </div>
+        
+        <!--confirm Dialog-->
+        <div id="confirmdlg" class="easyui-dialog" title="Confirm Customization" data-options="iconCls:'icon-close',resizable:true, closed:true, modal:true" 
+             style="width:535px;height:450px;padding:10px">
+            <label><strong>Choose one or more data sets for further analysis </strong></label><br>
+            <p>Note: If you choose more than one data sets here, you could ONLY do meta-analysis for further</p>
+            <form id="dd" style="height:260px">
+                <table id="datasetdg" class="easyui-datagrid"
+                       data-options="border:false,fit:true,checkOnSelect:true,selectOnCheck:true, fitColumns:true" 
+                       style="padding-bottom:1px">  
+                    <thead>  
+                        <tr style = "color: #145DA0">  
+                            <th field="ck" checkbox="true"/>
+                            <th data-options="field:'name',width:15">DataSet</th>  
+                            <th data-options="field:'size',width:65">Sample Size</th>
+                            <th data-options="field:'cmpd',width:15">Compounds</th>
+                        </tr>  
+                    </thead>  
+                </table>
+            </form>
+            <div style="text-align: center; padding-bottom: 10px; position: absolute; bottom: 10px; left: 195px">
+                <a href="#" class="easyui-linkbutton" iconCls="icon-ok" onclick='activateAnalysisPanel()' style = "margin-right:25px">Done</a>
+                <a href="#" class="easyui-linkbutton" iconCls="icon-redo" onclick="$('#confirmdlg').dialog('close')">Cancel</a>
+            </div>            
+        </div>
+        
+        <!--Color Meta Dialog-->
+        <div id="modulecolordlg" class="easyui-dialog" title="Metadata Color Customization"
+             data-options="resizable:true, closed:true, modal:true"  
+             style="width:300px;padding:10px; display: none;">
+            <div style = "columns: 2; margin-bottom: 12px">
+                <div id = "moduleColTxt" style="width:260px; font-size: 14px; margin-top: 6px; color: #0818A8; font-weight: bold"></div>
+                <div style="margin-left: 50px">
+                    <input type='text' id="custommeta"/>
+                </div>
+            </div>
+            <a href="#" class="easyui-linkbutton" iconCls="icon-ok" onclick='changeMetaColor()' style = "margin-left:105px">Update</a>
+        </div>
+        
+        <script>
+            $(document).ready(function () {
+                initScatter3D();
+            });
+        </script>
+    </body>
+</html>

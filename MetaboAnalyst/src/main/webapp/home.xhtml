@@ -1,0 +1,290 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                template="#{applicationBean1.templateUrl}/_doc_template.xhtml">
+    <ui:define name="metaInfo">
+        <f:event type="preRenderView" listener="#{sessionBean1.doLogout(1)}"/> 
+    </ui:define>
+    <ui:define name="myscript">
+        <style>
+            .btnBckg2 {
+                width: 200px;
+                height: 42px;
+                font-size:16px !important;
+                color:white !important;
+                font-weight: bold;
+                background-color: #a11f05 !important;
+                text-shadow: none !important;
+                box-shadow: none !important;
+                border:solid thin  #f2f8ff !important;
+                background-image: none !important;
+            }
+
+            .btnBckg2:hover {
+                border:solid medium salmon !important;
+            }
+
+            div.sticky {
+                position: -webkit-sticky;
+                position: sticky;
+                top: -4px;
+                background-color: white;
+            }
+        </style> 
+
+        <script src="#{facesContext.externalContext.requestContextPath}/resources/jscripts/glowCookies.min.js"></script>
+        <script>
+            glowCookies.start('en', {
+                analytics: 'G-YMJY7YV52G',
+                style: 1,
+                manageColor: 'white',
+                bannerDescription: 'To improve the performance of MetaboAnalyst, we use cookies to understand user traffics via Google Analytics.',
+                bannerLinkText: 'Read more on cookie usage',
+                policyLink: 'https://developers.google.com/analytics/devguides/collection/gajs/cookie-usage',
+                acceptBtnText: 'OK',
+                rejectBtnText: 'Decline',
+                manageBackground: '#374785',
+                manageText: 'Manage Cookies'
+            });
+        </script>
+    </ui:define>
+    <ui:define name="content">
+        <div style="padding: 30px 15px 2px 40px; line-height: 23px; background-color: #374785; width:100%; margin-top: -2px">
+            <h:outputLabel style="color: white; font-size: 15px; font-weight: bold" value="News &amp; Updates"/>
+            <ul style="margin-top: 0.3em; margin-bottom: 0.2em; font-size: 14px; color: white;">   
+                <!--
+                <li>
+                    Please check out our upcoming workshop on <a href="https://bioinformatics.ca/workshops-all/2023-metabolomics-analysis/" target="_blank" style="color:#FFAE20">Metabolomics Data Analysis</a> (July 6-7, Edmonton and Montreal). <b>Early bird discount ends soon</b>! 
+                </li>
+                -->
+                <li>
+                    For multi-omics integration, use <a href="https://www.microbiomeanalyst.ca" target="_blank" style="color:#FFAE20">MicrobiomeAnalyst</a> for metabolomics &amp; microbiome data, 
+                    <a href="https://www.omicsnet.ca" target="_blank" style="color:#FFAE20">OmicsNet</a> for omics signatures (lists), or
+                    <a href="https://www.omicsanalyst.ca" target="_blank" style="color:#FFAE20">OmicsAnalyst</a> for omics tables;
+                </li>
+                <li>
+                    Added a checkbox to allow users to explicitly specify group order in Data Editor (07/22/2023); <img src="#{facesContext.externalContext.requestContextPath}/resources/images/new.gif"></img>;
+                </li>
+                <li>
+                    Enhanced error messages for data upload format check; fixed the issue with figure legend in 3D scatter plot (06/22/2023);<img src="#{facesContext.externalContext.requestContextPath}/resources/images/new.gif"></img>;
+                </li>
+                <li>
+                    Enhanced result table download for mummichog and covariate adjustment analysis (04/30/2023);<img src="#{facesContext.externalContext.requestContextPath}/resources/images/new.gif"></img>;
+                </li>
+                <li>
+                    Minor bug fixes and feature enhancements based on user feedback from <a href="https://omicsforum.ca" target="_blank" style="color:#FFAE20"><b>OmicsForum</b></a> (04/06/2023);  <img src="#{facesContext.externalContext.requestContextPath}/resources/images/new.gif"></img> 
+                </li>
+                <li>
+                    Upgraded the interactive 3D scatter plot for PCA, PLSDA and sPLSDA visual exploration (03/19/2023) <img src="#{facesContext.externalContext.requestContextPath}/resources/images/new.gif"></img>;  
+                </li>
+                <li>
+                    Feature enhancement to improve performance and visualization for complex large data based on user feedback from <a href="https://www.omicsforum.ca" target="_blank" style="color:#FFAE20">OmicsForum</a> (03/15/2023); 
+                </li>
+                <li>
+                    Enhanced linear models with covariate adjustments (<b>Statistical Analysis [metadata table]</b> module) to better support different study designs (02/13/2023);  
+                </li>
+            </ul> 
+            <h:panelGrid style="width:100%; text-align: right; padding-right: 20px">
+                <a style="color: white" href="#{facesContext.externalContext.requestContextPath}/docs/UpdateHistory.xhtml">Read more ...... </a>
+            </h:panelGrid>
+        </div>
+        <div class="sticky">
+            <h:panelGrid style="width:100%; text-align: center; padding-top: 30px; padding-bottom: 25px;">
+                <p:button value="Click here to start" 
+                          styleClass ="btnBckg2"
+                          style="font-size:15px !important"
+                          href="#{ctl.toModuleView()}" 
+                          />
+            </h:panelGrid>
+            <hr class="style-one"/>
+        </div>
+        <h:panelGrid columns="2" style="width:100%; padding: 10px 70px 30px 80px; font-size: 15px; line-height: 23px" cellspacing="15px">
+            <h:panelGroup>
+                <img src="#{facesContext.externalContext.requestContextPath}/resources/images/MetaboAnalyst5_home_figures_moduleview.png"></img>
+            </h:panelGroup> 
+            <h:panelGroup>
+                <h3>Overview</h3>
+                <p>
+                    MetaboAnalyst is a comprehensive platform dedicated for metabolomics data analysis via user-friendly, web-based interface. 
+                    Over the past decade, MetaboAnalyst has evolved to become the most widely used platform (>300,000 users) in the metabolomics 
+                    community. The current MetaboAnalyst (V5.0) supports raw MS spectra processing, comprehensive data  
+                    normalization, statistical analysis, functional analysis, meta-analysis as well as integrative analysis with other 
+                    omics data. The objective is to <font color="darkblue">enable high-throughput analysis for both targeted and untargeted metabolomics</font>, 
+                    and to <font color="darkblue">narrow the gap from raw spectra to biological insights</font>. 
+                </p>
+            </h:panelGroup>
+
+            <h:panelGroup>
+                <img src="#{facesContext.externalContext.requestContextPath}/resources/images/MetaboAnalyst5_home_figures_vip.png" loading="lazy"></img>
+            </h:panelGroup>
+            <h:panelGroup>
+                <h3>Statistical Analysis [one factor]</h3>
+                <p>
+                    A wide array of commonly used statistical and machine learning methods are available: univariate - fold change, t-test, volcano plot, 
+                    ANOVA, correlation analysis; advanced feature selection - significance analysis of microarrays 
+                    (and metabolites) (SAM) and empirical Bayesian analysis of microarrays (and metabolites) (EBAM);
+                    multivariate - principal component analysis (PCA), partial least squares-discriminant analysis (PLS-DA) and 
+                    orthogonal partial least squares-discriminant analysis (OPLS-DA); clustering - dendrogram, heatmap, K-means, 
+                    and self organizing map (SOM); as well as supervised classification - random forests and support vector machine (SVM).
+                </p>
+            </h:panelGroup>
+
+            <h:panelGroup>
+                <img src="#{facesContext.externalContext.requestContextPath}/resources/images/MetaboAnalyst5_home_figures_time.png" loading="lazy"></img>
+            </h:panelGroup>
+            <h:panelGroup>
+                <h3>Statistical Analysis [metadata table]</h3>
+                <p>
+                    MetaboAnalyst now allows users to visualize and compute associations between phenotypes and metabolomics features with considerations of 
+                    other experimental factors / covariates. It employs general linear models to accommodate modern epidemiological study, 
+                    together with PCA and heatmaps for visual explorations. For two-factors / time-series data, users have more options 
+                    including two-way ANOVA, multivariate empirical Bayes time-series analysis (MEBA), and ANOVA-simultaneous component analysis (ASCA). 
+                </p>
+            </h:panelGroup>
+
+            <h:panelGroup>
+                <img src="#{facesContext.externalContext.requestContextPath}/resources/images/MetaboAnalyst5_home_figures_roc.png" loading="lazy"></img>
+            </h:panelGroup>
+            <h:panelGroup>
+                <h3>Biomarker Analysis</h3>
+                <p>
+                    MetaboAnalyst provides the receiver operating characteristic (ROC) curve based approach for identifying potential biomarkers 
+                    and evaluating their performance. It offers classical univariate ROC curve analysis as well as more modern multivariate ROC curve analysis 
+                    based on PLS-DA, SVM or Random Forests. In addition, users can manually select biomarkers or set up hold-out samples for flexible 
+                    evaluation and validation. 
+                </p>
+            </h:panelGroup>
+
+            <h:panelGroup>
+                <img src="#{facesContext.externalContext.requestContextPath}/resources/images/MetaboAnalyst5_home_figures_biometa.png" loading="lazy"></img>
+            </h:panelGroup>
+            <h:panelGroup>
+                <h3>Statistical Meta-analysis</h3>
+                <p>
+                    Users can upload several annotated metabolomics data sets collected under comparable conditions to identify robust biomarkers
+                    (compounds or annotated peaks) across multiple studies. It currently supports several meta-analysis methods based on p-value combination, 
+                    vote counts and direct merging. The results can be explored in an interactive Upset diagram.
+                </p>
+            </h:panelGroup>
+
+            <h:panelGroup>
+                <img src="#{facesContext.externalContext.requestContextPath}/resources/images/MetaboAnalyst5_home_figures_enrich.png" loading="lazy"></img>
+            </h:panelGroup>
+            <h:panelGroup>
+                <h3>Enrichment Analysis</h3>
+                <p>
+                    MetaboAnalyst performs metabolite set enrichment analysis (MSEA) contains human and mammalian metabolite sets,
+                    as well as chemical class metabolite sets. This module accepts a list of compound names, a list of compound
+                    names with concentrations, or a concentration table. The analysis is based on several libraries
+                    containing <font color="darkblue">~9,000</font> biologically meaningful metabolite sets collected primarily from human studies 
+                    including >1500 chemical classes.
+                </p>
+            </h:panelGroup>
+            <h:panelGroup>
+                <img src="#{facesContext.externalContext.requestContextPath}/resources/images/MetaboAnalyst5_home_figures_path.png" loading="lazy"></img>
+            </h:panelGroup>
+            <h:panelGroup>
+                <h3>Pathway Analysis</h3>
+                <p>
+                    MetaboAnalyst currently supports metabolic pathway analysis (integrating pathway enrichment analysis and pathway topology analysis) 
+                    and visualization for 26 model organisms, including Human, Mouse, Rat, Cow, Chicken, Zebrafish, Arabidopsis thaliana, 
+                    Rice, Drosophila, Plasmodium species, Budding yeast, E.coli., etc., with > 1600 pathways. 
+                </p>
+            </h:panelGroup>
+            <h:panelGroup>
+                <img src="#{facesContext.externalContext.requestContextPath}/resources/images/MetaboAnalyst5_home_figures_joint.png" loading="lazy"></img>
+            </h:panelGroup>
+            <h:panelGroup>
+                <h3>Joint Pathway Analysis</h3>
+                <p>
+                    With MetaboAnalyst, users are able to simultaneously analyze genes and metabolites of interest within the context of metabolic pathways.
+                    Metabolomics data from 25 model organisms including the human, mouse and rat are currently supported. Several algorithms have been implemented 
+                    to integrate evidence from transcriptomics and metabolomics for systems level insights 
+                </p>
+            </h:panelGroup>
+            <h:panelGroup>
+                <img src="#{facesContext.externalContext.requestContextPath}/resources/images/MetaboAnalyst5_home_figures_net.png" loading="lazy"></img>
+            </h:panelGroup>
+            <h:panelGroup>
+                <h3>Network Analysis</h3>
+                <p>
+                    Users can upload one or two lists of metabolites, genes, or KEGG orthologs (i.e. generated from metagenomics), and then visually explore these molecules of
+                    interest within the context of biological networks such as the KEGG global metabolic network, as well as several networks created based on known associations between 
+                    genes, metabolites, and diseases.
+                </p>
+            </h:panelGroup>
+
+            <h:panelGroup>
+                <img src="#{facesContext.externalContext.requestContextPath}/resources/images/MetaboAnalyst5_home_figures_spectra.png" loading="lazy"></img>
+            </h:panelGroup>
+            <h:panelGroup>
+                <h3>LC-MS Spectral Processing</h3>
+                <p>
+                    Users can now upload their LC-MS spectra to perform peak picking, peak alignment and peak annotation using auto-optimized
+                    parameters for XCMS and CAMERA. The input spectra must be in centroid mode and open formats (mzML, mzXML and mzData). 
+                    The resulting peak intensity table can be exported to other modules to allow comprehensive statistical or functional analysis. 
+                </p>
+            </h:panelGroup>
+            <h:panelGroup>
+                <img src="#{facesContext.externalContext.requestContextPath}/resources/images/MetaboAnalyst5_home_figures_mspeaks.png" loading="lazy"></img>
+            </h:panelGroup>
+            <h:panelGroup>
+                <h3>MS Peaks to Pathways</h3>
+                <p>
+                    This module supports functional analysis of untargeted metabolomics data generated from high-resolution mass spectrometry (HRMS) 
+                    such as LC-HRMS or FI-HRMS. The basic assumption is that putative annotation at individual compound level can enable more 
+                    accurate functional analysis at pathway level. This is because pathway-level changes rely on "collective behavior" which is 
+                    more tolerant to random errors during compound annotation (Li et al. 2013). 
+                </p>
+            </h:panelGroup>
+            <h:panelGroup>
+                <img src="#{facesContext.externalContext.requestContextPath}/resources/images/MetaboAnalyst5_home_figures_metamum.png" loading="lazy"></img>
+            </h:panelGroup>
+            <h:panelGroup>
+                <h3>Functional Meta-analysis of MS Peaks</h3>
+                <p>
+                    With MetaboAnalyst, users can now perform meta-analysis of untargeted metabolomics data. Our method extends the MS Peaks to Paths
+                    workflow to reduce the bias individual studies may carry towards specific sample processing protocols or LC-MS instruments.
+                    The current workflow allows users to perform meta-analysis of MS peaks to help identify consistent functional signatures by 
+                    integrating <font color="darkblue">functional profiles from independent studies</font> or by <font color="darkblue">pooling peaks from complementary instruments</font>.
+                </p>
+            </h:panelGroup>
+
+            <h:panelGroup>
+                <img src="#{facesContext.externalContext.requestContextPath}/resources/images/MetaboAnalyst5_home_figures_power.png" loading="lazy"></img>
+            </h:panelGroup>
+            <h:panelGroup>
+                <h3>Power Analysis</h3>
+                <p>
+                    Users can upload a dataset either from a pilot study or from a similar study to compute the minimum number of samples required to 
+                    detect the effect within a certain degree of confidence, as well as to estimate the power of the current study design.
+                </p>
+            </h:panelGroup>
+            <h:panelGroup>
+                <img src="#{facesContext.externalContext.requestContextPath}/resources/images/MetaboAnalyst5_home_figures_img.png" loading="lazy"></img>
+            </h:panelGroup>
+            <h:panelGroup>
+                <h3>Image Generation</h3>
+                <p>
+                    Publication quality image generation is an important feature of MetaboAnalyst. Important images can be customized (
+                    colors, shapes or labels) and re-produced in high resolution in various formats such as .png, .tiff, .ps, etc.
+                </p>
+            </h:panelGroup>
+            <h:panelGroup>
+                <img src="#{facesContext.externalContext.requestContextPath}/resources/images/MetaboAnalyst5_home_figures_report.png" loading="lazy"></img>
+            </h:panelGroup>
+
+            <h:panelGroup>
+                <h3>Report Generation</h3>
+                <p>
+                    Upon completion of your analysis, a comprehensive PDF report will be generated documenting each step performed along with 
+                    corresponding tabular and graphical results. All processed data and images are also freely available for download.
+                </p>
+            </h:panelGroup>
+        </h:panelGrid>
+    </ui:define>
+</ui:composition>

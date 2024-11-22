@@ -1,0 +1,112 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                template="#{applicationBean1.templateUrl}/_anal_template.xhtml"
+                xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+    <ui:define name="metaInfo">
+        <f:event type="preRenderView" listener="#{sessionBean1.registerPage('Data filter')}"/> 
+        <f:event type="preRenderView" listener="#{procBean.prepareFilterView()}"/>  
+    </ui:define>
+    <ui:define name="content">
+        <h:panelGrid style="padding:30px 40px 20px 50px; font-size: 13px; line-height: 23px; width: 95%">
+            <h2>Data Filtering:</h2>
+            <p>
+                The purpose of the data filtering is to identify and remove variables that are unlikely to be of use 
+                when modeling the data. No phenotype information are used in the filtering process, so the result 
+                can be used with any downstream analysis. This step is strongly recommended for untargeted metabolomics 
+                datasets (i.e. spectral binning data, peak lists) with large number of variables, many of them are from
+                baseline noises. Filtering can usually improve the results. For details, please refer to the paper by  
+                <a href='http://www.biomedcentral.com/1471-2105/10/11' target='_blank'>Hackstadt, et al</a>.
+            </p>
+            <p>
+                Non-informative variables can be characterized in three groups: 
+                1) variables that show <b>low repeatability</b> - this can be measured using QC samples using the 
+                relative standard deviation(RSD = SD/mean). Features with high percent RSD should be removed from the subsequent analysis (the suggested 
+                threshold is 20% for LC-MS and 30% for GC-MS); 2) variables that are <b>near-constant</b> throughout the experiment 
+                conditions - these variables can be detected using standard deviation (SD); or the robust estimate 
+                such as interquantile range (IQR); and 3) variables of <b>very small values</b> (close to baseline or detection limit) - these 
+                variables can be detected using mean or median.
+            </p>
+            <p>
+                For data filtering based on the last two categories, the default parameters follow the empirical rules: 
+                1) Less than 250 variables: 5% will be filtered; 2) Between 250 - 500 variables: 10% will be filtered;
+                3) Between 500 - 1000 variables: 25% will be filtered; and 4) Over 1000 variables: 40% will be filtered.  
+                You can turn off data filtering by dragging the slider to adjust the percentage to filter out to be 0,
+                when your data contain less than 5000 features (or 2500 for power analysis) to control computing time on our server.
+            </p>
+            <!--
+            Please note, for very large data using our public server, an extra filter (based on the current selection) will be applied to control the computing cost: 
+            <ul>
+                <li>
+                    For pathway analysis based on LC-MS peaks (mummichog), the max number of peaks is <b>7500</b> (after cleaning);
+                </li>
+                <li>
+                    For power analysis or multi-factor analysis, the max number is <b>2500</b>.
+                </li>
+                <li>
+                    For all other functions, the maximum allowed number of variables is <b>5000</b>
+                </li>
+            </ul>
+            -->
+
+
+            <h:form>
+                <h:panelGrid style="padding: 20px; background-color: #F9F9FB; width: 800px; font:Arial,sans-serif; font-size: 13px;">
+                    <p:divider align="center">
+                        <span class="ui-tag" style="font-size: 13px; width: 160px; background-color: #F9F9FB; color:black">Filter based on QC</span>
+                    </p:divider>
+                    <h:panelGrid columns="5" style="padding: 10px;">
+                        <p:selectBooleanCheckbox value="#{procBean.doQCFiltering}" style="line-height: 18px"/> 
+                        <h:outputLabel value="Filtering features if their RSDs are &gt;"/> 
+                        <h:inputHidden id="txt2" value="#{procBean.qcCutoff}"/> 
+                        <p:slider for="txt2" minValue="10" maxValue="40" display="output" 
+                                  style="width:100px; margin-left: 4px; margin-right: 6px" 
+                                  displayTemplate="{value}%"/>
+                        <h:outputText id="output" value="#{procBean.qcCutoff}% in QC samples"/> 
+                    </h:panelGrid>
+
+                    <p:divider align="center" style="margin-top: 10px;">
+                        <span class="ui-tag" style="font-size: 13px; width: 160px; background-color: #F9F9FB; color:black">Statistical Filters</span>
+                    </p:divider>
+                    <h:panelGrid columns="2" style="padding: 10px;">
+                        <p:selectOneRadio layout="pageDirection" value="#{procBean.filterOpt}" style="font:Arial,sans-serif; font-size: 13px" styleClass="hideDisabled">
+                            <f:selectItem itemLabel="Interquantile range (IQR)" itemValue="iqr" /> 
+                            <f:selectItem itemLabel="Standard deviation (SD)" itemValue="sd" /> 
+                            <f:selectItem itemLabel="Median absolute deviation (MAD)" itemValue="mad" /> 
+                            <f:selectItem itemLabel="Relative standard deviation (RSD = SD/mean)" itemValue="rsd" /> 
+                            <f:selectItem itemLabel="Non-parametric relative standard deviation (MAD/median)" itemValue="nrsd" /> 
+                            <f:selectItem itemLabel="Mean intensity value" itemValue="mean" /> 
+                            <f:selectItem itemLabel="Median intensity value" itemValue="median" /> 
+                        </p:selectOneRadio>
+
+                        <h:panelGrid columns="2" style="margin-left: 40px; padding: 20px; text-align: center; background-color: #F9F9FB">
+                            <h:outputText style="font-weight: bold" value="Percentage to filter out:"/>
+                            <h:inputHidden id="txt3" value="#{procBean.filterCutoff}"/>
+                            <p:slider for="txt3" display="output1" style="width: 160px" 
+                                      minValue="#{sessionBean1.filterMin}"
+                                      displayTemplate="{value}%"/>
+                            <h:outputText id="output1" value="#{procBean.filterCutoff}%"/>
+                        </h:panelGrid>
+                    </h:panelGrid>
+                </h:panelGrid>
+                <h:panelGrid columns="2" style="width: 800px; font-size: 14px; text-align: center; padding-top: 10px;">
+                    <p:commandButton value="Submit" style="width:120px"
+                                     onclick="PF('statusDialog').show()"
+                                     oncomplete="PF('statusDialog').hide()"   
+                                     update=":infoPane:cmdPane"
+                                     actionListener="#{procBean.filterButton_action()}"/>   
+                    <p:commandButton value="Proceed"  
+                                     style="width:120px" 
+                                     onclick="PF('statusDialog').show()"
+                                     oncomplete="PF('statusDialog').hide()"
+                                     ajax="false" 
+                                     action="#{procBean.filterProceed_action()}"/>    
+                </h:panelGrid> 
+            </h:form>
+        </h:panelGrid> 
+    </ui:define>
+</ui:composition>

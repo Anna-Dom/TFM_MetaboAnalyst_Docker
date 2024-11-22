@@ -1,0 +1,57 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pe="http://primefaces.org/ui/extensions"                
+                template="/frags/_template.xhtml">
+    <ui:define name="rightpaneout"/>
+    <ui:define name="leftpane">
+        <style>
+            .myMainColorLayoutStyle .ui-layout-unit-content{
+                background: #ffffff !important;
+                border-left: dashed thin !important;
+            }
+        </style>
+        <div id="navi" style="font-family: Arial, Helvetica, Geneva; padding: 40px 15px 10px 36px; font-size: 15px; line-height: 38px;">
+            <a href="#{facesContext.externalContext.requestContextPath}/home.xhtml">Home</a><br/>
+            <a href="#{facesContext.externalContext.requestContextPath}/docs/Format.xhtml">Data Formats</a><br/>
+            <a href="#{facesContext.externalContext.requestContextPath}/docs/Tutorials.xhtml">Tutorials</a><br/>
+            <a href="https://omicsforum.ca" target="_blank"><b>User Forum</b></a><br/>            
+            <a href="#{facesContext.externalContext.requestContextPath}/docs/RTutorial.xhtml">MetaboAnalystR</a><br/> 
+            <a href="#{facesContext.externalContext.requestContextPath}/docs/Publications.xhtml">Publications</a><br/>
+            <a href="#{facesContext.externalContext.requestContextPath}/docs/UpdateHistory.xhtml">Update History</a><br/>
+            <a href="#{facesContext.externalContext.requestContextPath}/docs/APIs.xhtml">APIs</a><br/> 
+<!--            <a href="#{facesContext.externalContext.requestContextPath}/covid/datasets.xhtml">COVID-19 Data</a><br/>-->
+            <a href="#{facesContext.externalContext.requestContextPath}/docs/UserStats.xhtml">User Stats</a><br/>
+            <a href="#{facesContext.externalContext.requestContextPath}/docs/About.xhtml">About</a><br/>   
+            <a href="#{facesContext.externalContext.requestContextPath}/docs/Contact.xhtml">Contact</a>
+        </div>
+
+        <div style="padding-top: 20px; padding-bottom: 30px; text-align: center; line-height: 30px;">
+            <a href="http://www.nserc-crsng.gc.ca/" style="text-decoration: none" target="_blank">
+                <img style="width: 120px;" src="#{facesContext.externalContext.requestContextPath}/resources/images/nserc.png" alt="NSERC"/>
+            </a>
+            <a href="http://www.chairs-chaires.gc.ca/" style="text-decoration: none" target="_blank">
+                <img style="width: 142px; padding-top: 30px" src="#{facesContext.externalContext.requestContextPath}/resources/images/crc_logo.png" alt="CRC"/>
+            </a>
+            <a href="https://metabolomicscentre.ca/" style="text-decoration: none" target="_blank">
+                <img style="width: 136px; padding-top: 30px" src="#{facesContext.externalContext.requestContextPath}/resources/images/tmic.png" alt="TMIC"/>
+            </a>
+            <a href="https://www.innovation.ca/" style="text-decoration: none" target="_blank">
+                <img style="width: 145px; padding-top: 30px" src="#{facesContext.externalContext.requestContextPath}/resources/images/cfi.png" alt="CFI"/>
+            </a>
+            <a href="https://www.genomecanada.ca/" style="text-decoration: none" target="_blank">
+                <img style="width: 115px; padding-top: 40px" src="#{facesContext.externalContext.requestContextPath}/resources/images/genome_c.png" alt="Genome Canada"/>
+            </a>
+            <a href="http://www.genomequebec.com/" style="text-decoration: none" target="_blank">
+                <img style="width: 115px; padding-top: 25px" src="#{facesContext.externalContext.requestContextPath}/resources/images/genome_q.png" alt="Genome Quebec"/>
+            </a>
+            <a href="https://commonfund.nih.gov/" style="text-decoration: none" target="_blank">
+                <img style="width: 115px; padding-top: 35px" src="#{facesContext.externalContext.requestContextPath}/resources/images/nih.png" alt="NIH"/>
+            </a>
+        </div>
+    </ui:define>
+</ui:composition>

@@ -1,0 +1,60 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                template="#{applicationBean1.templateUrl}/_template.xhtml">
+    <ui:define name="metaInfo">
+        <f:event type="preRenderView" listener="#{sessionBean1.registerPage('Login')}"/> 
+        <f:event type="preRenderView" listener="#{sessionBean1.addNaviTrack('Login', '/user/LoginView.xhtml')}"/> 
+        <f:event type="postAddToView" listener="#{userLoginBean.welcomeJustRegistered()}"></f:event>     
+    </ui:define>
+    <ui:define name="tracker"/>
+    <ui:define name="leftpaneout"/> 
+    <ui:define name="rightpaneout"/> 
+    <ui:define name="content">
+        <h:panelGrid style="margin-top: 20px; padding-left: 37%; font-size: 14px; line-height: 24px">
+            <p>
+                Log in to start a new analysis or resume your previous analysis
+            </p>
+            <h:panelGrid style="margin-left: 30px;">
+                <h:form id="form">
+                    <p:focus context="form"/>
+                    <h:panelGrid columns="2" style="width: 360px">
+                        <h:panelGrid columns="2">
+                            <p:outputLabel for="email" value="Email"  style="font-weight: bold;"/>
+                            <p:graphicImage id="idicon" class="pi pi-info-circle" ></p:graphicImage>
+                            <p:tooltip for="idicon" styleClass="helpTip">
+                                <p>
+                                    The email address will be used as the username or ID to access the system.
+                                </p>
+                            </p:tooltip>
+                        </h:panelGrid>
+                        <p:inputText id="email" value="#{userLoginBean.email}" required="true" style="width: 250px"/>
+
+                        <p:outputLabel for="pwd1" value="Password" style="font-weight: bold;"/>
+                        <p:password id="pwd1" value="#{userLoginBean.password}" label="Password 1" required="true" style="width: 250px" />
+                    </h:panelGrid>
+                    <h:panelGrid style="width: 360px; text-align: center; padding-top: 10px">
+                        <p:commandButton value="Login" style="width:120px;"
+                                         id="procBn"
+                                         onclick="PF('statusDialog').show();"
+                                         action="#{userLoginBean.doSecuredLogin()}"
+                                         disabled="false"
+                                         icon="pi pi-sign-in"
+                                         oncomplete ="PF('statusDialog').hide();"
+                                         />
+                    </h:panelGrid>
+                </h:form>
+                <h:form>
+                    <h:panelGrid columns="2" style="width: 360px; text-align: center; padding-top: 10px">
+                        <h:commandLink action="register" onclick="PF('statusDialog').show()" value="Create account" style="padding-right: 70px"/>
+                        <h:commandLink action="resetrequest" onclick="PF('statusDialog').show()" value="Forgot password?"/>
+                    </h:panelGrid>
+                </h:form>
+            </h:panelGrid>
+        </h:panelGrid>
+    </ui:define>
+</ui:composition>

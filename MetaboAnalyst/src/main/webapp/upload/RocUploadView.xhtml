@@ -1,0 +1,101 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                template="#{applicationBean1.templateUrl}/_anal_template.xhtml">
+    <ui:define name="metaInfo">
+        <f:event type="preRenderView" listener="#{sessionBean1.initNaviTree('roc')}"/> 
+        <f:event type="preRenderView" listener="#{sessionBean1.registerPage('Upload')}"/> 
+        <f:event type="preRenderView" listener="#{sessionBean1.addNaviTrack('Upload', '/ModuleView.xhtml')}"/>
+    </ui:define>
+    <ui:define name="rightpaneout"/>
+    <ui:define name="content">
+        <h:panelGrid style="padding-top:30px; padding-left: 40px; font-size: 13px; line-height: 23px">
+            <h2 style="margin-top: 10px; margin-bottom: 4px">Please upload your data</h2>
+            <h:form id="form1" enctype="multipart/form-data">
+                <h:panelGrid style="padding: 20px; width:800px">
+                    <h:outputLabel style="font-size: 13px; font-weight: bold;" value="From your local file"/>
+                    <h:panelGrid columns="2" style="width:100%; height:120px; border-bottom: lightgrey thin solid; margin-bottom: 20px;">
+                        <h:panelGrid columns="2" style="width:600px; background-color: #F9F9FB; padding: 10px 10px 10px 30px;">
+                            <p:outputLabel style="font-size:12px; font-weight: bold" value="Data Type:"/>
+                            <p:selectOneRadio value="#{uploader.dataType}">
+                                <f:selectItems value="#{optBean.tableTypeOpts}"/>
+                            </p:selectOneRadio>
+                            <p:outputLabel style="font-size:12px; font-weight: bold" value="Format:"/>
+                            <p:selectOneMenu styleClass="menu" panelStyleClass="panel" value="#{uploader.dataFormat}">
+                                <f:selectItems value="#{optBean.tableFormatOpts}" />
+                            </p:selectOneMenu>
+                            <p:outputLabel style="font-size:12px; font-weight: bold" value="Data File:"/>
+                            <p:fileUpload value="#{uploader.dataFile}" mode="simple" skinSimple="true" style="line-height: 18px"/>
+                        </h:panelGrid>
+
+                        <p:commandButton value="Submit" ajax="false"
+                                         onclick="PF('statusDialog').show()" 
+                                         oncomplete="PF('statusDialog').hide()"
+                                         action="#{uploader.uploadRocData()}"/>  
+                    </h:panelGrid>
+                    <h:outputLabel style="font-size: 13px; font-weight: bold;" value="Download from Metabolomics Workbench"/>
+                    <h:panelGrid columns="2" style="width:100%; height:45px;">
+                        <h:panelGrid columns="3" style="width:600px; background-color: #F9F9FB; padding: 10px 10px 10px 30px;">
+                            <p:outputLabel style="font-size:12px; font-weight: bold" value="Study ID:"/>
+                            <h:panelGroup id="cc6" layout="block" style="padding-right: 180px">
+                                <p:inputText style="width:140px" value="#{uploader.nmdrStudyId}"/> 
+                                <p:spacer width="10px"/>
+                                <p:graphicImage id="formatIcon2" url="/resources/images/ui-help.png" alt="help"/>
+                            </h:panelGroup>
+                        </h:panelGrid>
+                        <p:commandButton value="Submit" ajax="false" 
+                                         onclick="PF('statusDialog').show()" 
+                                         oncomplete="PF('statusDialog').hide()"                                         
+                                         action="#{uploader.handleMetWorkbenchData('roc')}"/>   
+                    </h:panelGrid>
+                </h:panelGrid>
+                <p:tooltip for="formatIcon2" styleClass="helpTip">
+                    <p>
+                        MetaboAnalyst now permits users to directly perform analyses on published datasets from the Metabolomics Workbench.
+                        Users must enter a valid Study ID to upload the preferred dataset. Browse here (https://www.metabolomicsworkbench.org/data/browse.php)
+                        to view all studies from the Metabolomics Workbench. Note that only studies with a named metabolite dataset such as study ST000017 
+                        will be able to be uploaded.
+                    </p>    
+                </p:tooltip>
+                <br/>
+                <hr class="style-one"/>
+                <br/>
+                <h:outputLabel style="font-size: 16px; font-weight: bold; color: rgb(74, 91, 112)" value="Try our example datasets"/>
+                <p:selectOneRadio id="customRadio" value="#{uploader.dataOpt}" layout="custom">  
+                    <f:selectItem itemLabel="data1" itemValue="data1" />
+                    <f:selectItem itemLabel="data2" itemValue="data2" />
+                </p:selectOneRadio>
+                <h:panelGrid columns="3" style="width: 800px; padding: 20px 30px 20px 30px; line-height: 23px;  background-color: #F9F9FB;">
+                    <p:spacer style="width: 30px"/>
+                    <h:panelGrid style="width:60px">
+                        <p:outputLabel style="font-weight: bold" value="Data"/>
+                    </h:panelGrid>       
+                    <p:outputLabel style="font-weight: bold" value="Description"/>
+                    <p:radioButton for="customRadio" itemIndex="0"/>
+                    <a href="https://www.xialab.ca/api/download/metaboanalyst/plasma_nmr.csv">Dataset1</a>
+                    <h:panelGrid>
+                        Metabolite concentrations of 90 human plasma samples measured by 1H NMR. 
+                        Phenotype labels: 0 - Controls; 1 - Patients.   
+                    </h:panelGrid>
+                    <p:radioButton for="customRadio" itemIndex="1"/>
+                    <a href="https://www.xialab.ca/api/download/metaboanalyst/plasma_nmr_new.csv">Dataset2</a>
+                    <h:panelGrid>
+                        Metabolite concentrations of 77 human plasma samples. Among them, the 
+                        phenotypes of 12 samples are empty/unknown. Their class can be predicted 
+                        using the <b>Tester</b> module.  
+                    </h:panelGrid>
+                </h:panelGrid>
+                <h:panelGrid style="width: 720px; padding-top: 10px; padding-bottom: 20px; text-align: center">
+                    <p:commandButton value="Submit" ajax="false"
+                                     onclick="PF('statusDialog').show()" 
+                                     oncomplete="PF('statusDialog').hide()"
+                                     action="#{uploader.handleRocTestFileUpload()}"/>  
+                </h:panelGrid>
+            </h:form>
+        </h:panelGrid>
+    </ui:define>
+</ui:composition>

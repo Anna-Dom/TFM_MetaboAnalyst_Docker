@@ -1,0 +1,308 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                template="#{applicationBean1.templateUrl}/_anal_template.xhtml">
+    <ui:define name="metaInfo">
+        <f:event type="preRenderView" listener="#{analBean.performDefaultAnalysis('PCA')}"/> 
+    </ui:define>
+    <ui:define name="myscript">
+        <script type="text/javascript" src="#{facesContext.externalContext.requestContextPath}/resources/jscripts/hammerjs2.0.8.js"></script>
+        <script type="text/javascript" src="#{facesContext.externalContext.requestContextPath}/resources/jscripts/chartjs-plugin-zoom.min.js"></script>
+        <script type="text/javascript">
+            function extender() {
+                var options = {
+                    options: {
+                        scales: {
+                            y: {
+                                title: {
+                                    display: false
+                                }
+                            },
+                            x: {
+                                title: {
+                                    display: false
+                                }
+                            }
+                        },
+                        plugins: {
+                            legend: {
+                                display: false
+                            },
+                            zoom: {
+                                zoom: {
+                                    enabled: true,
+                                    drag: {
+                                        enabled: true,
+                                        borderColor: 'rgb(54, 162, 235)',
+                                        borderWidth: 1,
+                                        backgroundColor: 'rgba(54, 162, 235, 0.3)'
+                                    },
+                                    mode: 'xy'
+                                }
+                            }
+                        }
+                    }
+                };
+                $.extend(true, this.cfg.config, options);
+            }
+            ;
+        </script>
+        <style>
+            .vertical-text {
+                display:inline-block;
+                white-space: nowrap;
+                filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=3);
+                -webkit-transform: rotate(270deg);
+                -ms-transform: rotate(270deg);
+                transform: rotate(270deg);
+            }
+        </style>
+    </ui:define>
+    <ui:define name="content">
+        <h:inputHidden id="mydir" value="#{sessionBean1.getJsonDir('pca_score3d')}" />
+        <h:inputHidden id="mydir2" value="#{sessionBean1.getJsonDir('pca_loading3d')}" />
+        <h:panelGrid style="padding:30px 30px 20px 40px; font-size: 13px; line-height: 23px; width:95%">
+            <h2>Principal Component Analysis (PCA)</h2>
+            <p:tabView id="ac" style="min-width: 900px; max-width: 1200px; border: none; background: none; font-size: 13px;">
+                <p:tab title ="Overview">
+                    <h:form id="form1">
+                        <h:panelGrid columns="2" style="width: 70%">
+                            <h:panelGroup>
+                                <h:outputLabel style="font-weight: bold" value="Display pairwise score plot for top "/>
+                                <p:selectOneMenu styleClass="menu" panelStyleClass="panel" style="width:50px" value="#{pcaBean.pcaPairNum}">
+                                    <f:selectItems value="#{pcaBean.pcaPCs}" />
+                                </p:selectOneMenu>
+                                <h:outputLabel style="font-weight: bold" value=" PCs"/>
+                            </h:panelGroup>
+                            <p:commandButton value="Update" update=":ac:form1:pairPane  :infoPane:cmdPane" actionListener="#{pcaBean.pcaPairBtn_action()}"/>   
+                        </h:panelGrid>
+                        <h:panelGrid id="pairPane" style="text-align: center; width: 1000px;">
+                            <h:panelGrid style="text-align: right; padding-left: 700px; width: 760px;">
+                                <p:commandLink actionListener="#{sessionBean1.graphicsLnk_action('pca_pair')}" 
+                                               update=":myGraphPane"
+                                               oncomplete="PF('graphDialog').show()"
+                                               title="Customize the graphics output">
+                                    <img src="#{facesContext.externalContext.requestContextPath}/resources/images/imgcenter.png"/>
+                                </p:commandLink>
+                            </h:panelGrid>
+                            <img onerror='this.style.display="none"' src="#{sessionBean1.getCurrentImageURL('pca_pair')}" alt="PCAPairImage"/>
+                        </h:panelGrid>        
+                    </h:form>
+                </p:tab>
+                <p:tab title ="Scree Plot">
+                    <h:form id="form2">
+                        <h:panelGrid columns="2" style="width: 70%">
+                            <h:panelGroup>
+                                <h:outputLabel style="font-weight: bold" value="Display the scree plot for top "/>
+                                <p:selectOneMenu styleClass="menu" panelStyleClass="panel" style="width:50px" value="#{pcaBean.pcaScreeNum}">
+                                    <f:selectItems value="#{pcaBean.pcaPCs}" />
+                                </p:selectOneMenu>
+                                <h:outputLabel style="font-weight: bold" value=" PCs"/>
+                            </h:panelGroup>
+                            <p:commandButton value="Update" update=":ac:form2:screePane  :infoPane:cmdPane" actionListener="#{pcaBean.pcaScreeBtn_action()}"/>   
+                        </h:panelGrid>
+                        <h:panelGrid id="screePane" style="width: 100%;">
+                            <h:outputText value ="The green line on top shows the accumulated variance explained; the blue line underneath shows the 
+                                          variance explained by individual PC"/>
+                            <h:panelGrid style="text-align: right; padding-left: 700px; width: 760px;">
+                                <p:commandLink actionListener="#{sessionBean1.graphicsLnk_action('pca_scree')}" 
+                                               update=":myGraphPane"
+                                               oncomplete="PF('graphDialog').show()"
+                                               title="Customize the graphics output">
+                                    <img src="#{facesContext.externalContext.requestContextPath}/resources/images/imgcenter.png"/>
+                                </p:commandLink>
+                            </h:panelGrid>
+                            <img onerror='this.style.display="none"' src="#{sessionBean1.getCurrentImageURL('pca_scree')}" alt="PCAScreeImage"/>
+                        </h:panelGrid>     
+                    </h:form>
+                </p:tab>
+                <p:tab title ="2D Scores Plot">
+                    <h:form id="form3">
+                        <h:panelGrid columns="2" style="width:1000px; padding: 2px 20px 10px 20px; line-height: 25px">
+                            <h:panelGrid columns="2" style="width:480px;">
+                                <h:outputLabel style="font-weight: bold" value="Specify PC on X-axis:"/>
+                                <p:selectOneMenu styleClass="menu" panelStyleClass="panel" style="width:50px" value="#{pcaBean.pcaScoreX}">
+                                    <f:selectItems value="#{pcaBean.pcaAllPCs}" />
+                                </p:selectOneMenu>                             
+                                <h:outputLabel style="font-weight: bold" value="Specify PC on Y-axis:"/>
+                                <p:selectOneMenu styleClass="menu" panelStyleClass="panel" style="width:50px" value="#{pcaBean.pcaScoreY}">
+                                    <f:selectItems value="#{pcaBean.pcaAllPCs}" />
+                                </p:selectOneMenu> 
+                                <h:outputLabel style="font-weight: bold" value="Display 95% confidence regions:"/>
+                                <p:selectBooleanCheckbox value ="#{pcaBean.displayConfs}" style="line-height: 18px"/>    
+                                <h:outputLabel style="font-weight: bold" value="Display sample names:"/>
+                                <p:selectBooleanCheckbox value ="#{pcaBean.displayNames}" style="line-height: 18px"/>                                
+                                <h:outputLabel style="font-weight: bold" value="Use grey-scale colors:"/>
+                                <p:selectBooleanCheckbox value ="#{pcaBean.greyScale}" style="line-height: 18px"/>
+                                <p:commandLink action="#{pcaBean.flipPCA()}" value="Flip Image" update=":ac:form3:score2dPane :ac:loadPane :ac:syn3d"/>
+                                <p:selectOneRadio value="#{pcaBean.flipOpt}">
+                                    <f:selectItem itemLabel="X axis" itemValue="x" />
+                                    <f:selectItem itemLabel="Y axis" itemValue="y" />
+                                    <f:selectItem itemLabel="All" itemValue="all" />
+                                </p:selectOneRadio>
+                            </h:panelGrid>
+                            <p:commandButton value="Update" update=":ac:form3:score2dPane  :infoPane:cmdPane" actionListener="#{pcaBean.pcaScore2dBtn_action()}" partialSubmit="true"/>   
+                        </h:panelGrid>
+
+                        <h:panelGrid id="score2dPane" style="text-align: center; width:1000px; padding-top: 20px">
+                            <h:panelGrid style="text-align: right; padding-left: 700px; width: 760px;">
+                                <p:commandLink actionListener="#{sessionBean1.graphicsLnk_action('pca_score2d')}" 
+                                               update=":myGraphPane"
+                                               oncomplete="PF('graphDialog').show()"
+                                               title="Customize the graphics output">
+                                    <img src="#{facesContext.externalContext.requestContextPath}/resources/images/imgcenter.png"/>
+                                </p:commandLink>
+                            </h:panelGrid>
+                            <img onerror='this.style.display="none"' src="#{sessionBean1.getCurrentImageURL('pca_score2d')}" alt="PCAScore2DImage"/>
+                        </h:panelGrid>  
+                    </h:form>
+                </p:tab>
+                <p:tab title ="Loadings Plot">
+                    <h:panelGrid columns="2" style="width:1000px">
+                        <h:form id="form5">
+                            <h:panelGrid columns="2" style="padding: 2px 20px 6px 20px; line-height: 28px">
+                                <h:panelGrid columns="2" style="width:500px; padding-left: 20px">
+                                    <h:panelGroup layout="block" style="width: 140px">
+                                        <h:outputLabel style="font-weight: bold" value="X-axis PC:"/>
+                                    </h:panelGroup>
+                                    <p:selectOneMenu styleClass="menu" panelStyleClass="panel" style="width:50px" value="#{pcaBean.pcaLoadX}">
+                                        <f:selectItems value="#{pcaBean.pcaAllPCs}" />
+                                    </p:selectOneMenu>
+
+                                    <h:outputLabel style="font-weight: bold" value="Y-axis PC:"/>
+                                    <p:selectOneMenu styleClass="menu" panelStyleClass="panel" style="width:50px" value="#{pcaBean.pcaLoadY}">
+                                        <f:selectItems value="#{pcaBean.pcaAllPCs}" />
+                                    </p:selectOneMenu>
+
+                                    <h:panelGroup layout="block">
+                                        <h:outputLabel style="font-weight: bold" value="Set annotations:"/> <br/>
+                                        <h:outputText style="color:grey" value="(for download image only)"/>
+                                    </h:panelGroup>
+                                    <p:selectOneRadio layout="pageDirection" value="#{pcaBean.loadOpt}">
+                                        <f:selectItem itemLabel="Label all varaibles" itemValue="all" /> 
+                                        <f:selectItem itemLabel="Do not label variables" itemValue="none" /> 
+                                        <f:selectItem itemLabel="Label only variables of interest" itemValue="custom" /> 
+                                    </p:selectOneRadio>
+                                </h:panelGrid>
+
+                                <h:panelGrid style="text-align: center; padding-left: 50px">
+                                    <p:commandButton value="Update" 
+                                                     update=":ac:loadPane  :infoPane:cmdPane" 
+                                                     actionListener="#{pcaBean.pcaLoadBtn_action()}"
+                                                     partialSubmit="true"/>
+                                </h:panelGrid>
+                            </h:panelGrid>
+                        </h:form>
+                    </h:panelGrid>
+
+                    <h:panelGrid columns="2" style="width: 1000px; text-align: center; padding-top: 20px">
+                        <h:panelGrid style="width: 500px; text-align: left">
+                            <p:outputLabel style="font-weight:bold; color: #FFAE20" value="Click a point to view; drag to zoom; reset zoom at bottom"/>
+                        </h:panelGrid>
+                        <h:panelGrid columns="3" style="width:200px; text-align: right;">
+                            <p:commandLink action="#{sessionBean1.detailsLnk_action('pca')}" title="View the detailed data table">
+                                <img src="#{facesContext.externalContext.requestContextPath}/resources/images/table.png"/>
+                            </p:commandLink>
+                            <p:commandLink actionListener="#{sessionBean1.graphicsLnk_action('pca_loading')}" 
+                                           update=":myGraphPane"
+                                           oncomplete="PF('graphDialog').show()"
+                                           title="Customize the graphics output">
+                                <img src="#{facesContext.externalContext.requestContextPath}/resources/images/imgcenter.png"/>
+                            </p:commandLink>
+                            <p:graphicImage id="helpIcon" url="/resources/images/ui-help.png"  alt="help"/>
+                        </h:panelGrid>
+                        <p:tooltip for="helpIcon" styleClass="helpTip">
+                            <p>
+                                Boxplot of the selected metabolomic feature from the user's uploaded data. The black dots
+                                represent the concentrations of the selected feature from all samples. The notch indicates
+                                the 95% confidence interval around the median of each group, defined as +/- 1.58*IQR/sqrt(n).
+                                The notch can be used to evaluate differences between groups; if the notches 
+                                do not overlap, the medians are likely different. Meanwhile, the mean concentration of each group is indicated
+                                with a yellow diamond.
+                            </p>
+                        </p:tooltip>
+                    </h:panelGrid>
+                    <h:panelGrid style="text-align: center;">
+                        <h:panelGrid columns="2" id="loadPane">
+                            <div class="vertical-text">Loadings #{pcaBean.pcaLoadY}</div>
+                            <h:panelGrid style="text-align: center">
+                                <p:scatterChart id="chart" widgetVar="chart" model="#{detailsBean.getModel1('pca')}"  
+                                                style="height:580px; width:600px">
+                                    <p:ajax event="itemSelect" listener="#{detailsBean.itemSelect}" update=":infoPane:cmdPane"/>
+                                </p:scatterChart>
+                                <div>Loadings #{pcaBean.pcaLoadX}</div>
+                            </h:panelGrid>
+                        </h:panelGrid>
+                        <p:commandButton type="button" value="Reset Zoom" icon="pi pi-ban" onclick="PF('chart').chart.resetZoom()"/>
+                    </h:panelGrid>
+                </p:tab>
+                <p:tab title ="Synchronized 3D Plots">
+                    <h:form id="form4">
+                        <h:panelGrid style="width: 95%;" columns="2">
+                            <ul>
+                                <li>
+                                    <u>Dragging</u> to rotate the view around the axis; <u>Scrolling</u> to zoom in and out.
+                                </li>
+                                <li>
+                                    For data points on the loading plot, <u>double clicking</u> to view a corresponding summary; 
+                                </li>
+                                <li>
+                                    Click <u>Update</u> if you have updated color schema or flipped image in the 2D score view. 
+                                </li>
+                                <li>  
+                                    The colors of data points in the loading plot are based on their distances to the origin (0,0,0),  
+                                    with yellow for close and dark red for distant data points    
+                                </li>
+                            </ul>
+                            <p:commandButton value="Update" update="mydir2 :ac:syn3d :infoPane:cmdPane" actionListener="#{pcaBean.pcaScore3dBtn_action(true)}" partialSubmit="true"/>   
+
+                        </h:panelGrid>
+                    </h:form>
+                    <h:panelGrid id="syn3d" style="width: 1100px">
+                        <iframe loading="lazy" name="frame1" style="width: 1100px; height: 840px; margin: 0; padding: 0;" frameborder="0"
+                                        src="../viewer/_scatter3D_viewer.html"/>
+                    </h:panelGrid>
+                </p:tab>
+                <p:tab title ="Biplot">
+                    <h:form id="form6">
+                        <h:panelGrid columns="2" style="padding: 2px 20px 10px 20px; line-height: 25px">
+                            <h:panelGrid columns="2" style="width:400px; padding-left: 20px">
+                                <h:outputLabel style="font-weight: bold" value="Select PC for X-axis:"/>
+                                <p:selectOneMenu styleClass="menu" panelStyleClass="panel" style="width:50px" value="#{pcaBean.pcaBiplotX}">
+                                    <f:selectItems value="#{pcaBean.pcaAllPCs}" />
+                                </p:selectOneMenu>
+                                <h:outputLabel style="font-weight: bold" value="Select PC for Y-axis:"/>
+                                <p:selectOneMenu styleClass="menu" panelStyleClass="panel" style="width:50px" value="#{pcaBean.pcaBiplotY}">
+                                    <f:selectItems value="#{pcaBean.pcaAllPCs}" />
+                                </p:selectOneMenu>  
+                            </h:panelGrid>
+                            <p:commandButton value="Update" update=":ac:form6:biplotPane  :infoPane:cmdPane" actionListener="#{pcaBean.pcaBiplotBtn_action()}"/>   
+                        </h:panelGrid>
+                        <h:panelGrid id="biplotPane" style="text-align: center; width: 1000px; padding-top: 20px">
+                            <h:panelGrid style="text-align: right; padding-left: 700px; width: 760px;">
+                                <p:commandLink actionListener="#{sessionBean1.graphicsLnk_action('pca_biplot')}" 
+                                               update=":myGraphPane"
+                                               oncomplete="PF('graphDialog').show()"
+                                               title="Customize the graphics output">
+                                    <img src="#{facesContext.externalContext.requestContextPath}/resources/images/imgcenter.png"/>
+                                </p:commandLink>
+                            </h:panelGrid>
+                            <img onerror='this.style.display="none"' src="#{sessionBean1.getCurrentImageURL('pca_biplot')}" alt="PCABiplotImage"/>
+                        </h:panelGrid>  
+                    </h:form>
+                </p:tab>
+            </p:tabView> 
+        </h:panelGrid> 
+        <p:dialog modal="true" widgetVar="exportDialog" style="width:600px; height: 580px" appendTo="@(body)">  
+            <h:outputLabel style="font-size: 13px; font-weight: bold" value="Right click the PNG image to save as your preferred name:"/><br/>
+            <image id="downloadimage"></image>  
+        </p:dialog> 
+
+        <ui:include src="#{applicationBean1.templateUrl}/_feature_dialog.xhtml" />
+
+    </ui:define>
+</ui:composition>

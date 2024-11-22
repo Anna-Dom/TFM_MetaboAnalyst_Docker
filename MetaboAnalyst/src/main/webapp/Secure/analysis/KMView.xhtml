@@ -1,0 +1,103 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                template="#{applicationBean1.templateUrl}/_anal_template.xhtml">
+    <ui:define name="metaInfo">
+        <f:event type="preRenderView" listener="#{analBean.performDefaultAnalysis('K-means')}"/> 
+    </ui:define>
+    <ui:define name="content">
+
+        <h:panelGrid style="padding:30px 30px 20px 40px; font-size: 13px; line-height: 23px; width:95%">
+            <h2>K-means Clustering</h2>
+            <p>
+                Please note: Due to space limits, only the &#xa;cluster members will be calculated if the specified cluster number &gt; 20. 
+                The darker lines in the Overview plot represent the median intensities of each cluster. The Score plot shows the cluster membership
+                on a PCA of the normalized data.
+            </p>
+            <h:form>
+                <h:panelGrid columns="2">
+                    <h:panelGrid columns="2" style="padding: 2px 20px 10px 20px; line-height: 30px; width: 480px">
+                        <h:outputLabel style="font-weight: bold" value="Specify the cluster number:"/>
+                        <p:inputText style="width:50px" value="#{clusterBean.kmClustNm}"/>
+
+                        <h:outputLabel style="font-weight: bold" value="Color palette:"/>
+                        <p:selectOneMenu styleClass="menu" panelStyleClass="panel" value="#{clusterBean.kmColPal}">
+                            <f:selectItem itemLabel="Default" itemValue="default" /> 
+                            <f:selectItem itemLabel="Color-blind friendly" itemValue="colblind" /> 
+                        </p:selectOneMenu>
+
+                        <h:outputLabel style="font-weight: bold" value="Layout (Feature Overview):"/>                       
+                        <p:selectOneMenu styleClass="menu" panelStyleClass="panel" value="#{clusterBean.kmFacet}">
+                            <f:selectItem itemLabel="Overlay" itemValue="overlay" /> 
+                            <f:selectItem itemLabel="Separate" itemValue="separate" />  
+                        </p:selectOneMenu>
+
+                        <h:outputLabel style="font-weight: bold" value="Show names (Sample Overview):"/>
+                        <p:selectBooleanCheckbox value ="#{clusterBean.kmLabel}" style="line-height: 18px"/>
+                    </h:panelGrid>
+                    <p:commandButton value="Submit" 
+                                     update=":infoPane:cmdPane" 
+                                     ajax="false"
+                                     onclick="PF('statusDialog').show()"
+                                     oncomplete="PF('statusDialog').hide()"
+                                     actionListener="#{clusterBean.kmButton_action()}"/>   
+                </h:panelGrid>
+            </h:form>
+
+            <p:tabView id="ac" style="width:100%; border: none; background: none; font-size: 13px;">
+                <p:tab title ="Sample Overview">
+                    <h:form id="form2">
+                        <h:panelGrid id="kmPCAPane" style="width: 100%; padding-left: 10%">
+                            <h:panelGrid columns="2" style="text-align: right; padding-left: 700px; width: 760px;">
+                                <p:commandLink onclick="PF('detailDialog').show()" title="View the detailed data table">
+                                    <img src="#{facesContext.externalContext.requestContextPath}/resources/images/table.png"/>
+                                </p:commandLink>
+                                <p:commandLink actionListener="#{sessionBean1.graphicsLnk_action('km_pca')}" 
+                                               update=":myGraphPane"
+                                               oncomplete="PF('graphDialog').show()"
+                                               title="Customize the graphics output">
+                                    <img src="#{facesContext.externalContext.requestContextPath}/resources/images/imgcenter.png"/>
+                                </p:commandLink>
+                            </h:panelGrid>
+                            <img onerror='this.style.display="none"' src="#{sessionBean1.getCurrentImageURL('km_pca')}" alt="KMeanimage"/>
+                            <p:dialog widgetVar="detailDialog" dynamic="true" modal="true" appendTo="@(body)" width="500" height="400"
+                                      hideEffect="explode" resizable="true"> 
+                                <h:panelGrid id="detailView" style="width:500px; padding: 20px; font-size: 12px">
+                                    <h:outputText escape="false" value="#{clusterBean.kmTxt}"/>
+                                </h:panelGrid> 
+                            </p:dialog>
+                        </h:panelGrid>  
+                    </h:form>
+                </p:tab>
+                <p:tab title ="Feature Overview">
+                    <h:form id="form1">
+                        <h:panelGrid id="kmPane" style="width: 100%; padding-left: 10%">
+                            <h:panelGrid columns="2" style="text-align: right; padding-left: 700px; width: 760px;">
+                                <p:commandLink onclick="PF('detailDialog').show()" title="View the detailed data table">
+                                    <img src="#{facesContext.externalContext.requestContextPath}/resources/images/table.png"/>
+                                </p:commandLink>
+                                <p:commandLink actionListener="#{sessionBean1.graphicsLnk_action('km')}" 
+                                               update=":myGraphPane"
+                                               oncomplete="PF('graphDialog').show()"
+                                               title="Customize the graphics output">
+                                    <img src="#{facesContext.externalContext.requestContextPath}/resources/images/imgcenter.png"/>
+                                </p:commandLink>
+                            </h:panelGrid>
+                            <img onerror='this.style.display="none"' src="#{sessionBean1.getCurrentImageURL('km')}" alt="KMeanimage"/>
+                            <p:dialog widgetVar="detailDialog" dynamic="true" modal="true" appendTo="@(body)" width="500" height="400"
+                                      hideEffect="explode" resizable="true"> 
+                                <h:panelGrid id="detailView" style="width:500px; padding: 20px; font-size: 12px">
+                                    <h:outputText escape="false" value="#{clusterBean.kmTxt}"/>
+                                </h:panelGrid> 
+                            </p:dialog>
+                        </h:panelGrid>  
+                    </h:form>
+                </p:tab>
+            </p:tabView>
+        </h:panelGrid> 
+    </ui:define>
+</ui:composition>

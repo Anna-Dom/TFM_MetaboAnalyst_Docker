@@ -1,0 +1,46 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                template="#{applicationBean1.templateUrl}/_anal_template.xhtml">
+    <ui:define name="metaInfo">
+        <f:event type="preRenderView" listener="#{sessionBean1.initNaviTree('utils')}"/> 
+        <f:event type="preRenderView" listener="#{sessionBean1.registerPage('Batch View')}"/> 
+    </ui:define>
+    <ui:define name="rightpaneout"/>
+    <ui:define name="content">
+        <h:panelGrid style="padding: 30px 10px 20px 40px; font-size: 13px;  width: 95%; line-height: 25px;">
+            <h3>
+                Batch Effect Adjustment View
+            </h3>
+            <h:panelGrid>
+                <h4>Principal Component Analysis (PCA) showing general profile before and after correction:</h4>
+                <img onerror='this.style.display="none"' src="#{sessionBean1.getCurrentImageURL('batch')}" alt="BatchImage"/>
+            </h:panelGrid>
+
+            <h:panelGrid>
+                <h4>Singular value decomposition (SVD) analysis applied to find systematic trends attributable to bias:</h4>
+                <img onerror='this.style.display="none"' src="#{batchLoader.getBatchImg('Trenddpi72')}" alt="BatchImage2"/>
+            </h:panelGrid>
+
+            <h:panelGrid>
+                <h4>Distance among all sample batches before and after correction:</h4>
+                <img onerror='this.style.display="none"' src="#{batchLoader.getBatchImg('distdpi72')}" alt="BatchImage3"/>
+            </h:panelGrid>
+
+            <h:form>   
+                <h:panelGrid columns="2" style="text-align: right;">
+                    <h4>Click to download the batch corrected data table</h4>
+                    <p:commandButton value="Download" ajax="false" icon="pi pi-download">
+                        <p:fileDownload value="#{batchLoader.correctedFile}" />
+                    </p:commandButton>    
+                </h:panelGrid>  
+            </h:form>
+        </h:panelGrid>
+    </ui:define>
+</ui:composition>
+
+

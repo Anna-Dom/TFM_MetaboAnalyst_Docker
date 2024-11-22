@@ -1,0 +1,155 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                template="#{applicationBean1.templateUrl}/_anal_template.xhtml">
+    <ui:define name="metaInfo">
+        <f:event type="preRenderView" listener="#{sessionBean1.registerPage('View result')}"/> 
+        <f:event type="preRenderView"  listener="#{sessionBean1.addNaviTrack('Result Table', '/Secure/mummichog/GseaResultView.xhtml')}"/> 
+    </ui:define>
+    <ui:define name="myscript">
+        <script type="text/javascript" src="#{facesContext.externalContext.requestContextPath}/resources/jscripts/rainbowvis.js"></script>
+        <script type="text/javascript" src="#{facesContext.externalContext.requestContextPath}/resources/jscripts/chart.min.js"></script>
+        <script type="text/javascript" src="#{facesContext.externalContext.requestContextPath}/resources/jscripts/chartjs-plugin-zoom.min.js"></script>
+        <script type="text/javascript" src="#{facesContext.externalContext.requestContextPath}/resources/jscripts/mummichog_graphics_1.0.js"></script>
+    </ui:define>
+    <ui:define name="content">
+        <h:inputHidden id="mydir" value="#{sessionBean1.currentUser.relativeDir}" />
+        <h:panelGrid style="padding:30px 40px 20px 40px; font-family: 'Arial','Helvetica',sans-serif; font-size: 13px; line-height: 21px; width:96%;">
+            <h2>GSEA Pathway Activity Profile</h2>
+            <p>
+                <u>Mouse over</u> any circle to view its name; <u>click</u> a circle to view compound matches. Click the <u>Network Explorer</u> to view
+                results in the KEGG global metabolic network. 
+            </p>
+            <h:form>
+                <h:panelGrid id="graphPane" style="width:100%">
+                    <h:panelGrid id="imgPane" style="text-align: center; width: 100%;">
+                        <h:panelGrid columns="4" style="width: 800px; padding-left: 700px">                         
+                            <h:panelGrid style="width:25px">
+                                <p:commandLink onclick="reset()"
+                                               title="Reset">
+                                    <img style="width: 16px;" src="#{facesContext.externalContext.requestContextPath}/resources/images/reset.png"/>
+                                </p:commandLink>
+                            </h:panelGrid>
+                            <h:panelGrid style="width:25px">
+                                <p:commandLink actionListener="#{sessionBean1.graphicsLnk_action('peaks_to_paths')}" 
+                                               update=":myGraphPane"
+                                               oncomplete="PF('graphDialog').show()"
+                                               title="Customize the graphics output">
+                                    <img src="#{facesContext.externalContext.requestContextPath}/resources/images/imgcenter.png"/>
+                                </p:commandLink>
+                            </h:panelGrid>
+                            <h:panelGrid style="width:25px">
+                                <p:commandLink onclick="exportToPng()"
+                                               title="PNG download">
+                                    <b>PNG</b>
+                                </p:commandLink>
+                            </h:panelGrid>
+                            <h:panelGrid style="width:25px">
+                                <p:graphicImage id="helpIcon" url="/resources/images/ui-help.png"  alt="help"/>
+                            </h:panelGrid>
+                        </h:panelGrid>
+                        <p:tooltip for="helpIcon" styleClass="helpTip">
+                            <p>
+                                The Normalized Enrichment Score is GSEA enrichment score normalized to the average enrichment score of random samples of the same size.
+                            </p>
+                        </p:tooltip>
+                        <div style="margin-left: auto; padding-left: 23%; padding-right: 0;">
+                            <canvas id='canvas1' width='550px' height='500px'/>
+                        </div>
+                    </h:panelGrid>  
+                </h:panelGrid> 
+            </h:form>
+            <h:form>
+                <p:remoteCommand name="myRemote" partialSubmit="true" process="@this" update="summaryForm" action="#{mummiAnalBean.showPathDialog()}"/>
+                <h:panelGrid columns="3" style="width:90%; padding: 10px 10px 10px 50px; text-align: center">                 
+
+                    <p:commandButton value="Pathway Hits" ajax="false" 
+                                     style="width: 160px;"
+                                     onclick="PrimeFaces.monitorDownload(start, stop);"   
+                                     icon="pi pi-download">  
+                        <p:fileDownload value="#{mummiAnalBean.gseaPathEnrichFile}" />  
+                    </p:commandButton> 
+
+                    <p:commandButton value="Compound Hits" ajax="false" 
+                                     style="width: 160px;"
+                                     onclick="PrimeFaces.monitorDownload(start, stop);"   
+                                     icon="pi pi-download">  
+                        <p:fileDownload value="#{mummiAnalBean.cmpdHitFile}" />  
+                    </p:commandButton> 
+
+                    <p:commandButton value="Network Explorer" 
+                                     ajax="false" 
+                                     disabled="#{!mummiAnalBean.showMumNetwork or !pMetaStatBean.showNetwork}"
+                                     style="width: 180px;"
+                                     icon="pi pi-caret-right" 
+                                     onclick="PF('statusDialog').show()" 
+                                     oncomplete="PF('statusDialog').hide()"                                           
+                                     action="Metabolic network"/>
+                </h:panelGrid>
+            </h:form>
+            <hr class="style-one"/> 
+            <h:form>
+                <h3>
+                    Detailed result table
+                </h3>
+                <p:dataTable paginator="true" paginatorPosition="bottom" id="resTbl" 
+                             rows="20" rowsPerPageTemplate="20,50,100"
+                             style="width:100%;" var="gb" value="#{mummiAnalBean.gseaBeans}">  
+                    <p:column headerText="Pathway Name">  
+                        <p:outputLabel value="#{gb.setName}"/>
+                    </p:column>  
+                    <p:column headerText="Total" sortBy="#{gb.setNum}">  
+                        <h:outputText escape="false" value="#{gb.setNum}"/>
+                    </p:column> 
+                    <p:column headerText="Hits" sortBy="#{gb.hitNum}">  
+                        <h:outputText escape="false" value="#{gb.hitNum}"/>
+                    </p:column> 
+                    <p:column headerText="Raw P" sortBy="#{gb.rawP}">  
+                        <h:outputText escape="false" value="#{gb.rawP}"/>
+                    </p:column>  
+                    <p:column headerText="Adj P" sortBy="#{gb.adjP}">  
+                        <h:outputText escape="false" value="#{gb.adjP}"/>
+                    </p:column>    
+                    <p:column headerText="NES" sortBy="#{gb.nesScore}">  
+                        <h:outputText escape="false" value="#{gb.nesScore}"/>
+                    </p:column>  
+                    <p:column headerText="Details">  
+                        <p:commandLink value="View" update=":detailView" oncomplete="PF('msetDialog').show()">  
+                            <f:setPropertyActionListener value="#{gb.setName}" target="#{sessionBean1.currentPathName}" />  
+                        </p:commandLink>
+                    </p:column>  
+                </p:dataTable>                
+            </h:form>
+        </h:panelGrid> 
+        <p:dialog header="Match Details" widgetVar="msetDialog" dynamic="true" modal="true" appendTo="@(body)" 
+                  hideEffect="explode" resizable="true"> 
+            <h:panelGrid id="detailView" style="width:540px; font-size: 12px; padding: 10px">
+                <p>
+                    The red compounds indicate all potential matches from the user's input to the 
+                    selected pathway. More in depth matches can be found in  the <b>Compound Hits</b> table 
+                    and <b>Network Explorer</b>.
+                </p>
+                <h:form id="summaryForm">
+                    <p:dataTable var="set" value="#{mummiAnalBean.currentPathSet}">
+                        <p:column headerText="Pathway">  
+                            <h:outputText escape="false" value="#{set.name}"/>  
+                        </p:column>  
+                        <p:column headerText="Metabolites">  
+                            <h:outputText escape="false" value="#{set.members}"/>
+                        </p:column>   
+                    </p:dataTable> 
+                    <h:panelGrid style="width:100%; text-align: center">
+                        <p:commandButton value="OK" onclick="PF('msetDialog').hide()"/>
+                    </h:panelGrid>
+                </h:form>
+            </h:panelGrid> 
+        </p:dialog>
+        <script type="text/javascript">
+            showGSEA();
+        </script>
+    </ui:define>
+</ui:composition>

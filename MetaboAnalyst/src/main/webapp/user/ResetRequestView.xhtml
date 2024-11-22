@@ -1,0 +1,39 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                template="#{applicationBean1.templateUrl}/_template.xhtml">
+    <ui:define name="tracker"/>
+    <ui:define name="leftpaneout"/> 
+    <ui:define name="rightpaneout"/> 
+    <ui:define name="content">
+        <h:panelGrid  style="position: relative; margin-top: 20px; padding-left: 33%; line-height: 24px; font-size: 14px">
+            <p>
+                Please enter your login email to receive instructions to reset the password.
+            </p>
+            <h:form id="form">
+                <p:focus context="form"/>
+                <h:panelGrid style="margin-left: 30px;">
+                    <h:panelGrid columns="2" style="width: 360px">
+                        <p:outputLabel for="email" value="Email address:"  style="font-weight: bold;"/>
+                        <p:inputText id="email" value="#{userLoginBean.email}" required="true" placeholder="Enter your email address" style="width: 220px"/>
+                    </h:panelGrid>
+                    <h:panelGrid style="width: 360px; text-align: center; padding-top: 10px">
+                        <!--                                <p:captcha label="Captcha" />-->
+                        <p:commandButton value="Submit" style="width:120px;"
+                                         id="resetReqBn"
+                                         ajax="false" 
+                                         onclick="PF('statusDialog').show();"
+                                         action="#{userLoginBean.doSendEmail()}"
+                                         icon="pi pi-envelope"
+                                         oncomplete ="PF('statusDialog').hide();"
+                                         />
+                    </h:panelGrid>
+                </h:panelGrid>
+            </h:form>
+        </h:panelGrid>
+    </ui:define>
+</ui:composition>

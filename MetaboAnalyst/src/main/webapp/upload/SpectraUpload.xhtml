@@ -1,0 +1,166 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                template="#{applicationBean1.templateUrl}/_anal_template.xhtml">
+    <ui:define name="metaInfo">
+        <f:event type="preRenderView" listener="#{sessionBean1.initNaviTree('spec')}"/> 
+        <f:event type="preRenderView" listener="#{sessionBean1.registerPage('Upload')}"/>
+        <f:event type="preRenderView" listener="#{sessionBean1.addNaviTrack('Upload', '/upload/SpectraUpload.xhtml')}"/>
+    </ui:define>
+    <ui:define name="myscript">
+        <script type="text/javascript" src="#{facesContext.externalContext.requestContextPath}/resources/jscripts/pf.upload.queue.js"></script>  
+    </ui:define>
+    <ui:define name="rightpaneout"/>
+    <ui:define name="content">
+        <h:form id="form" enctype="multipart/form-data"> 
+            <h:panelGrid style="padding: 20px 30px 20px 60px; font-size: 13px; width: 90%; line-height: 21px;">
+
+                <h3>LC-MS Spectra Upload</h3>
+                <p>
+                    MetaboAnalyst currently supports <u>mzML, mzXML, CDF or mzData formats in centroid mode</u>. 
+                    Quality control (QC) spectra are not required but recommended. 
+                    QC should start with <b>"QC_"</b> or marked as "QC" in meta data. BLANK should be marked as "BLANK" in meta data for subtraction. 
+                    The following two data types are allowed:
+                    <ol>
+                        <li>
+                            [Required] Spectra uploaded as individual zip files - one zip (.zip) per spectrum [max: #{applicationBean1.MAX_SPEC_NUM} spectra].
+                        </li>
+                        <li>
+                            [Optional] Meta data uploaded as a plain text (.txt) file containing two columns - spectral names 
+                            and group labels [<a target="_blank" href="#{facesContext.externalContext.requestContextPath}/resources/data/quick_metadata.txt">example</a>]
+                        </li>
+                    </ol>
+                </p>
+                <p style="margin: 0px; padding: 0px">
+                    Spectra processing can take a long time to complete, to avoid waiting: 
+                    <ol>
+                        <li>
+                            For guest users (default), after job submission, click <b>Create Bookmark URL</b> and save the URL so you can return later
+                            to check your job status.                                
+                        </li>
+                        <li>
+                            For registered users, use the buttons on the left panel to manage your projects.                               
+                        </li>
+                    </ol>
+                </p>
+                <div>
+                    Please <b>Select</b> all files, then click <b>Upload</b> to start. Once the upload has completed, click <b>Proceed</b> to continue.                    
+                </div>
+                <h:panelGrid style="width:100%; padding-left: 10px">
+                    <p:fileUpload listener="#{specLoader.handleFileUpload}"
+                                  widgetVar="importFile" 
+                                  sequential="true"
+                                  update=":form:procBn" 
+                                  auto="false" 
+                                  label="Select" 
+                                  mode="advanced" 
+                                  style="width:720px; margin-top: 5px; margin-bottom:5px"
+                                  multiple="true" 
+                                  sizeLimit="#{applicationBean1.MAX_SPEC_SIZE}" 
+                                  fileLimit="#{applicationBean1.MAX_SPEC_NUM}" 
+                                  allowTypes="/(\.|\/)(csv|txt|zip)$/" 
+                                  oncomplete="sanityCheckMeta();"
+                                  />
+                    <p:remoteCommand name="rc"  actionListener="#{specLoader.addNumOfUploadFiles}" />
+                    <p:remoteCommand name="showMetaErrorRC" actionListener="#{specLoader.showMetaError}"/>
+                    <p:remoteCommand name="moreThanOneMetaRC" actionListener="#{specLoader.moreThanOneMeta}"/>
+                    <h:panelGrid style="width:720px; text-align:center; padding-top: 10px; padding-bottom: 20px;" columns="2">                           
+                        <p:commandButton value="Reset" id="resetBn"
+                                         style="width:100px"
+                                         onclick="PF('statusDialog').show()"
+                                         oncomplete="PF('statusDialog').hide()"
+                                         ajax="false" 
+                                         action="#{sessionBean1.doSpectraReset()}"/>  
+                        <p:commandButton value="Proceed" id="procBn"
+                                         style="width:100px"
+                                         onclick="PF('statusDialog').show()"
+                                         oncomplete="PF('statusDialog').hide()"
+                                         ajax="false" 
+                                         action="#{specLoader.goToProcessing()}"/>  
+                    </h:panelGrid>
+                </h:panelGrid>
+                <hr class="style-one"/>
+                <h3>Try our example data</h3>
+
+                <p:selectOneRadio id="customRadio" value="#{specLoader.selectedExample}" layout="custom">  
+                    <f:selectItem itemValue="fastdata"/>
+                    <f:selectItem itemValue="malaria"/>
+                </p:selectOneRadio> 
+
+                <h:panelGrid columns="3" style="width: 840px; padding-left: 20px" cellspacing="4">
+                    <p:spacer style="width: 30px; height:5px"/>
+                    <h:panelGroup  layout="block" style="padding-left:10px">
+                        <p:outputLabel style="font-size:13px; font-weight: bold" value="Description"/> 
+                    </h:panelGroup>
+                    <h:panelGroup  layout="block" style="padding-left:10px">
+                        <p:outputLabel style="font-size:13px; font-weight: bold" value="Download"/> 
+                    </h:panelGroup>
+                    <p:radioButton for="customRadio" itemIndex="0"/>
+                    <h:panelGroup  layout="block" style="padding-left:10px">
+                        A small example dataset for demo purposes, containing 10 spectra (UPLC-Q/E-ESI<sup>-</sup>, C18) organized into three groups 
+                        (Healthy, Crohn's Disease and QC) from <a href="https://www.nature.com/articles/s41586-019-1237-9" target="_blank">Lloyd-Price et al.</a>                                
+                    </h:panelGroup>
+                    <h:panelGroup  layout="block" style="padding-left:10px">
+                        <a href="https://www.dropbox.com/s/lh4ema8fn0f12hz/IBD_small.zip?dl=0" target="_blank">Dropbox</a> <br/>  
+                        <a href="http://gofile.me/4esAc/Za1mugeEP" target="_blank">GoFile</a>
+                    </h:panelGroup>
+                    <p:radioButton for="customRadio" itemIndex="1"/>
+                    <h:panelGroup  layout="block" style="padding-left:10px">
+                        An experimental Malaria metabolomics dataset (UPLC-Q/E-ESI<sup>+</sup>, HILIC) between two immune status (Native vs. Semi-immune) from 
+                        <a href="https://dx.doi.org/10.1016%2Fj.redox.2018.04.011" target="_blank">Li et al.</a> 15 samples (12 Samples and 3 QCs)
+                        are included.
+                    </h:panelGroup>
+                    <h:panelGroup  layout="block" style="padding-left:10px">
+                        <a href="https://www.dropbox.com/s/ift0zrkh0rx3v80/malaria_raw.zip?dl=0" target="_blank">Dropbox</a> <br/> 
+                        <a href="http://gofile.me/4esAc/wMN4FNeTg" target="_blank">GoFile</a>
+                    </h:panelGroup>
+                </h:panelGrid>
+
+                <h:panelGrid style="width:720px; padding: 10px; text-align: center; margin-left: 13px">
+                    <p:commandButton value="Submit" 
+                                     style="width:100px"
+                                     onclick="PF('statusDialog').show()" 
+                                     oncomplete="PF('statusDialog').hide()"
+                                     ajax="false" 
+                                     action="#{specLoader.uploadExampleSpectra()}" />
+                </h:panelGrid>
+            </h:panelGrid>
+
+            <p:dialog modal="true" widgetVar="uploadStatusDialog" 
+                      style="width: 200px; height:120px; padding:20px;" 
+                      appendTo="@(body)" header="Server is busy .... "
+                      draggable="false" closable="true" resizable="false"> 
+                <h:outputLabel value="The upload will start when an empty slot frees up. Please be patient."/>
+                <h:panelGrid style="width: 100%; text-align: center;">
+                    <p:graphicImage value="/resources/images/ajax-loader.gif" /> 
+                </h:panelGrid>
+            </p:dialog>
+
+            <p:dialog modal="true" widgetVar="uploadSessionDialog" 
+                      style="width: 300px; height:120px; padding:20px;" 
+                      appendTo="@(body)" header="Information"
+                      draggable="false" closable="true" resizable="false"> 
+                <h:outputLabel value="Running job detected! Please wait until it is complete."/>
+                <br />
+                <h:outputLabel value="If you would like to submit a new job right now, you can kill the currently running job by clicking on the OK button."/>
+                <h:panelGrid style="width:100%; text-align:center; padding-top: 20px; padding-bottom: 10px;" columns="2">                           
+                    <p:commandButton value="Cancel" id="cancelBn2"
+                                     style="width:60px"
+                                     onclick="PF('uploadSessionDialog').hide()"
+                                     />  
+                    <p:commandButton value="OK" id="okBn2"
+                                     style="width:60px"
+                                     oncomplete="PF('statusDialog').hide()"
+                                     onclick="PF('uploadSessionDialog').hide();PF('statusDialog').show()"
+                                     action="#{spectraController.killCurrentJob()}"
+                                     />  
+                </h:panelGrid>
+            </p:dialog>
+
+        </h:form>
+    </ui:define>
+</ui:composition>

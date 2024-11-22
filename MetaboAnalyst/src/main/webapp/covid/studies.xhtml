@@ -1,0 +1,62 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                template="#{applicationBean1.templateUrl}/_doc_template.xhtml">
+    <ui:define name="metaInfo">
+        <f:event type="preRenderView" listener="#{covids.setupDataTable()}"/> 
+    </ui:define>
+    <ui:define name="content">
+        <h:form id="form1">
+            <h:panelGrid style="padding: 30px 40px 20px 40px; width: 95%; font-size: 13px; line-height: 23px;">
+
+                <h2>COVID-19 Metabolomics Datasets</h2>
+                <p>
+                    A collection of our manually curated published metabolomics datasets. 
+                    We appreciate the authors of these studies for sharing their datasets.  
+                    You can download a data of interest to perform exploratory analysis in MetaboAnalyst. 
+                    But, it is highly recommended to intuitively explore the data from our dedicated <b>"COVID-19 Metabolomics Explorer"</b> Module
+                    by click the <img src="../resources/images/start_exploring_button.png" alt="Start Exploring" style="display: inline; width: 95px"/> button from previous page.
+                </p>
+
+                <p:dataTable style="width:100%;" var="covs" value="#{covids.coviders}" >
+                    <p:column headerText = "ID" >
+                        <h:outputText escape="false" value="#{covs.IDs}"/>
+                    </p:column>
+                    <p:column headerText = "Publication" >
+                        <h:outputText escape="false" value="#{covs.publications}"/>
+                    </p:column>
+                    <p:column headerText = "Sample Size" >
+                        <h:outputText escape="false" value="#{covs.descriptions}"/>
+                    </p:column>
+                    <p:column headerText = "Country">
+                        <h:outputText escape="false" value="#{covs.countries}"/>
+                    </p:column>
+                    <p:column headerText = "Platform" style="width:72px">
+                        <h:outputText escape="false" value="#{covs.platform}"/>
+                    </p:column>
+                    <!--
+                    <p:column headerText = "Data Type" >
+                        <h:outputText escape="false" value="#{covs.datatypes}"/>
+                    </p:column>
+                    -->
+                    <p:column headerText = "Download">
+                        <h:outputText escape="false" value="#{covs.fileNameLink}"/>
+                    </p:column>
+
+                    <!--                    <p:column headerText = "Download" >
+                                            <p:commandLink style="font-size: 13px;" ajax="false"
+                                                           value ="Download">
+                                                <p:fileDownload value="#{covs.fileNameAContent}" />
+                                            </p:commandLink>   
+                    
+                                        </p:column>
+                    -->
+                </p:dataTable>
+            </h:panelGrid>
+        </h:form>
+    </ui:define>
+</ui:composition>

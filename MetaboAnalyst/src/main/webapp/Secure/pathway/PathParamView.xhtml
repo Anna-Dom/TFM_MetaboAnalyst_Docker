@@ -1,0 +1,320 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                template="#{applicationBean1.templateUrl}/_anal_template.xhtml">
+    <ui:define name="metaInfo">
+        <f:event type="preRenderView" listener="#{sessionBean1.registerPage('Set parameter')}"/> 
+        <f:event type="preRenderView" listener="#{sessionBean1.addNaviTrack('Set parameter', '/Secure/pathway/PathParamView.xhtml')}"/>
+    </ui:define>
+    <ui:define name="content">
+        <h:form>
+            <h:panelGrid style="padding: 30px 30px 20px 40px; font-size: 13px;  line-height: 23px; width: 95%">
+
+                <h2>Parameter Settings</h2>
+                <p>
+                    Unlike transcriptomics which allows comprehensive gene expression profiling, targeted metabolomics usually covers only a small percentage of metabolome 
+                    (the actual coverage is platform/protocol specific). This means that metabolites (defined in our current pathways or metabolite sets) do not have equal probabilities 
+                    of being measured in your studies, and <u>the enriched functions are the results from both platform/protocol specific effects and biological perturbations</u>.
+                    Since the primary interest is to detect the latter, we highly recommend <b>uploading a reference metabolome</b> containing all measurable metabolites from 
+                    your platform to eliminate the former effects. 
+                </p>
+
+                <p:selectOneRadio id="customRadio1" value="#{pathBean.refLibOpt}" layout="custom">  
+                    <f:selectItem itemValue="all" itemLabel="Use all compounds in the selected pathways"/>
+                    <f:selectItem itemValue="self" itemLabel="Upload a reference metabolome based on your technical platform"/>  
+                </p:selectOneRadio>
+                <p:selectOneRadio id="customRadio2" value="#{pathBean.analOption}"  layout="custom">  
+                    <f:selectItem itemLabel="Scatter plot (testing significant features)" itemValue="scatter"/> 
+                    <f:selectItem itemLabel="Heatmaps (manually select features for test)" itemValue="heatmap"/> 
+                </p:selectOneRadio>
+                <p:selectOneRadio id="customRadio" value="#{pathBean.libOpt}" layout="custom">  
+                    <f:selectItem itemValue="hsa" itemLabel="Homo sapiens (human) [KEGG:80]"/>
+                    <f:selectItem itemValue="smpdb-hsa" itemLabel="Homo sapiens (human) [SMPDB]"/> 
+                    <f:selectItem itemValue="mmu" itemLabel="Mus musculus (mouse) [KEGG:82]"/>
+                    <f:selectItem itemValue="smpdb-mmu" itemLabel="Mus musculus (mouse) [SMPDB]"/>
+                    <f:selectItem itemValue="rno" itemLabel="Rattus norvegicus (rat) [81]"/>
+                    <f:selectItem itemValue="bta" itemLabel="Bos taurus (cow) [81]"/>
+                    <f:selectItem itemValue="gga" itemLabel="Gallus gallus (chicken) [78]"/>
+                    <f:selectItem itemValue="dre" itemLabel="Danio rerio (zebrafish) [81]"/>
+                    <f:selectItem itemValue="dme" itemLabel="Drosophila melanogaster (fruit fly) [79]"/>
+                    <f:selectItem itemValue="cel" itemLabel="Caenorhabditis elegans (nematode) [78]"/>
+                    <f:selectItem itemValue="sce" itemLabel="Saccharomyces cerevisiae (yeast) [65]"/>
+                    <f:selectItem itemValue="osa" itemLabel="Oryza sativa japonica (Japanese rice) [83]"/>
+                    <f:selectItem itemValue="ath" itemLabel="Arabidopsis thaliana (thale cress) [87]"/>
+                    <f:selectItem itemValue="cvr" itemLabel="Chlorella variabilis (green alga)"/>
+                    <f:selectItem itemValue="smm" itemLabel="Schistosoma mansoni [69]"/>
+                    <f:selectItem itemValue="pfa" itemLabel="Plasmodium falciparum 3D7 (Malaria) [47]"/>
+                    <f:selectItem itemValue="pvx" itemLabel="Plasmodium vivax (Malaria) [50]"/>
+                    <f:selectItem itemValue="tbr" itemLabel="Trypanosoma brucei [54]"/>
+                    <f:selectItem itemValue="eco" itemLabel="Escherichia coli K-12 MG1655 [87]"/>
+                    <f:selectItem itemValue="bsu" itemLabel="Bacillus subtilis [80]"/>
+                    <f:selectItem itemValue="ppu" itemLabel="Pseudomonas putida KT2440 [89]"/>
+                    <f:selectItem itemValue="sau" itemLabel="Staphylococcus aureus N315 (MRSA/VSSA) [73]"/>
+                    <f:selectItem itemValue="tma" itemLabel="Thermotoga maritima [57]"/>
+                    <f:selectItem itemValue="syf" itemLabel="Synechococcus elongatus PCC7942 [75]"/>
+                    <f:selectItem itemValue="mlo" itemLabel="Mesorhizobium japonicum MAFF 303099 [86]"/>
+                    <f:selectItem itemValue="kpn" itemLabel="Klebsiella pneumoniae MGH 78578 (serotype K52)"/>
+                    <f:selectItem itemValue="kva" itemLabel="Klebsiella variicola At-22"/>
+                    <f:selectItem itemValue="spym" itemLabel="Streptococcus pyogenes M1 476 (serotype M1)"/>
+                </p:selectOneRadio>
+                <p:panelGrid style="width: 880px; margin-left: 40px; padding-top: 10px">
+                    <p:row>
+                        <p:column colspan="2" style="background-color: #eff5ff">
+                            <h:panelGroup layout="block" style="min-width: 650px">
+                                <p:outputLabel style="font-size: 16px; font-weight: bold" value="Specify pathway analysis parameters:"/>
+                            </h:panelGroup> 
+                        </p:column>          
+                    </p:row>
+
+                    <p:row>
+                        <p:column>
+                            <p:outputLabel style="font-size: 14px" value="Visualization method"/>
+                        </p:column>
+                        <p:column>
+                            <h:panelGrid columns="3">
+                                <p:radioButton for="customRadio2" itemIndex="0"/> 
+                                <p:spacer style="width:2px"/>
+                                <p:outputLabel value="Scatter plot (testing significant features)"/>
+                                <p:radioButton for="customRadio2" itemIndex="1" disabled="#{sessionBean1.analType eq 'pathora'}"/>
+                                <p:spacer style="width:2px"/>
+                                <p:outputLabel value="Heatmaps (testing your selected features)"/>
+                            </h:panelGrid>  
+                        </p:column>
+                    </p:row>
+
+                    <p:row>
+                        <p:column>
+                            <p:outputLabel style="font-size: 14px" value="Enrichment method"/>
+                        </p:column>
+                        <p:column>
+                            <p:selectOneRadio value="#{pathBean.oraStatCode}" layout="pageDirection" rendered="#{sessionBean1.analType eq 'pathora'}">
+                                <f:selectItem itemLabel="Hypergeometric Test" itemValue="hyperg"/> 
+                                <f:selectItem itemLabel="Fisher's Exact Test" itemValue="fisher"/> 
+                            </p:selectOneRadio> 
+
+                            <p:selectOneRadio value="#{pathBean.qeaStatCode}" layout="pageDirection" rendered="#{sessionBean1.analType eq 'pathqea'}">
+                                <f:selectItem itemLabel="Global Test" itemValue="gt"/> 
+                                <f:selectItem itemLabel="Global Ancova" itemValue="ga"/> 
+                            </p:selectOneRadio> 
+                        </p:column>
+                    </p:row>
+
+                    <p:row>
+                        <p:column>
+                            <p:outputLabel style="font-size: 14px" value="Topology analysis"/>
+                        </p:column>
+                        <p:column>
+                            <p:selectOneRadio value="#{pathBean.topoCode}" layout="pageDirection">
+                                <f:selectItem itemLabel="Relative-betweeness Centrality" itemValue="rbc"/> 
+                                <f:selectItem itemLabel="Out-degree Centrality" itemValue="dgr"/> 
+                            </p:selectOneRadio> 
+                        </p:column>
+                    </p:row>
+
+                    <p:row>
+                        <p:column>
+                            <p:outputLabel style="font-size: 14px" value="Reference metabolome"/>
+                        </p:column>
+                        <p:column>
+                            <h:panelGrid columns="3">
+                                <p:radioButton for="customRadio1" itemIndex="0"/> 
+                                <p:spacer style="width:2px"/>
+                                <p:outputLabel value="Use all compounds in the selected pathway library"/>
+                                <p:radioButton for="customRadio1" itemIndex="1"/>
+                                <p:spacer style="width:2px"/>
+                                <p:commandLink onclick="PF('RefUploader').show()"
+                                               value="Upload your own reference metabolome"/>
+                            </h:panelGrid>                    
+                        </p:column>
+                    </p:row>
+
+                    <p:row>
+                        <p:column colspan="2" style="background-color: #eff5ff">
+                            <h:panelGroup layout="block" style="min-width: 650px">
+                                <p:outputLabel style="font-size: 16px; font-weight: bold" value="Select a pathway library "/>
+                                <p:outputLabel style="font-size: 13px; font-style: italic; color: darkgray" value=" (KEGG pathway info were obtained in Oct. 2019)"/>
+                            </h:panelGroup> 
+                        </p:column>          
+                    </p:row>
+
+                    <p:row>
+                        <p:column>
+                            <p:outputLabel style="font-size: 14px" value="Mammals"/>
+                        </p:column>
+                        <p:column>
+                            <h:panelGrid columns="2" style="font-size: 12px;">
+                                <p:radioButton for="customRadio" itemIndex="0"/>
+                                <p:outputLabel value="Homo sapiens (KEGG)"/>
+                                <p:radioButton for="customRadio" itemIndex="1"/>
+                                <p:outputLabel value="Homo sapiens (SMPDB)"/>
+                                <p:radioButton for="customRadio" itemIndex="2"/>
+                                <p:outputLabel value="Mus musculus (KEGG)"/>
+                                <p:radioButton for="customRadio" itemIndex="3"/>
+                                <p:outputLabel value="Mus musculus (SMPDB)"/>
+                                <p:radioButton for="customRadio" itemIndex="4"/>
+                                <p:outputLabel value="Rattus norvegicus (rat) (KEGG)"/>
+                                <p:radioButton for="customRadio" itemIndex="5"/>
+                                <p:outputLabel value="Bos taurus (cow) (KEGG)"/>
+                            </h:panelGrid>
+                        </p:column>
+                    </p:row>
+
+                    <p:row>
+                        <p:column>
+                            <p:outputLabel style="font-size: 14px" value="Birds"/>
+                        </p:column>
+                        <p:column>
+                            <h:panelGrid columns="2" style="font-size: 12px;">
+                                <p:radioButton for="customRadio" itemIndex="6"/>
+                                <p:outputLabel value="Gallus gallus (chicken) (KEGG)"/>
+                            </h:panelGrid>
+                        </p:column>
+                    </p:row>
+
+                    <p:row>
+                        <p:column>
+                            <p:outputLabel style="font-size: 14px" value="Fish"/>
+                        </p:column>
+                        <p:column>
+                            <h:panelGrid columns="2" style="font-size: 12px">
+                                <p:radioButton for="customRadio" itemIndex="7"/>
+                                <p:outputLabel value="Danio rerio (zebrafish) (KEGG)"/>
+                            </h:panelGrid>
+                        </p:column>
+                    </p:row>
+
+                    <p:row>
+                        <p:column>
+                            <p:outputLabel style="font-size: 14px" value="Insects"/>
+                        </p:column>
+                        <p:column>
+                            <h:panelGrid columns="2" style="font-size: 12px;">
+                                <p:radioButton for="customRadio" itemIndex="8"/>
+                                <p:outputLabel value="Drosophila melanogaster (fruit fly) (KEGG)"/>
+                            </h:panelGrid>
+                        </p:column>
+                    </p:row>
+
+                    <p:row>   
+                        <p:column>
+                            <p:outputLabel style="font-size: 14px" value="Nematodes"/>
+                        </p:column>
+                        <p:column>
+                            <h:panelGrid columns="2" style="font-size: 12px;">
+                                <p:radioButton for="customRadio" itemIndex="9"/>
+                                <p:outputLabel value="Caenorhabditis elegans (nematode) (KEGG)"/>
+                            </h:panelGrid>
+                        </p:column>
+                    </p:row>
+
+                    <p:row>
+                        <p:column>
+                            <p:outputLabel style="font-size: 14px" value="Fungi"/>
+                        </p:column>
+                        <p:column>
+                            <h:panelGrid columns="2" style="font-size: 12px;">
+                                <p:radioButton for="customRadio" itemIndex="10"/>
+                                <p:outputLabel value="Saccharomyces cerevisiae (yeast) (KEGG)"/>
+                            </h:panelGrid>
+                        </p:column>
+                    </p:row>
+
+                    <p:row>
+                        <p:column>
+                            <p:outputLabel style="font-size: 14px" value="Plants"/>
+                        </p:column>
+                        <p:column>
+                            <h:panelGrid columns="2" style="font-size: 12px;">
+                                <p:radioButton for="customRadio" itemIndex="11"/>
+                                <p:outputLabel value="Oryza sativa japonica (Japanese rice) (KEGG)"/>
+                                <p:radioButton for="customRadio" itemIndex="12"/>
+                                <p:outputLabel value="Arabidopsis thaliana (thale cress) (KEGG)"/>
+                                <p:radioButton for="customRadio" itemIndex="13"/>
+                                <p:outputLabel value="Chlorella variabilis (green alga) (KEGG)"/>
+                            </h:panelGrid>
+                        </p:column>
+                    </p:row>
+
+                    <p:row>
+                        <p:column>
+                            <p:outputLabel style="font-size: 14px" value="Parasites"/>
+                        </p:column>
+                        <p:column>
+                            <h:panelGrid columns="2" style="font-size: 12px;">
+                                <p:radioButton for="customRadio" itemIndex="14"/>
+                                <p:outputLabel value="Schistosoma mansoni (KEGG)"/>
+                                <p:radioButton for="customRadio" itemIndex="15"/>
+                                <p:outputLabel value="Plasmodium falciparum 3D7 (Malaria) (KEGG)"/>
+                                <p:radioButton for="customRadio" itemIndex="16"/>
+                                <p:outputLabel value="Plasmodium vivax (Malaria) (KEGG)"/>
+                                <p:radioButton for="customRadio" itemIndex="17"/>
+                                <p:outputLabel value="Trypanosoma brucei (KEGG)"/>
+                            </h:panelGrid>
+                        </p:column>
+                    </p:row>
+
+                    <p:row>
+                        <p:column>
+                            <p:outputLabel style="font-size: 14px" value="Prokaryotes"/>
+                        </p:column>
+                        <p:column>
+                            <h:panelGrid columns="2" style="font-size: 12px;">
+                                <p:radioButton for="customRadio" itemIndex="18"/>
+                                <p:outputLabel value="Escherichia coli K-12 MG1655 (KEGG)"/>
+                                <p:radioButton for="customRadio" itemIndex="19"/>
+                                <p:outputLabel value="Bacillus subtilis (KEGG)"/>
+                                <p:radioButton for="customRadio" itemIndex="20"/>
+                                <p:outputLabel value="Pseudomonas putida KT2440 (KEGG)"/>
+                                <p:radioButton for="customRadio" itemIndex="21"/>
+                                <p:outputLabel value="Staphylococcus aureus N315 (MRSA/VSSA) (KEGG)"/>
+                                <p:radioButton for="customRadio" itemIndex="22"/>
+                                <p:outputLabel value="Thermotoga maritima (KEGG)"/>
+                                <p:radioButton for="customRadio" itemIndex="23"/>
+                                <p:outputLabel value="Synechococcus elongatus PCC7942 (KEGG)"/>
+                                <p:radioButton for="customRadio" itemIndex="24"/>
+                                <p:outputLabel value="Mesorhizobium japonicum MAFF 303099 (KEGG)"/>
+                                <p:radioButton for="customRadio" itemIndex="25"/>
+                                <p:outputLabel value="Klebsiella pneumoniae MGH 78578 (serotype K52) (KEGG)"/>
+                                <p:radioButton for="customRadio" itemIndex="26"/>
+                                <p:outputLabel value="Klebsiella variicola At-22 (KEGG)"/>
+                                <p:radioButton for="customRadio" itemIndex="27"/>
+                                <p:outputLabel value="Streptococcus pyogenes M1 476 (serotype M1) (KEGG)"/>
+                            </h:panelGrid>
+                        </p:column>
+                    </p:row>
+                </p:panelGrid>
+
+                <h:panelGrid style="width: 880px; text-align: center; padding-top: 10px">
+                    <p:commandButton value="Proceed" ajax="false" 
+                                     icon="pi pi-caret-right"
+                                     onclick="PF('statusDialog').show()" 
+                                     oncomplete="PF('statusDialog').hide()"                              
+                                     action="#{pathBean.paBn_proceed()}"/>
+                </h:panelGrid> 
+            </h:panelGrid>
+        </h:form>
+        <p:dialog widgetVar="RefUploader" dynamic="true" modal="true" appendTo="@(body)" header="Reference Metabolome Upload"
+                  hideEffect="explode" resizable="false"> 
+            <h:panelGrid style="width:560px; font-size: 13px; line-height: 23px; padding:0px 20px 20px 20px">
+                <div style="padding-bottom: 20px">
+                    The reference metabolome refers to <b>all</b> the metabolites that can be detected based on your 
+                    analytical platform. They should be uploaded as a single-column <u>KEGG compound IDs</u>.  
+                    You can use the "Compound ID Conversion" program from "Other Utilities" to perform the conversion. 
+                    An example list can be found <a href="#{facesContext.externalContext.requestContextPath}/resources/data/KEGG_list.txt">here</a>.
+                </div>
+                <h:form enctype="multipart/form-data">  
+                    <p:fileUpload value="#{pathBean.refLibFile}" mode="simple" skinSimple="true" style="line-height: 18px"/>  
+                    <p:commandButton value="Submit" ajax="false"  
+                                     style ="margin-left: 20px"
+                                     onclick="PF('statusDialog').show()"
+                                     oncomplete="PF('statusDialog').hide()"
+                                     actionListener="#{pathBean.handleRefLibUpload()}"/>  
+                </h:form>
+            </h:panelGrid>
+        </p:dialog>
+    </ui:define>
+</ui:composition>

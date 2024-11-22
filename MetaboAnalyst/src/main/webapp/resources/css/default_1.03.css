@@ -1,0 +1,294 @@
+body {
+    margin: 0px;
+    padding: 0;
+    font-size: 13px;
+    font-family: Arial, Helvetica, Geneva
+}
+
+h1, h2{
+    margin-top: 0;
+}
+
+a:hover {
+    color:yellowgreen;
+}
+
+/* Header */
+#header {
+    padding: 0px;
+    margin: 0px;
+    height: 120px;
+    position: relative;
+}
+
+/* Footer */
+#footer {
+    padding: 0px;
+    position: relative;
+    text-align: center;
+}
+
+.ui-menu .ui-menu-parent .ui-menu-child {
+    margin-left:4px;
+    margin-right: 20px;
+}
+
+.ui-layout, .ui-layout-doc, .ui-layout-unit, .ui-layout-wrap, .ui-layout-bd, .ui-layout-hd{
+    border: none;
+}
+
+.ui-widget-header {
+    padding-left: 10px !important;
+    color: #2779aa !important;
+}
+
+.ui-layout-north {
+    z-index:20 !important;
+    overflow:visible !important;
+}
+
+.ui-layout-north .ui-layout-unit-content {
+    overflow:visible !important;
+}
+
+.ui-datatable .ui-datatable-footer {
+    text-align: right;
+    padding: 4px 10px;
+}
+
+.noBorders tr, .noBorders td {
+    background: none !important;
+    border: none !important;
+}
+
+a.changeBlue:hover { /* change to blue on mouseover */
+    color: #FFAE20;
+    font-size: 110%;
+    text-decoration: underline;
+}
+
+strong {
+    font-weight: bold;
+    color: #000;
+}
+
+table.nopadding td {
+    padding: 0;
+}
+
+.helpTip{
+    width: 600px;
+    line-height: 1.6em;
+    background: #ffe7bd;
+    padding-left: 10px
+}
+
+.ui-layout-unit .ui-layout-unit-content {
+    padding: 0em 0em !important;
+}
+
+.ui-growl-icon-close {
+    width: 100%;
+    height: 100%;
+    background-image: none!important;
+}
+
+.ui-panelgrid .firstcolumn{
+    background: #8BC1FF;
+    color: #000000;
+    font-weight: bold
+}
+
+.ui-datalist-content{
+    border: 0px;
+    background: none
+}
+
+.selectable td.ui-selection-column input {
+    display:none;
+}
+
+.unselectable td.ui-selection-column input {
+    display:block;
+}
+
+#content {
+    background:#f1f3f6;
+    z-index: 1;
+    position:relative;
+}
+
+#footer {
+    clear:both;
+    background:#DDDDDD;
+    border-top-style:solid;
+    border-width: thin;
+    border-color: silver;
+    text-align: center;
+    vertical-align: middle;
+}
+
+a:link {
+    color: #011CA2;
+}
+
+h2{
+    font-size: 16px;
+    font-weight: bold
+}
+
+.panelColumns td {
+    vertical-align: top;
+}
+
+a.changeBlue:hover { /* change to blue on mouseover */
+    color: #FFAE20;
+    font-size: 110%;
+    text-decoration: underline;
+}
+
+.menu .ui-selectonemenu-label {
+    font-size: 12px;
+    line-height: 18px
+}
+
+.ui-selectonemenu .ui-selectonemenu-label{
+    font-size: 12px;
+    line-height: 18px
+}
+
+.panel .ui-selectonemenu-list {
+    font-size: 12px;
+    line-height: 18px
+}
+
+.ui-selectonemenu label.ui-selectonemenu-label{
+    width:100% !important;
+}
+
+.ui-growl-title {
+    font-size: 15px;
+}
+
+.ui-growl-message p {
+    font-size: 13px;
+}
+
+.ui-dialog.customDialog .ui-dialog-content {
+    font-size: 13px;
+}
+.ui-dialog-titlebar.ui-widget-header.customDialog {
+    font-size: 15px;
+}
+
+.ui-dialog.ui-widget-content .ui-dialog-title{
+    font-size: 17px !important;
+    padding-left: 10px !important;
+    font-weight: bold;
+}
+
+.hide-column-names table thead tr {
+    display: none;
+}
+
+.ui-datatable table, .ui-datatable-resizable table {
+    table-layout: auto !important;
+}
+
+.ui-datatable-scrollable table {
+    table-layout: fixed !important;
+}
+
+hr.style-one {
+    border: 0;
+    height: 1px;
+    background: #4472c4;
+    background-image: -webkit-linear-gradient(left, #EDF0F5, #ADB9D3, #4472c4, #ADB9D3,#EDF0F5);
+    background-image: -moz-linear-gradient(left, #EDF0F5, #ADB9D3, #4472c4, #ADB9D3,#EDF0F5);
+    background-image: -ms-linear-gradient(left, #EDF0F5, #ADB9D3, #4472c4, #ADB9D3,#EDF0F5);
+    background-image: -o-linear-gradient(left, #EDF0F5, #ADB9D3, #4472c4, #ADB9D3,#EDF0F5);
+    margin-top: 8px;
+    margin-bottom: 12px;
+}
+
+.ui-widget {
+    font-size: 13px  !important;
+}
+
+.ui-datatable .ui-datatable-data > tr > td {
+    padding: 0.5rem 0.5rem  !important;
+}
+
+.ui-breadcrumb{
+    padding: 0.5rem !important;
+}
+
+.ui-tree .ui-tree-container .ui-treenode {
+    padding: 0 0 !important;
+}
+
+.myPanel.ui-panel .ui-panel-content{
+    border: none !important;
+}
+
+.rw-conversation-container .rw-messages-container{
+    height: 1000px;
+}
+
+.rw-conversation-container {
+    resize: vertical;
+    overflow: fragments;
+    border-left: 1px solid grey;
+    border-right: 1px solid grey;
+    width: 400px;
+}
+
+.rw-conversation-container .rw-title {
+    font-family: Georgia, Times, "Times New Roman", serif;
+    font-size:23px;
+    overflow: fragments;
+}
+
+.rw-conversation-container .rw-header {
+    font-family: "Lucida Sans Unicode";
+    font-size: 14px;
+    font-stretch:expanded;
+    overflow: fragments;
+    background-color: #374785 !important;
+}
+
+.rw-launcher:hover {
+    background-color: #a11f05 !important;
+    border: 1px solid orange;
+
+}
+
+.rw-launcher {
+    background-color: #374785 !important;
+}
+
+.rw-conversation-container .rw-reply {
+    background-color: #374785 !important;
+    border-left: 1px solid grey;
+    border-right: 1px solid grey;
+    text-align: center;
+    font-size: 13px;
+    font-family: "Trebuchet MS", "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", sans-serif;
+
+}
+
+.rw-conversation-container .rw-reply:hover {
+    background-color: #a11f05 !important;
+    border: 1px solid orange;
+    text-align: center;
+    font-size: 13px;
+    font-family: "Trebuchet MS", "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", sans-serif;
+}
+
+.rw-conversation-container .rw-messages-container .rw-message .rw-response {
+    font-family: "Trebuchet MS", "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", sans-serif;
+}
+.rw-conversation-container .rw-messages-container .rw-message .rw-client {
+    font-family: "Trebuchet MS", "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", sans-serif;
+    background-color: #374785;
+}

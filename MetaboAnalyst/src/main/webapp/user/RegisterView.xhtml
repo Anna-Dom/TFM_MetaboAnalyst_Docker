@@ -1,0 +1,80 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                template="#{applicationBean1.templateUrl}/_template.xhtml">
+    <ui:define name="metaInfo">       
+    </ui:define>
+    <ui:define name="tracker"/>
+    <ui:define name="leftpaneout"/> 
+    <ui:define name="rightpaneout"/> 
+    <ui:define name="content">
+        <h:panelGrid  style="margin-top: 20px; padding-left: 37%; font-size: 14px; line-height: 24px">
+
+            <h4>You don't need an account to use MetaboAnalyst, register for raw spectra processing?</h4>
+            <ul style="font-size: 13px; padding-left: 20px; margin-top: -15px; color: lightslategrey">
+                <li>
+                    You will be able to save &amp; resume your analysis (within 1 year)
+                </li>
+                <li>
+                    Registration is free
+                </li>
+            </ul>
+            <h:form id="form">
+                <p:focus context="form"/>
+                <h:panelGrid style="margin-left: 20px">
+                    <h:panelGrid columns="2" style="width: 360px">
+                        <h:panelGrid columns="2" style="margin-left: -2px">
+                            <p:outputLabel for="email" value="Email:"  style="font-weight: bold;"/>
+                            <p:graphicImage id="idicon" class="pi pi-info-circle" ></p:graphicImage>
+                            <p:tooltip for="idicon" styleClass="helpTip">
+                                <p>
+                                    The email address will be used as the username or ID for accessing the system.
+                                </p>
+                            </p:tooltip>
+                        </h:panelGrid>
+                        <p:inputText id="email" 
+                                     value="#{userLoginBean.email}" 
+                                     required="true" 
+                                     style="width: 250px"
+                                     maxlength="145"/>
+
+                        <p:outputLabel for="pwd1" value="Password:" style="font-weight: bold;"/>
+                        <p:password id="pwd1" value="#{userLoginBean.password}" match="pwd2" label="Password 1" required="true" style="width: 250px" placeholder="Password"/>
+                        <p:spacer/>
+                        <p:password id="pwd2" value="#{userLoginBean.password}" label="Password 2" required="true" style="width: 250px" placeholder="Confirm password"/>
+
+                        <p:outputLabel for="Name" value="Name:" style="font-weight: bold;"/>
+                        <p:inputText id="Name" 
+                                     value="#{userLoginBean.fname}" 
+                                     style="width: 250px" 
+                                     placeholder="Full name"
+                                     maxlength="98"/>
+
+
+                        <p:outputLabel for="institution" value="Institution:"  style="font-weight: bold;"/>
+                        <p:inputText id="institution" 
+                                     value="#{userLoginBean.institution}" 
+                                     style="width: 250px; " 
+                                     placeholder="University, company, etc."
+                                     maxlength="98"/>
+
+                    </h:panelGrid>
+                    <h:panelGrid style="padding-top: 10px; text-align: center; width: 360px">
+                        <p:commandButton value="Register" style="width:120px;"
+                                         id="procBn"
+                                         onclick="PF('statusDialog').show();"
+                                         action="#{userLoginBean.doRegister()}"
+                                         disabled="false"
+                                         icon="pi pi-user-plus"
+                                         oncomplete ="PF('statusDialog').hide();"
+                                         />
+                    </h:panelGrid>
+                </h:panelGrid>
+            </h:form>
+        </h:panelGrid>
+    </ui:define>
+</ui:composition>

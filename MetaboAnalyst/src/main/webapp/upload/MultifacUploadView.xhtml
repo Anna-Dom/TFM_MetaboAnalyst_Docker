@@ -1,0 +1,172 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                template="#{applicationBean1.templateUrl}/_anal_template.xhtml">
+    <ui:define name="metaInfo">
+        <f:event type="preRenderView" listener="#{sessionBean1.initNaviTree('time')}"/>         
+        <f:event type="preRenderView" listener="#{sessionBean1.registerPage('Upload')}"/> 
+        <f:event type="preRenderView" listener="#{sessionBean1.addNaviTrack('Upload', '/ModuleView.xhtml')}"/>
+    </ui:define>
+    <ui:define name="rightpaneout"/>
+    <ui:define name="content">
+        <h:form enctype="multipart/form-data">
+            <h:panelGrid style="padding: 20px 20px 20px 50px; line-height: 23px; font-size:13px;">
+                <h2 style="margin-top: 10px; margin-bottom: 4px">Upload your data and metadata</h2>
+                <p>
+                    <ul>
+                        <li>
+                            Data table contains compound concentrations or peak intensities for multiple samples;
+                        </li>
+                        <li>
+                            Metadata table contains various descriptors of these samples and can be discrete or continuous;
+                        </li>
+                        <li>
+                            Data and metadata tables must use the same sample IDs;
+                        </li>
+                        <li>
+                            For detailed instructions, please visit our <a href="#{facesContext.externalContext.requestContextPath}/docs/Format.xhtml" target="_blank">Data Formats</a> 
+                            page (under <b style="color:orange">Metadata/Time-series</b> tab) 
+                        </li>
+                    </ul>
+                </p>
+                <h:panelGrid columns="2" style="width:900px; padding: 20px; line-height: 24px; background-color: #F9F9FB;">
+                    <p:outputLabel style="font-size:12px; font-weight: bold" value="Data Type:"/>
+                    <p:selectOneRadio value="#{tsuploader.tsDataType}">
+                        <f:selectItems value="#{optBean.tableTypeOpts}" />
+                    </p:selectOneRadio>   
+                    <p:outputLabel style="font-size:12px; font-weight: bold" value="Study Design:"/>
+                    <h:panelGroup>
+                        <p:selectOneMenu styleClass="menu" panelStyleClass="panel" value="#{sessionBean1.tsDesign}">
+                            <f:selectItem itemValue="multi" itemLabel="Multiple factors / covariates"/>
+                            <f:selectItem itemValue="time" itemLabel="Time-series + one factor"/>                            
+                            <f:selectItem itemValue="time0" itemLabel="Time-series only"/>
+                        </p:selectOneMenu> 
+                    </h:panelGroup>
+                    <p:outputLabel style="font-size:12px; font-weight: bold" value="Data Format:"/>
+                    <p:selectOneMenu styleClass="menu" panelStyleClass="panel" style="width:165px" value="#{tsuploader.tsFormat}">
+                        <f:selectItem itemValue="colmf" itemLabel="Samples in columns"/>    
+                        <f:selectItem itemValue="rowmf" itemLabel="Samples in rows"/>                    
+                    </p:selectOneMenu>
+
+                    <p:outputLabel style="font-size:12px; font-weight: bold" value="Data File:"/>
+                    <p:fileUpload value="#{tsuploader.csvFile}" mode="simple"  skinSimple="true" style="line-height: 18px"/>
+
+                    <p:outputLabel style="font-size:12px; font-weight: bold" value="Metadata File:"/>
+                    <p:fileUpload value="#{tsuploader.metaFile}" mode="simple"  skinSimple="true" style="line-height: 18px"/>
+                </h:panelGrid>
+                <h:panelGrid style="width: 900px; padding-top: 10px; padding-bottom: 10px; text-align: center">
+                    <p:commandButton value="Submit" 
+                                     onclick="PF('statusDialog').show()" 
+                                     ajax="false" 
+                                     action="#{tsuploader.handleTsDataUpload}"/>  
+                </h:panelGrid>
+                <hr class="style-one"/>
+                <h2 style="margin-top: 20px; margin-bottom: 4px"> Try our test data</h2>
+                <p:selectOneRadio id="timeRadio" value="#{tsuploader.timeDataOpt}" layout="custom">  
+                    <f:selectItem itemValue="pkcovid" itemLabel="LC-MS peak intensity table"/>
+                    <f:selectItem itemValue="tce" itemLabel="LC-MS peak intensity table"/>
+                    <f:selectItem itemValue="time2" itemLabel="Time-series + one experimental factor"/>
+                    <f:selectItem itemValue="time1" itemLabel="Time-series only"/>
+                    <f:selectItem itemValue="diabetes" itemLabel="Lipidomics intensity table"/>
+                </p:selectOneRadio> 
+
+                <h:panelGrid columns="4" style="width: 900px; padding: 20px; background-color: #F9F9FB;">
+                    <p:spacer style="width:30px"/>
+                    <h:panelGroup layout="block" style="width:120px">
+                        <p:outputLabel style="font-weight: bold" value="Data"/>
+                    </h:panelGroup>       
+                    <h:panelGroup layout="block" style="width:200px">
+                        <p:outputLabel style="font-weight: bold" value="Study Design"/>
+                    </h:panelGroup>   
+                    <p:outputLabel style="font-weight: bold" value="Description"/>
+
+                    <p:radioButton for="timeRadio" itemIndex="0"/> 
+                    <h:panelGroup style="width:120px">
+                        <a href="https://www.xialab.ca/api/download/metaboanalyst/covid_metabolomics_data.csv">Data</a>
+                        <br />
+                        <a href="https://www.xialab.ca/api/download/metaboanalyst/covid_metadata_multiclass.csv">Metadata</a>
+                    </h:panelGroup>
+
+                    <h:panelGroup layout="block" style="width:200px">
+                        Multiple factors / covariates 
+                    </h:panelGroup>
+                    <h:panelGroup>
+                        LC-MS peak intensity data table and meta-data of 20 healthy and 39 COVID-19 patient samples; 
+                        <b>Four metadata</b> - 3 categorical and 1 numeric. 
+                    </h:panelGroup>   
+
+                    <p:radioButton for="timeRadio" itemIndex="1"/> 
+                    <h:panelGroup style="width:120px">
+                        <a href="https://www.xialab.ca/api/download/metaboanalyst/TCE_feature_table.csv">Data</a>
+                        <br />
+                        <a href="https://www.xialab.ca/api/download/metaboanalyst/TCE_metadata.csv">Metadata</a>
+                    </h:panelGroup>
+
+                    <h:panelGroup layout="block" style="width:200px">
+                        Multiple factors / covariates 
+                    </h:panelGroup>
+                    <h:panelGroup>
+                        LC-MS peak intensity data from plasma samples of 175 individuals to study 
+                        trichloroethylene (TCE) exposure. <b>Nine metadata</b> - 6 categorical and 3 numeric. 
+                        Please refer to <a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5100622/">Walker D. et al</a> for more details.
+                    </h:panelGroup>   
+
+                    <p:radioButton for="timeRadio" itemIndex="2"/> 
+                    <h:panelGroup style="width:120px">
+                        <a href="https://www.xialab.ca/api/download/metaboanalyst/cress_time.csv">Data</a>
+                        <br />
+                        <a href="https://www.xialab.ca/api/download/metaboanalyst/cress_time_meta.csv">Metadata</a>
+                    </h:panelGroup>
+                    <h:panelGroup layout="block" style="width:200px">
+                        Time series + one condition
+                    </h:panelGroup>
+                    <h:panelGroup>
+                        LC-MS peak intensity data collected from <i>Arabidopsis thaliana</i> during a wounding time 
+                        course (four time points). <b>WT</b> - wild type; <b>MT</b> - <i> dde2-2 </i>mutant. Please refer 
+                        to (<a href="http://dx.doi.org/10.1186/1748-7188-3-9">Meinicke P. et al</a>) for more information
+                    </h:panelGroup>
+
+                    <p:radioButton for="timeRadio" itemIndex="3"/> 
+                    <h:panelGroup style="width:120px">
+                        <a href="https://www.xialab.ca/api/download/metaboanalyst/cress_time1.csv">Data</a>
+                        <br />
+                        <a href="https://www.xialab.ca/api/download/metaboanalyst/cress_time1_meta.csv">Metadata</a>                        
+                    </h:panelGroup>
+                    <h:panelGroup layout="block" style="width:200px">
+                        Time series only data 
+                    </h:panelGroup>
+                    <h:panelGroup>
+                        LC-MS peak intensity data collected from only <b>wild type</b> <i>Arabidopsis thaliana</i> during a wounding time 
+                        course (four time points). Please refer to (<a href="http://dx.doi.org/10.1186/1748-7188-3-9">Meinicke P. et al</a>) for more information
+                    </h:panelGroup>
+                    
+                    <p:radioButton for="timeRadio" itemIndex="4"/> 
+                    <h:panelGroup style="width:120px">
+                        <a href="https://www.xialab.ca/api/download/metaboanalyst/diabetes_lipids.txt">Data</a>
+                        <br />
+                        <a href="https://www.xialab.ca/api/download/metaboanalyst/diabetes_metadata.csv">Metadata</a>                        
+                    </h:panelGroup>
+                    <h:panelGroup layout="block" style="width:200px">
+                        Multiple factors / covariates 
+                    </h:panelGroup>
+                    <h:panelGroup>
+                        Lipidomics data collected from plasma of patients along the spectrium of diabetes progression. <b>Five metadata</b> - 
+                        1 categorical and 4 numeric. Please refer to <a href="https://www.nature.com/articles/s42255-021-00420-9" target="_blank">Wigger L. et al.</a> 
+                        for more information.
+                    </h:panelGroup>                    
+
+                </h:panelGrid>
+                <h:panelGrid style="width: 900px; padding-top: 10px; padding-bottom: 10px; text-align: center">
+                    <p:commandButton value="Submit" 
+                                     onclick="PF('statusDialog').show()" 
+                                     ajax="false" 
+                                     action="#{tsuploader.handleTestDataUpload}"/>  
+                </h:panelGrid>
+            </h:panelGrid>                    
+        </h:form>
+    </ui:define>
+</ui:composition>

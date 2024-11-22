@@ -1,0 +1,51 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui">
+
+    <script type="text/javascript" src="#{facesContext.externalContext.requestContextPath}/resources/jscripts/graphics_1.00.js"></script>
+
+    <p:dialog header="Feature View" widgetVar="FeatureView" dynamic="true" modal="true" appendTo="@(body)" height="480" width="630" 
+              hideEffect="explode" resizable="true" onShow="updateDialog()">
+        <h:panelGrid id="visView" style="width:100%;">
+
+            <h:panelGrid rendered="#{not sessionBean1.showMultiBoxView()}">
+                <p:commandLink actionListener="#{sessionBean1.graphicsLnk_action('cmpd')}" 
+                               update=":myGraphPane"
+                               oncomplete="PF('graphDialog').show()"
+                               title="Customize the graphics output">
+                    <img src="#{facesContext.externalContext.requestContextPath}/resources/images/imgcenter.png"/>
+                </p:commandLink>
+                <img id="boximage" onerror='this.style.display="none"' src="#{sessionBean1.cmpdSummaryImg}" alt="FeatureImage"/>
+            </h:panelGrid> 
+
+            <h:form id="visForm">
+                <h:panelGrid columns="3" rendered="#{sessionBean1.showMultiBoxView()}" style="margin-bottom:10px">
+                    <h:outputLabel value="View a different metadata:"/>
+                    <p:selectOneMenu styleClass="menu" panelStyleClass="panel" value="#{multifacBean.boxMeta}">
+                        <f:selectItems value="#{multifacBean.boxMetaOpts}" />
+                    </p:selectOneMenu>
+                    <p:commandButton value="Update" update="visForm"   
+                                     rendered="#{sessionBean1.isLinMod()}"
+                                     onclick="PF('statusDialog').show();"
+                                     oncomplete="PF('statusDialog').hide()"
+                                     actionListener="#{multifacBean.updateMultiFacBoxplotMeta('update')}"/>   
+                    <p:commandButton value="Update" update="visForm"   
+                                     rendered="#{!sessionBean1.isLinMod()}"
+                                     onclick="PF('statusDialog').show();"
+                                     oncomplete="PF('statusDialog').hide()"
+                                     actionListener="#{multifacBean.updateBoxplotMeta()}"/>  
+                </h:panelGrid>
+                <img onerror='this.style.display="none"' src="#{sessionBean1.boxplotUrl}" />   
+                <h:panelGrid style="width:100%; text-align: center">
+                    <p:commandButton value="Close"
+                                     onclick="PF('FeatureView').hide()"/>
+                </h:panelGrid>
+            </h:form>
+        </h:panelGrid>          
+    </p:dialog>
+    <h:inputHidden id="userDir" value="#{sessionBean1.userDir}" />
+    <p:remoteCommand name="updateDialog" update="visView"/>
+</ui:composition>
+

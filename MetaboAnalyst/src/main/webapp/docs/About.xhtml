@@ -1,0 +1,64 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                template="#{applicationBean1.templateUrl}/_doc_template.xhtml">
+    <ui:define name="content">
+        <h:panelGrid style="padding: 30px 40px 20px 40px; width: 96%; font-size: 13px; line-height: 23px">
+            <h2>About</h2>
+
+            <p>
+                The web interface of MetaboAnalyst was implemented based on the open-source JavaServer Faces Technology using the PrimeFaces library (v12.0). 
+                The back-end computations are based on the open-source MetaboAnalystR package. 
+                Please note the raw spectra processing module has been developed as an 
+                independent R package (optiLCMS) for the ease of installation and maintenance. 
+            </p>
+            <p style="padding-bottom: 10px">
+                To support growing user traffic, MetaboAnalyst 5.0 has employed distributed computing and microservice for   
+                scalable metabolomics data analysis. The new spectral processing module also allows user registration
+                in order to perform this time-consuming task. Due to its complex configurations and sensitive information stored in the package, 
+                <u>the support for local installation of the web server has been discontinued</u>. We encourage users to use the public web servers
+                for flexible and interactive data analysis tasks, and the R packages for batch processing. 
+            </p>
+            <hr style="height: 12px; border: 0;box-shadow: inset 0 12px 12px -12px rgba(0, 0, 0, 0.5); width:100%; min-width: 1000px;"/>
+            <h:panelGrid style="padding-left: 10px">
+                <h3 style="padding-top: 0px; margin-top: 6px">Public Servers</h3>
+                <p style="padding-left: 20px">
+                    Main Server 1: <a href="https://www.metaboanalyst.ca" target="_blank"> https://www.metaboanalyst.ca</a>
+                    <br/>
+                    -- for general-purpose data analysis
+                </p>
+                <p style="padding-left: 20px">
+                    Main Server 2: <a href="https://new.metaboanalyst.ca" target="_blank"> https://new.metaboanalyst.ca</a>
+                    <br/>
+                    -- for general-purpose data analysis
+                </p>
+                <p style="padding-left: 20px">
+                    Genap Server: <a href="https://genap.metaboanalyst.ca" target="_blank">https://genap.metaboanalyst.ca</a>
+                    <br/>
+                    -- for general-purpose data analysis (loading balancing)
+                </p>
+                <p style="padding-left: 20px">
+                    Dev Server: <a href="https://dev.metaboanalyst.ca" target="_blank">https://dev.metaboanalyst.ca</a>
+                    <br/>
+                    -- for backup and development purpose
+                </p>
+
+                <h3>R Packages</h3>
+                <p style="padding-left: 20px">
+                    MetaboAnalystR: <a href="https://github.com/xia-lab/MetaboAnalystR" target="_blank">https://github.com/xia-lab/MetaboAnalystR</a>
+                    <br/>    
+                    -- for general-purpose statistical and functional analysis            
+                </p>
+                <p style="padding-left: 20px; padding-bottom: 10px">
+                    OptiLCMS:   <a href="https://github.com/xia-lab/OptiLCMS" target="_blank">https://github.com/xia-lab/OptiLCMS</a>
+                    <br/>
+                    -- for efficient LC-MS spectra processing with parameter optimization                        
+                </p>
+            </h:panelGrid>
+        </h:panelGrid>
+    </ui:define>
+</ui:composition>

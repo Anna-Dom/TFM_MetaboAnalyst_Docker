@@ -1,0 +1,119 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                template="#{applicationBean1.templateUrl}/_anal_template.xhtml"
+                xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+    <ui:define name="metaInfo">
+        <f:event type="preRenderView" listener="#{mhmBean.doDefaultMetaHeatmap()}"/> 
+    </ui:define>
+    <ui:define name="content">
+        <h:panelGrid style="padding:30px 30px 20px 40px; font-size: 13px; line-height: 23px; width:100%">
+            <h2>Metadata Overview</h2>
+            <p>
+                The metadata heatmaps displays patterns and correlations between different meta-data. Pay attention to those metadata 
+                that are highly correlated (i.e. collinear) or redundant metadata, as they may lead to unexpected issues in statistical analysis. 
+                It is advised to keep only one of the correlated meta-data, as more variables will lead to reduced statistical power and 
+                difficulties in interpretations. 
+            </p>
+            <p:tabView id="ac" style="width:100%; border: none; background: none; font-size: 13px;">
+                <p:tab title ="Metadata Heatmap">
+                    <h:form id="form1">
+                        <h:panelGrid columns="2" style="padding-left: 20px;">
+                            <h:panelGrid columns="2" style="padding: 10px; width:540px; padding-right: 40px">
+                                <h:panelGroup layout="block" style="width: 160px">
+                                    <h:outputLabel style="font-weight: bold" value="Distance Measure:"/>
+                                </h:panelGroup>
+                                <p:selectOneMenu styleClass="menu" panelStyleClass="panel"  value="#{mhmBean.metaDistOpt}">
+                                    <f:selectItem itemLabel="Euclidean" itemValue="euclidean"/> 
+                                    <f:selectItem itemLabel="Pearson" itemValue="correlation"/> 
+                                    <f:selectItem itemLabel="Minkowski" itemValue="minkowski"/>                         
+                                </p:selectOneMenu>
+                                <h:outputLabel style="font-weight: bold" value="Clustering Options"/>
+                                <p:selectOneMenu styleClass="menu" panelStyleClass="panel" value="#{mhmBean.metaClusterSelOpt}">
+                                    <f:selectItem itemLabel="None" itemValue="none"/> 
+                                    <f:selectItem itemLabel="Both" itemValue="both"/> 
+                                    <f:selectItem itemLabel="Row only" itemValue="row"/>    
+                                    <f:selectItem itemLabel="Column only" itemValue="col"/>         
+                                </p:selectOneMenu>
+                                <h:outputLabel style="font-weight: bold" value="Clustering Methods"/>
+                                <p:selectOneMenu styleClass="menu" panelStyleClass="panel" value="#{mhmBean.metaClusterOpt}">
+                                    <f:selectItems value="#{optBean.clustMethodOpts}" />
+                                </p:selectOneMenu>
+                                <h:outputLabel style="font-weight: bold" value="Color Contrast:"/>
+                                <p:selectOneMenu styleClass="menu" panelStyleClass="panel" value="#{mhmBean.metaColorOpt}">
+                                    <f:selectItems value="#{optBean.colorContrastOpts}" />
+                                </p:selectOneMenu>
+                                <h:outputLabel style="font-weight: bold" value="View Mode:"/>
+                                <p:selectOneRadio value="#{mhmBean.metaViewOpt}">
+                                    <f:selectItem itemLabel="Overview" itemValue="overview" /> 
+                                    <f:selectItem itemLabel="Detail View" itemValue="detail" /> 
+                                </p:selectOneRadio>
+
+                                <h:outputLabel style="font-weight: bold" value="Show row names"/>
+                                <p:selectBooleanCheckbox value="#{mhmBean.includeRowNamesMeta}" style="line-height: 18px"/> 
+                                <h:outputLabel style="font-weight: bold" value="Show cell borders"/>
+                                <p:selectBooleanCheckbox value="#{mhmBean.drawBordersMeta}" style="line-height: 18px"/> 
+                            </h:panelGrid>
+                            <p:commandButton value="Update" 
+                                             onclick="PF('statusDialog').show()"
+                                             oncomplete="PF('statusDialog').hide()"                                      
+                                             update=":ac:hmPane  :infoPane:cmdPane" 
+                                             actionListener="#{mhmBean.metaHmBn_action()}"/>  
+                        </h:panelGrid>
+                    </h:form>
+                    <hr class="style-one"/>
+                    <h:panelGrid id="hmPane" style="text-align: center; width: 100%;">
+                        <h:panelGrid style="text-align: right; padding-left: 700px; width: 800px;">
+                            <p:commandLink actionListener="#{sessionBean1.graphicsLnk_action('metaHeatmap')}" 
+                                           update=":myGraphPane"
+                                           oncomplete="PF('graphDialog').show()"
+                                           title="Customize the graphics output">
+                                <img src="#{facesContext.externalContext.requestContextPath}/resources/images/imgcenter.png"/>
+                            </p:commandLink>
+                        </h:panelGrid>
+                        <p:scrollPanel mode="native" style="width:95%;height:700px">
+                            <img onerror='this.style.display="none"' 
+                                 src="#{sessionBean1.getCurrentImageURL('metaHeatmap')}" 
+                                 alt="Heatmapimage"/>
+                        </p:scrollPanel>
+                    </h:panelGrid> 
+                </p:tab>
+                <p:tab title ="Correlation Heatmap">
+                    <h:form id="form2">
+                        <h:panelGrid columns="2" style="padding-left: 20px;">
+                            <h:panelGrid columns="2" style="padding: 10px; width:420px; padding-right: 40px">
+                                <h:outputLabel style="font-weight: bold" value="Correlation measure:"/>
+                                <p:selectOneMenu styleClass="menu" panelStyleClass="panel" value="#{mhmBean.corOpt}">
+                                    <f:selectItems value="#{optBean.distMeasureOpts}" />
+                                </p:selectOneMenu>
+                            </h:panelGrid>
+                            <p:commandButton value="Update" 
+                                             onclick="PF('statusDialog').show()"
+                                             oncomplete="PF('statusDialog').hide()"                                      
+                                             update=":ac:corrPane  :infoPane:cmdPane" 
+                                             actionListener="#{mhmBean.metaCorrHmBn_action()}"/> 
+                        </h:panelGrid>
+                    </h:form>
+                    <h:panelGrid id="corrPane" style="text-align: center; width: 100%;">
+                        <h:panelGrid style="text-align: right; padding-left: 700px; width: 800px;">
+                            <p:commandLink actionListener="#{sessionBean1.graphicsLnk_action('metaCorrHeatmap')}" 
+                                           update=":myGraphPane"
+                                           oncomplete="PF('graphDialog').show()"
+                                           title="Customize the graphics output">
+                                <img src="#{facesContext.externalContext.requestContextPath}/resources/images/imgcenter.png"/>
+                            </p:commandLink>
+                        </h:panelGrid>
+                        <p:scrollPanel style="max-width:1000px; height:800px; text-align: center; margin: 20px;">
+                            <img src="#{sessionBean1.getCurrentImageURL('metaCorrHeatmap')}" alt="Meta-data correlation"/>
+                        </p:scrollPanel>
+                    </h:panelGrid>
+                </p:tab>
+            </p:tabView>
+        </h:panelGrid>
+    </ui:define>
+</ui:composition>
+

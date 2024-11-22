@@ -1,0 +1,314 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pe="http://primefaces.org/ui/extensions"                
+                template="/frags/_template.xhtml">
+    <ui:define name="header"/>
+    <ui:define name="rcmdpane">   
+        <h:form id="cmdCtrlForm" rendered="#{sessionBean1.renderRcmdPane}">
+            <p:commandLink id="showCmd" value="Show R Commands" rendered="#{not sessionBean1.showRcmdPane}" 
+                           style="position:absolute; right:10px; top: 10px; z-index: 999; color: blue"
+                           action="#{sessionBean1.showRcmdPane()}"
+                           ajax="false"
+                           oncomplete="PF('layoutGeral').open('east')"
+                           update=":cmdCtrlForm"/>
+            <p:commandLink id="hideCmd" value="Hide R Commands" 
+                           style="position:absolute; right:10px; top: 10px; z-index: 999; color: blue"
+                           rendered="#{sessionBean1.showRcmdPane}" 
+                           action="#{sessionBean1.hideRcmdPane()}"
+                           ajax="false"
+                           oncomplete="PF('layoutGeral').close('east')"
+                           update=":cmdCtrlForm"/>   
+        </h:form>
+    </ui:define> 
+    <ui:define name="leftpane">
+        <div id="navi" style="line-height: 23px; font-family: Arial, Helvetica, Geneva; padding: 20px 10px 10px 20px; font-size: 13px;">
+            <h:form id="treeForm">
+                <h:panelGrid columns="3" style="padding-left: 35px; padding-bottom: 10px">
+                    <h:commandLink id="homelnk" action="#{sessionBean1.doLogout(1)}">
+                        <p:graphicImage id="home" 
+                                        url="/resources/images/home.png"
+                                        width="32" height="32"/>
+                    </h:commandLink>
+                    <p:spacer style="width:20px"/>
+                    <p:link id="forumlnk" href="https://www.omicsforum.ca" target="_blank">
+                        <p:graphicImage id="forum" 
+                                        url="/resources/images/forum.png"
+                                        width="26" height="26"/>
+                    </p:link>
+                </h:panelGrid>
+                <p:tooltip for="homelnk" style="font-size: 11px;" value="Exit and return to Home page" />
+                <p:tooltip for="forumlnk" style="font-size: 11px;" value="Visit OmicsForum to search FAQs"/>
+
+                <p:tree style="border: 3px rgb(177, 208, 238) ridge; width: 170px;
+                        padding: 2px 2px 4px 0px; font-size: 13px;" 
+                        value="#{sessionBean1.naviTree}" 
+                        var="node"
+                        selectionMode="single">
+                    <p:ajax update=":treeForm" 
+                            onstart="PF('statusDialog').show()"  
+                            onerror="PF('statusDialog').hide()"
+                            event="select" 
+                            listener="#{ctl.onNodeSelect}" />  
+                    <p:treeNode>
+                        <h:outputText style="color: #011CA2;" value="#{node}"/>
+                    </p:treeNode>
+                </p:tree>
+
+                <h:panelGrid id="accountPane" style="padding-left: 5%; padding-top: 10%" rendered="#{sessionBean1.naviType eq 'spec'}">
+                    <p:commandButton action="#{ctl.goToLoginView()}" value="Log in" style="width:145px;" 
+                                     rendered="#{!sessionBean1.registeredLogin and (!sessionBean1.dataUploaded) and (!applicationBean1.inDocker)}"/>
+                     <!--<p:commandButton onclick="PF('warning').show()" value="Log in" style="width:125px;" rendered="#{!sessionBean1.registeredLogin}"/>-->
+                    <p:commandButton value="Save  &amp;  Exit" style="width:145px;"
+                                     styleClass="btnBckg3"
+                                     id="saveBn"
+                                     onclick="PF('statusDialog').show();"
+                                     action="#{projCtrl.saveProject()}"
+                                     disabled="#{!sessionBean1.saveEnabled}"
+                                     rendered="#{sessionBean1.registeredLogin}"
+                                     icon="pi pi-save"
+                                     oncomplete ="PF('statusDialog').hide();"
+                                     />
+                    <p:commandButton value="Project Home" style="margin-top: 5%; width:145px;"
+                                     styleClass="btnBckg3"
+                                     id="projHomeBn"
+                                     action="projects"
+                                     rendered="#{sessionBean1.registeredLogin}"
+                                     icon="pi pi-home"
+                                     />
+
+                    <p:commandButton value="Job Manager" style="margin-top: 5%; width:145px;"
+                                     styleClass="btnBckg3"
+                                     id="Jobmanager"
+                                     onclick="PF('Manager Entry').show()"                                                 
+                                     rendered="#{JobManagerBean.managerPage and userLoginBean.jobManager}"
+                                     icon="pi pi-cogs"
+                                     />
+
+                </h:panelGrid>
+
+                <h:panelGrid id="accountPaneGeneral" 
+                             style="padding-left: 12%; padding-top: 10%; width: 165px" 
+                             rendered="#{sessionBean1.naviType ne 'spec'}">
+                    <p:splitButton value="#{userLoginBean.userabbre}" 
+                                   icon="pi pi-user" 
+                                   rendered="#{userLoginBean.loggedin}">
+                        <p:menuitem value="Profile" action="#{userLoginBean.todoregister()}" icon="pi pi-user-edit"/>
+                        <p:menuitem value="Upgrade" action="#{userLoginBean.todoregister()}" icon="pi pi-lock-open"/>
+                        <p:menuitem value="SignOut" action="#{userLoginBean.doGeneralSignOut()}" icon="pi pi-sign-out"/>                        
+                        <p:menuitem value="Delete"  action="#{userLoginBean.todoregister()}" icon="pi pi-trash"/>
+                    </p:splitButton>
+                </h:panelGrid>
+            </h:form>
+        </div>
+
+        <p:dialog modal="true" widgetVar="Manager Entry" 
+                  style="width: 400px; height:400px;" 
+                  dynamic="true"
+                  appendTo="@(body)" header="Administrator Entry:" 
+                  draggable="false" closable="true" resizable="false"> 
+            <h:form id="formkill">
+
+                <h:panelGrid>
+                    <h:panelGrid columns="2" style="width:300px; padding-bottom:50px; margin-left: 70px;">
+                        <h:outputLabel value="Password:"/>
+                        <p:password value="#{JobManagerBean.killPassword}" style="width:120px" />    
+                    </h:panelGrid>
+                    <h:panelGrid columns="2" style="width:400px; text-align: center;">
+                        <p:commandButton value="Cancel"
+                                         onclick="PF('Manager Entry').hide();"
+                                         />
+                        <p:commandButton value="Confirm"
+                                         action="#{JobManagerBean.enterManager()}"
+                                         />
+                    </h:panelGrid>
+                </h:panelGrid>
+
+            </h:form>
+        </p:dialog>
+
+
+        <p:dialog modal="true" widgetVar="graphDialog" header="Graphics Center"
+                  style="width: 420px; height:420px;" 
+                  appendTo="@(body)"
+                  dynamic="true"
+                  draggable="true" closable="true" resizable="true"> 
+            <h:panelGrid style="padding: 10px;font-size: 13px;">
+                <p:tabView id="myGraphPane" style="width:100%; border: none; background: none;">
+                    <p:tab title ="Hi-res Images">
+                        <h:form id="formgraph">
+                            <h:panelGrid columns="2" style="width:380px;">
+                                <h:panelGrid columns="2" style="padding-top: 10px; padding-left: 20px">
+                                    <h:outputLabel value="Theme:" rendered="#{sessionBean1.imageSource eq 'covariate_plot'}"/>
+                                    <p:selectOneMenu id="themeOpts" styleClass="menu" panelStyleClass="panel" value="#{multifacBean.covStyleOpt}" rendered="#{sessionBean1.imageSource eq 'covariate_plot'}">
+                                        <f:selectItem itemValue="default" itemLabel="Default"/>
+                                        <f:selectItem itemValue="ggplot" itemLabel="ggplot"/>
+                                    </p:selectOneMenu>
+                                    <h:outputLabel value="Format:"/>
+                                    <p:selectOneMenu value="#{sessionBean1.formatOpt}">
+                                        <f:selectItem itemLabel="PNG" itemValue="png"/> 
+                                        <f:selectItem itemLabel="TIFF" itemValue="tiff"/> 
+                                        <f:selectItem itemLabel="PDF" itemValue="pdf"/> 
+                                        <f:selectItem itemLabel="SVG" itemValue="svg"/> 
+                                        <f:selectItem itemLabel="PostScript" itemValue="ps"/> 
+                                    </p:selectOneMenu> 
+                                    <h:outputLabel value="Resolution:"/>
+                                    <p:selectOneMenu value="#{sessionBean1.dpiOpt}">
+                                        <f:selectItem itemLabel="72 DPI" itemValue="72"/>  
+                                        <f:selectItem itemLabel="150 DPI" itemValue="150"/>  
+                                        <f:selectItem itemLabel="300 DPI" itemValue="300"/>  
+                                    </p:selectOneMenu> 
+                                    <h:outputLabel value="Size:"/>
+                                    <p:selectOneMenu value="#{sessionBean1.sizeOpt}">
+                                        <f:selectItem itemLabel="Default" itemValue="NA"/>  
+                                        <f:selectItem itemLabel="7 inches" itemValue="7"/>  
+                                        <f:selectItem itemLabel="12 inches" itemValue="12"/>  
+                                    </p:selectOneMenu>
+                                </h:panelGrid>
+                                <p:commandButton value="Submit" 
+                                                 update=":myGraphPane:formgraph:glink"
+                                                 onclick="PF('statusDialog').show()" 
+                                                 oncomplete="PF('statusDialog').hide()"
+                                                 actionListener="#{graphBean.graphBn_action()}"/>
+                            </h:panelGrid>
+                            <h:panelGrid style="width:400px; text-align: center; padding-top: 10px; padding-bottom: 20px">
+                                <h:outputText id="glink" escape="false" value="#{sessionBean1.imgDownloadTxt}"/>  
+                            </h:panelGrid>
+                        </h:form>
+                    </p:tab>
+                    <p:tab title ="Colors &amp; Shapes" rendered="#{graphBean.renderStatus}">
+                        <h:form>
+                            <h:panelGrid columns="2" rendered="#{sessionBean1.analType eq 'mf'}">
+                                <h:outputLabel value="Experimental Factor:"/>
+                                <p:selectOneMenu value="#{sessionBean1.expFac}">  
+                                    <f:selectItems value="#{sessionBean1.metaInfo}"/>  
+                                    <p:ajax event="change" update=":myGraphPane" />
+                                </p:selectOneMenu>  
+                            </h:panelGrid>
+                            <h:panelGrid columns="2" style="width:380px;">
+                                <p:dataTable id="colTbl" style="padding-top: 8px; padding-right: 20px;" 
+                                             var="colorBean" value="#{sessionBean1.colorBeanLists}">  
+                                    <p:column headerText="Group" style="width:200px">  
+                                        <h:outputLabel value="#{colorBean.grpName}" />  
+                                    </p:column>  
+                                    <p:column headerText="Set Color" style="width:120px">  
+                                        <p:colorPicker value="#{colorBean.colorPopup}"/>
+                                    </p:column>  
+                                    <p:column headerText="Set Shape*" style="width:120px">  
+                                        <p:inputText style="width:60px" value="#{colorBean.shapeType}"/>
+                                    </p:column> 
+                                </p:dataTable>
+                                <p:commandButton value="Submit" 
+                                                 onclick="PF('statusDialog').show()" 
+                                                 oncomplete="PF('statusDialog').hide()"
+                                                 actionListener="#{graphBean.updateColorScheme()}"/>    
+                            </h:panelGrid>
+                            <h:panelGrid columns="2" style="text-align: left">
+                                <h:panelGrid style="width: 200px; line-height: 22px">
+                                    <h3>Note: </h3>   
+                                    <ul style="margin-left: 0; padding-left: 0">
+                                        <li>
+                                            This setting only affects those graphics with group-specific color scheme
+                                        </li>
+                                        <li>
+                                            The <b>shape</b> option currently only affects <u>scores plots</u> in PCA and PLS-DA. 
+                                        </li>
+                                        <li>
+                                            Use shape code <b>0</b> will set it to default shapes. 
+                                        </li>
+                                    </ul>
+                                </h:panelGrid>
+                                <h:panelGrid style="padding-left: 20px">
+                                    <h3>*Shape Code: </h3>
+                                    <img src="#{facesContext.externalContext.requestContextPath}/resources/images/symbols.png" 
+                                         style="width: 200px"
+                                         alt="Symbols"/>
+                                </h:panelGrid>
+                            </h:panelGrid>
+                        </h:form>
+                    </p:tab>
+                </p:tabView> 
+            </h:panelGrid>
+        </p:dialog>
+
+        <p:dialog header="Your project updates can be lost!"
+                  widgetVar="saveProjDialog" 
+                  showEffect="fade" 
+                  hideEffect="fade" 
+                  modal="true"
+                  width="395"
+                  height="140"
+                  closable="true"
+                  draggable="false"
+                  resizable="false"   
+                  appendTo="@(body)">
+            <h:form>
+                <h:panelGrid  style="width:380px; line-height: 150%; padding: 2px; font-size: 13px">
+                    <p>
+                        <span icon="pi pi-info-circle" style="float:left; margin:0 7px 50px 0;"></span>
+                        <div>If you did not <span style="font-weight:bold">save</span> the project, please do so.</div>
+                    </p>
+                    <p>Do you want to save your work first?</p>   
+                </h:panelGrid>
+
+                <p:commandButton style="width:50px; font-size: 14px; margin-left: 20%" value="Yes" 
+                                 onclick="PF('saveProjDialog').hide();
+                                         PF('statusDialog').show();" 
+                                 action="#{projCtrl.saveProject('projects')}" 
+                                 oncomplete ="PF('statusDialog').hide();" />
+                <p:commandButton style="width:50px; font-size: 14px; margin-left: 100px" value="No" onclick="PF('saveProjDialog').hide()" action="projects"/>   
+
+            </h:form>
+        </p:dialog> 
+
+        <p:dialog header="Updating..."
+                  widgetVar="warning" 
+                  showEffect="fade" 
+                  hideEffect="fade" 
+                  modal="true"
+                  closable="true"
+                  draggable="false"
+                  resizable="false"   
+                  appendTo="@(body)">       
+            <h:form>
+                <h:panelGrid style="padding: 20px; width:540px; font-size: 13px; line-height: 23px"> 
+
+                    Sorry. User login module is being upgraded. You can still process your spectra without login. 
+                    We will come back soon...                     
+
+                    <h:panelGrid columns="1" style=" width: 100%; text-align:center">
+                        <p:button href="#" onclick="PF('warning').hide();" value="Okay"></p:button> 
+                    </h:panelGrid>
+                </h:panelGrid>
+            </h:form>
+        </p:dialog>
+    </ui:define>
+    <ui:define name="rightpane">
+        <h:form> 
+            <h:panelGrid columns="2" style="width:100%; text-align: right; padding-top: 30px">
+                <h:outputText value="R Command History:"/>
+                <p:commandButton value="Save" ajax="false" style="float:right;"
+                                 onclick="PrimeFaces.monitorDownload(start, stop);" 
+                                 icon="pi pi-save">
+                    <p:fileDownload value="#{ctl.getRCmdFile()}" />
+                </p:commandButton>
+            </h:panelGrid>
+        </h:form>  
+        <h:form id="infoPane">
+            <h:dataTable id="cmdPane" var="cmdBean" value="#{ctl.cmdVec}"
+                         styleClass="panelColumns" 
+                         style="font-size: 11px; font-family:monospace;">
+                <h:column>
+                    <h:outputText style="font-weight:bold" value="#{cmdBean.step}."/>
+                </h:column>
+                <h:column>
+                    <h:outputText style="width:240px; word-wrap: break-word; word-break: break-all;" value="#{cmdBean.cmd}"/>        
+                </h:column>
+            </h:dataTable>
+        </h:form>
+    </ui:define>
+</ui:composition>

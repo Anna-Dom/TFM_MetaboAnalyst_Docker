@@ -1,0 +1,311 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:pe="http://primefaces.org/ui/extensions"      
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+    <h:head>
+        <f:facet name="first">
+            <meta content='text/html; charset=UTF-8' http-equiv="Content-Type"/>
+            <title>MetaboAnalyst</title>
+        </f:facet>
+
+        <f:metadata> 
+            <ui:insert name="metaInfo"> 
+            </ui:insert>
+        </f:metadata> 
+        <ui:insert name="myscript">
+        </ui:insert>
+
+        <!-- old Global site tag (gtag.js) - Google Analytics 
+        <script async='async' src="https://www.googletagmanager.com/gtag/js?id=UA-9654671-1"></script>     
+        <script>
+            window.dataLayer = window.dataLayer || [];
+            function gtag() {
+                dataLayer.push(arguments);
+            }
+            gtag('js', new Date());
+            gtag('config', 'UA-9654671-1');
+        </script>
+        
+                    $(document).ready(function () {
+                var prefix = "www";
+                sessionStorage.clear();
+                const page = getCurrentPageUrl();
+                const category = "MetaboAnalyst";
+                const payLoad = getPayload(page, category);
+                //console.log(payLoad);
+                webchatObj.func1(false, prefix, payLoad);
+            });
+        <script type="text/javascript" src="https://www.xialab.ca/api/download/webchat/webchat.js"></script>
+        -->
+
+        <!-- Google tag (gtag.js) -->
+        <script async='async' src="https://www.googletagmanager.com/gtag/js?id=G-YMJY7YV52G"></script>
+        <script type="text/javascript">
+            window.dataLayer = window.dataLayer || [];
+            function gtag() {
+                dataLayer.push(arguments);
+            }
+            gtag('js', new Date());
+
+            gtag('config', 'G-YMJY7YV52G');
+        </script>
+
+
+        <script type="text/javascript">
+            var startFrom = 1800; //#{session.maxInactiveInterval};  // Total session time out setting eg 10 sec, Real implementation assign from session
+            var loopTill = 20; //#{systemController.getSessionTimeoutAlertDuration()};  //Count down degins from 6 sec and starts after 4 sec ie 10-6
+            var reduce = 1;
+            var handleDialog = null;
+            var redirectPage = "#{facesContext.externalContext.requestContextPath}/home.xhtml";
+            var countDownDiv = "dialog-countdown";
+            function resetPageTimer() {
+                PF('timeoutDialog').hide();
+                startPageTimer(startFrom, loopTill);
+                clearInterval(handleDialog);
+            }
+
+            function startDialogTimer(wCounter, timeOutPage) {
+                var e = null;
+                if (!e)
+                    e = document.getElementById(countDownDiv);
+                e.innerHTML = wCounter;
+                handleDialog = setInterval(function () {
+                    if (wCounter === 0) {
+                        clearInterval(handleDialog);
+                        window.location.href = timeOutPage;
+                    } else {
+                        wCounter -= reduce;
+                        e.innerHTML = wCounter;
+                    }
+                }, reduce * 1000);
+            }
+
+            function startPageTimer(wFrom, wReach) {
+                var handle = null;
+                handle = setInterval(function () {
+                    if (wFrom === wReach) {
+                        clearInterval(handle);
+                        PF('timeoutDialog').show();
+                        startDialogTimer(loopTill, redirectPage);
+                    } else {
+                        wFrom -= reduce;
+                    }
+                }, reduce * 1000);
+            }
+            if (window.location.href.includes("JobStatusView.xhtml") || window.location.href.includes("SpectraUpload.xhtml")) {
+                startPageTimer(10700, loopTill);
+            } else {
+                startPageTimer(startFrom, loopTill);
+            }
+
+            function start() {
+                PF('statusDialog').show();
+            }
+
+            function stop() {
+                PF('statusDialog').hide();
+            }
+
+            $(window).on('load', function () {
+                //$("#cover").hide();
+                $("#cover").fadeOut(180);
+            });
+        </script>
+        <link type="text/css" rel="stylesheet" href="#{facesContext.externalContext.requestContextPath}/resources/css/default_1.03.css" />
+        <style>
+            body > .ui-layout-west{
+                background: #f2f8ff !important;
+                border-right: dashed thin !important;
+                border-color: #999999 !important;
+            }
+            body > .ui-layout-east{
+                background: #f2f8ff !important;
+                border-left: dashed thin !important;
+                border-color: #999999 !important;
+            }
+            .glow {
+                text-shadow: 2px 2px 4px #000000;
+            }
+            .login .ui-dialog-titlebar{
+                padding: 0px !important;
+            }
+            #cover {
+                position: fixed;
+                height: 100%;
+                width: 100%;
+                top:0;
+                left: 0;
+                background: #ebecf0;
+                z-index:9999;
+            }
+        </style>
+    </h:head>
+    <h:body>
+        <div id="cover"></div>
+        <pe:layout style="margin:0px; padding:0px; font-family: Helvetica,Arial,sans-serif; font-size: 13px" fullPage="true" widgetVar="layoutGeral">
+            <pe:layoutPane closable="false" resizable="false" spacingOpen="0" spacingClosed="0" position="north">
+                <ui:insert name="header">
+                    <div id="header" style="clear: both; margin: 0; padding: 0; background-color: #f5f5f5" class="ui-widget ui-widget-header ui-corner-all">
+                        <h:panelGrid columns="3" style="width:100%; padding: 0px 0px 0px 36px; margin: 0px;">
+                            <img src="#{facesContext.externalContext.requestContextPath}/resources/images/ma5_logo.png" height="113px" alt="Logo"/>
+                            <h:panelGrid  style="position: absolute; left:220px; top:42px; height: 40px; border-left: 3px solid #FFAE20;"/>
+                            <h:panelGrid  columns="2" style="padding-left:40px; padding-bottom: 8px">
+                                <h:panelGroup layout="block" style="font-weight: bold; font-size: 2.0em;">
+                                    <h:outputLabel style='letter-spacing: 1.1px; color: #24305e; left:0px; top:4px' value="MetaboAnalyst"/>
+                                    <h:outputLabel style='color: #d24407; padding-left:10px; top:4px' class="glow" value="5.0"/>
+                                </h:panelGroup>
+                                <h:panelGrid style="font: 1.8em Arial monospace sans-serif;letter-spacing: 1.0px; color: #24305e;">
+                                    - user-friendly, streamlined metabolomics data analysis 
+                                </h:panelGrid>
+                            </h:panelGrid>
+                        </h:panelGrid>
+                    </div>
+                </ui:insert>
+                <ui:insert name="rcmdpane"> 
+                </ui:insert>
+                <p:messages severity="error" showDetail="true" escape="false" closable="true"  style="width:800px; padding-left: 280px">
+                    <p:autoUpdate/>
+                </p:messages>
+                <ui:insert name="toptrack"> 
+                </ui:insert>
+                <p:growl id="growl" severity="info, warn" showDetail="true" globalOnly="true" escape="false" sticky="true">
+                    <p:autoUpdate/>
+                </p:growl> 
+            </pe:layoutPane>
+            <pe:layoutPane closable="false" resizable="false" spacingOpen="0" spacingClosed="0" position="center">
+                <ui:insert name="content"> 
+                </ui:insert>
+            </pe:layoutPane>          
+            <ui:insert name="leftpaneout"> 
+                <pe:layoutPane closable="false" resizable="false" position="west" spacingOpen="0" size="220" spacingClosed="0" styleContent="background: ">
+                    <ui:insert name="leftpane"> 
+                    </ui:insert>
+                </pe:layoutPane>  
+            </ui:insert>
+            <ui:insert name="rightpaneout"> 
+                <pe:layoutPane closable="false" resizable="false" position="east" spacingOpen="0" size="280" spacingClosed="0" rendered="#{sessionBean1.showRcmdPane}">
+                    <ui:insert name="rightpane"> 
+                    </ui:insert>
+                </pe:layoutPane>  
+            </ui:insert>
+            <pe:layoutPane closable="false" resizable="false" spacingOpen="0" spacingClosed="0" position="south">
+                <div id="footer" style="clear: both; margin: 0; padding: 0;" class="ui-widget ui-widget-header ui-corner-all">
+                    <ui:include src="/frags/_footer.xhtml" />
+                </div>
+            </pe:layoutPane>
+        </pe:layout> 
+
+        <p:dialog modal="true" widgetVar="statusDialog"
+                  style="width: 200px; height:65px;" 
+                  appendTo="@(body)" header="Processing .... "
+                  draggable="false" closable="true" resizable="false"> 
+            <div style="width: 100%; text-align: center; padding:20px">
+                <p>
+                    This may take a while to complete, please be patient....
+                </p>
+                <p:graphicImage value="/resources/images/ajax-loader.gif" /> 
+            </div>
+        </p:dialog>
+
+        <p:dialog header="Your session is about to expire!"
+                  widgetVar="timeoutDialog" 
+                  showEffect="fade" 
+                  hideEffect="fade" 
+                  modal="true"
+                  width="460"
+                  height="160"
+                  closable="false"
+                  draggable="false"
+                  resizable="false"   
+                  appendTo="@(body)">
+            <div  style="width:400px; line-height: 150%; padding: 10px; font-size: 13px">
+                <p>
+                    <span icon="pi pi-info-circle" style="float:left; margin:0 7px 50px 0;"></span>
+                    <div>You will be logged off in <span id="dialog-countdown" style="font-weight:bold"></span> seconds.</div>
+                </p>
+                <p>Do you want to continue your session?</p>   
+            </div>
+            <h:form>
+                <h:panelGrid columns="2" style="width: 100%; text-align: center">
+                    <p:commandButton style="width:180px; font-size: 14px" value="Yes, keep working" oncomplete="resetPageTimer()"/>
+                    <p:commandButton style="width:160px; font-size: 14px" value="No, log off" onclick="PF('timeoutDialog').hide()" action="#{sessionBean1.doLogout(1)}"/>   
+                </h:panelGrid>
+            </h:form>
+        </p:dialog>
+
+        <p:dialog widgetVar="signin" 
+                  showEffect="fade" 
+                  hideEffect="fade" 
+                  modal="true"
+                  closable="true"
+                  draggable="false"
+                  resizable="false"   
+                  dynamic="true"
+                  appendTo="@(body)" 
+                  showHeader="true" class="login">
+            <h:form>
+                <h:panelGrid  style="width:320px; line-height: 150%; text-align: left; padding: 15px 20px 20px 15px; font-size: 13px">
+                    <div>
+                        <h1 style="color:#000000; font-size: 30px; position: relative"> Welcome Back 
+                            <img src="#{facesContext.externalContext.requestContextPath}/resources/images/wave_hand.png" style="float: right; width: 35px; height: 35px"/>
+                        </h1>
+                        <p style="color: black; font-size: 16px">Log in to your account</p>
+                    </div>
+
+                    <h:panelGrid style="width: 260px; padding-top: 10px">
+                        <p:outputLabel for="email" value="Email / Username" style="position: absolute; background-color: white; top: 105.5px; left: 65px; font-size: 14px" />
+                        <p:inputText id="email" value="#{userLoginBean.email}" style="width: 230px; height: 40px"/>
+
+                        <p:outputLabel for="pwd1" value="Password" style="position: absolute; background-color: white; top: 163.5px; left: 65px; font-size: 14px" />
+                        <p:password id="pwd1" value="#{userLoginBean.password}" style="width: 230px; height: 40px; margin-top: 10px" />
+                        <h:commandLink action="#{userLoginBean.todoregister()}" value="Forgot password?"/>
+                    </h:panelGrid>
+                    <h:panelGrid columns = "2" style="width: 260px; text-align: center; padding-top: 10px">
+                        <p:commandButton value="Log in" 
+                                         style="width:100px; height: 35px; background-color: black; border-color: grey"
+                                         id="signinBn"
+                                         onclick="PF('statusDialog').show();"
+                                         action="#{userLoginBean.doGeneralLogin()}"
+                                         disabled="false"
+                                         icon="pi pi-sign-in"
+                                         update=":head_con :formdl:form_con" 
+                                         oncomplete ="PF('statusDialog').hide(); PF('signin').hide();"/>
+                        <h:commandLink action="#{userLoginBean.todoregister()}" value="Create your account" style="font-size: 14.5px"/>
+                    </h:panelGrid>
+                </h:panelGrid>
+            </h:form>
+        </p:dialog>
+
+        <p:dialog widgetVar="signup" 
+                  showEffect="fade" 
+                  hideEffect="fade" 
+                  modal="true"
+                  closable="false"
+                  draggable="false"
+                  resizable="false"   
+                  dynamic="true"
+                  appendTo="@(body)" showHeader="false">
+            <h:form>
+                <h:panelGrid  style="width:320px; line-height: 150%; text-align: left; padding: 35px 20px 20px 15px; font-size: 13px">
+                    <div>
+                        <p style="color: darkorchid; font-size: 20px">Hi there! </p>
+                        <p style="font-size: 16px">Thanks for coming here! The project management system is under testing! This operation is suspended temporarily!</p>
+                        <p style="font-size: 16px">Please come back later..</p>                    
+                    </div>
+                    <h:panelGrid style="width: 260px; text-align: center; padding-top: 10px">
+                        <p:commandButton value="Sure! I will try later.." style="width:210px; height: 35px; background-color: black; border-color: grey"
+                                         id="sigupBn"
+                                         onclick="PF('signup').close();"
+                                         disabled="false"
+                                         icon="pi pi-thumbs-up"
+                                         />                        
+                    </h:panelGrid>
+                </h:panelGrid>
+            </h:form>
+        </p:dialog>
+    </h:body>
+</html>
