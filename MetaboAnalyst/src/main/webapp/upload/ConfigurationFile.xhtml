@@ -1,31 +1,31 @@
 <?xml version='1.0' encoding='UTF-8' ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<ui:composition xmlns="http://www.w3.org/1999/xhtml"
-                xmlns:ui="http://java.sun.com/jsf/facelets"
-                xmlns:h="http://java.sun.com/jsf/html"
-                xmlns:f="http://java.sun.com/jsf/core"
-                xmlns:p="http://primefaces.org/ui"
-                template="#{applicationBean1.templateUrl}/_anal_template.xhtml">
+<!DOCTYPE html
+    PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui"
+    template="#{applicationBean1.templateUrl}/_anal_template.xhtml">
     <ui:define name="metaInfo">
-        <f:event type="preRenderView" listener="#{sessionBean1.initNaviTree('stat')}"/> 
+        <f:event type="preRenderView" listener="#{sessionBean1.initNaviTree('config')}"/>
     </ui:define>
-    <ui:define name="rightpaneout"/>
+    <ui:define name="rightpaneout" />
     <ui:define name="content">
         <h:form enctype="multipart/form-data">
-            <h:panelGrid columns="2" style="border: gray solid thin; background-color: #F9F9FB; padding: 20px; width:760px">
-                <p:outputLabel style="font-size:13px; font-weight: bold" value="Choose a file to upload:"/>
-                <p:spacer/>
-                <h:panelGrid columns="1" style="width:560px; padding: 10px">
-                <!-- File Upload Field -->
-                    <p:fileUpload value="#{uploader.dataFile}" mode="simple" label="Select File"/>
-                </h:panelGrid>
-    
-                <!-- Submit Button -->
-                <h:panelGrid style="padding: 20px">
-                    <p:commandButton value="Submit" ajax="false"
-                         onclick="PF('statusDialog').show()" 
-                         oncomplete="PF('statusDialog').hide()"
-                         action="#{uploader.handleFileUpload()}"/>
+            <h:panelGrid style="padding: 30px 20px 20px 60px; font-size: 13ps; line-height: 23px;">
+                <h2 style="margin-top: 10px; margin-bottom: 20px;">Please Upload your MetaboAnalyst R Script</h2>
+                <h:panelGrid columns="2"
+                    style="border: gray solid thin; background-color: #F9F9FB; padding: 20px; width:760px">
+                    <p:outputLabel style="font-size:13px; font-weight: bold" value="Choose a file to upload:" />
+                    <p:spacer />
+                    <h:panelGrid columns="1" style="width:560px; padding: 10px">
+                        <!-- File Upload Field -->
+                        <p:fileUpload value="#{uploader.dataFile}" mode="simple" label="Select File" />
+                    </h:panelGrid>
+
+                    <!-- Submit Button -->
+                    <h:panelGrid style="padding: 20px">
+                        <p:commandButton value="Submit" ajax="false" onclick="PF('statusDialog').show()"
+                            oncomplete="PF('statusDialog').hide()" action="#{uploader.handleFileUpload()}" />
+                    </h:panelGrid>
                 </h:panelGrid>
             </h:panelGrid>
         </h:form>
