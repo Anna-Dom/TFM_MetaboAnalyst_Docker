@@ -79,11 +79,16 @@ RUN R -e 'install.packages("Rserve",,"http://rforge.net/",type="source")'
 # Need to install XML from specific repo
 RUN R -e 'install.packages("XML", repos = "http://www.omegahat.net/R")'
 
-# Install all R packages from CRAN
-RUN install2.r RColorBrewer xtable fitdistrplus som ROCR RJSONIO gplots e1071 caTools igraph randomForest Cairo pls pheatmap lattice rmarkdown knitr data.table pROC Rcpp caret ellipse scatterplot3d lars tidyverse Hmisc reshape plyr car
+COPY Rinstall.R /tmp/Rinstall.R
 
-# Install all R packages from Bioconductor 
-RUN R -e 'BiocManager::install(c("impute", "pcaMethods", "siggenes", "globaltest", "GlobalAncova", "Rgraphviz", "KEGGgraph", "preprocessCore", "genefilter", "SSPA", "sva", "limma", "mzID", "xcms"))'
+# Run the R script to install the packages
+RUN Rscript /tmp/Rinstall.R
+
+# # Install all R packages from CRAN
+# RUN install2.r RColorBrewer xtable fitdistrplus som ROCR RJSONIO gplots e1071 caTools igraph randomForest Cairo pls pheatmap lattice rmarkdown knitr data.table pROC Rcpp caret ellipse scatterplot3d lars tidyverse Hmisc reshape plyr car
+
+# # Install all R packages from Bioconductor 
+# RUN R -e 'BiocManager::install(c("impute", "pcaMethods", "siggenes", "globaltest", "GlobalAncova", "Rgraphviz", "KEGGgraph", "preprocessCore", "genefilter", "SSPA", "sva", "limma", "mzID", "xcms"))'
 
 ############################
 ### ADD FILES FOR SERVER ###
@@ -93,6 +98,7 @@ ADD rserve.conf /etc/rserve.conf
 ADD metab4script.R /metab4script.R
 ADD run.sh /run.sh
 RUN chmod +x /run.sh
+
 
 #####################
 ### SET UP PAYARA ###
@@ -135,5 +141,5 @@ RUN mv /target/MetaboAnalyst-5.0.war $DEPLOY_DIR/MetaboAnalyst.war
 # COPY ./target/*.war $DEPLOY_DIR/
 
 # # Set the entrypoint to start Payara Micro
-CMD ["/run.sh"]
+ENTRYPOINT ["/run.sh"]
 

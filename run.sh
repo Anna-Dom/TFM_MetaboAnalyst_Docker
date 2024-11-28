@@ -1,6 +1,10 @@
-#!/usr/bin/env bash
-Rscript /metab4script.R > /dev/null 2>&1
+#!/bin/bash
+# start.sh
 
+# Step 1: Run the R script to start Rserve in daemon mode
+echo "Starting Rserve..."
+Rscript /metab4script.R
 
-# Then start the Payara server
+# Step 2: Start Payara Micro
+echo "Starting Payara Micro..."
 java -jar /opt/payara/payara-micro.jar --deploymentDir /opt/payara/deployments
