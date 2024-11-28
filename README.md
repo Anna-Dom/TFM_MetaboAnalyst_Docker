@@ -12,13 +12,15 @@ The project was developed as a Final Master's Project and aims to improve some f
 
 There are two options to run the application.
 
-1. Build the docker image and then run it
+1. Build the docker image and then run it. 
 
 ```sh
 # Build the image
 docker build -t metaboanalyst .
 # Run it
-docker run -p 8080:8080 --name metabo-app -d metaboanalyst
+docker run --rm -p 8080:8080 --name metabo-app -d metaboanalyst
+# To check the logs
+docker logs metabo-app -f
 ```
 
 2. Download the image and run it directly
@@ -27,6 +29,7 @@ docker run -p 8080:8080 --name metabo-app -d metaboanalyst
 # TODO
 ```
 
-Once the docker is running, MetaboAnalyst Webapp can be access at http://localhost:8080/MetaboAnalyst/. 
+Once the docker is running, MetaboAnalyst Webapp can be access at http://localhost:8080/MetaboAnalyst/. Notice that after running the image it might take a couple of seconds before the web application is available in this address.
+
 
 
