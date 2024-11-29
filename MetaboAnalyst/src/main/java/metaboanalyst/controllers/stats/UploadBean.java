@@ -575,21 +575,21 @@ public class UploadBean implements Serializable {
             // but we are not ready to do the Login yet
             if (sb.doPartialLogin()) {
                 LOGGER.error(sb.getCurrentUser());
+                String fileName = DataUtils.uploadFile(rscriptfile, sb.getCurrentUser().getHomeDir(), null, ab.isOnPublicServer());
+                LOGGER.error(fileName);
+
+                if (fileName == null) {
+                    return null;
+                }
+
+                RConnection RC = sb.getRConnection();
+
+                // Call the function that will run the RScript to proccess RHistory
+                RList rconfiguration = RDataUtils.processConfigFile(RC, fileName);
+                LOGGER.error(rconfiguration);
+
             }
             
-            
-            
-
-            String fileName = DataUtils.uploadFile(rscriptfile, sb.getCurrentUser().getHomeDir(), null, ab.isOnPublicServer());
-            if (fileName == null) {
-                return null;
-            }
-            
-            RConnection RC = sb.getRConnection();
-            // Call the function that will run the RScript to proccess RHistory
-            RList rconfiguration = RDataUtils.processConfigFile(RC, fileName);
-            LOGGER.error(rconfiguration);
-
             setDataType("conc");
             setAnaltype("stat");
             setDataFile(undefineddatafile);
@@ -600,7 +600,7 @@ public class UploadBean implements Serializable {
 
             // Call the R function that reads the R script
         } catch (Exception e) {
-            LOGGER.error("handleMetWorkbenchData-roc", e);
+            LOGGER.error("handleRScriptUpload", e);
             return null;
         }
         
