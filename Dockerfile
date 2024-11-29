@@ -31,9 +31,9 @@ RUN echo "en_US.UTF-8 UTF-8" >> /etc/locale.gen \
     && /usr/sbin/update-locale LANG=en_US.UTF-8
 
 # set up env
-ENV LC_ALL en_US.UTF-8
-ENV LANG en_US.UTF-8
-ENV DEBIAN_FRONTEND noninteractive 
+ENV LC_ALL=en_US.UTF-8
+ENV LANG=en_US.UTF-8
+ENV DEBIAN_FRONTEND=noninteractive 
 
 RUN apt-get update && \
     apt-get install -y software-properties-common sudo apt-transport-https apt-utils openjdk-11-jdk 
@@ -104,12 +104,13 @@ RUN chmod +x /run.sh
 ### SET UP PAYARA ###
 #####################
 
-ENV PAYARA_PATH /opt/payara
-ENV PAYARA_PKG https://nexus.payara.fish/repository/payara-community/fish/payara/extras/payara-micro/5.194/payara-micro-5.194.jar
-ENV PAYARA_VERSION 181
-ENV PKG_FILE_NAME payara-micro.jar
-ENV AUTODEPLOY_DIR $PAYARA_PATH/deployments
-ENV PAYARA_MICRO_JAR=$PAYARA_PATH/$PKG_FILE_NAME
+ENV PAYARA_PATH = /opt/payara
+ENV PAYARA_PKG = https://nexus.payara.fish/repository/payara-community/fish/payara/extras/payara-micro/5.194/payara-micro-5.194.jar
+ENV PAYARA_VERSION = 181
+ENV PKG_FILE_NAME = payara-micro.jar
+ENV AUTODEPLOY_DIR = $PAYARA_PATH/deployments
+ENV PAYARA_MICRO_JAR = $PAYARA_PATH/$PKG_FILE_NAME
+ENV DEPLOY_DIR = $PAYARA_PATH/deployments
 
 # Install and configure Payara Micro
 RUN mkdir -p $PAYARA_PATH/deployments && \
@@ -132,8 +133,6 @@ RUN mvn clean package -DskipTests
 
 # # Expose Payara's ports
 EXPOSE 4848 8009 8080 8181 6311
-
-ENV DEPLOY_DIR $PAYARA_PATH/deployments
 
 # Copy the WAR file from the build stage into the Payara Micro deployments directory
 RUN mv /target/MetaboAnalyst-5.0.war $DEPLOY_DIR/MetaboAnalyst.war
