@@ -21,4 +21,4 @@ metanr_packages <- function(){
 
 metanr_packages()
 
-install.packages(c("plotly","Cairo"))
+install.packages(c("plotly","Cairo", "ggplot2"))

@@ -522,4 +522,70 @@ public class UploadBean implements Serializable {
         return null;
     }
 
+    /*
+     * Handle R Script Upload
+     */
+
+    // Declare the UploadedFile instance variable
+    private UploadedFile rscriptfile;  // Define the property
+    private UploadedFile undefineddatafile;
+    private String analtype;
+
+	public String getAnaltype() {
+		return this.analtype;
+	}
+
+	public void setAnaltype(String analtype) {
+		this.analtype = analtype;
+	}
+
+
+	public UploadedFile getRscriptfile() {
+		return this.rscriptfile;
+	}
+
+	public void setRscriptfile(UploadedFile rscriptfile) {
+		this.rscriptfile = rscriptfile;
+	}
+
+	public UploadedFile getUndefineddatafile() {
+		return this.undefineddatafile;
+	}
+
+	public void setUndefineddatafile(UploadedFile undefineddatafile) {
+		this.undefineddatafile = undefineddatafile;
+	}
+
+
+
+    public String handleRScriptUpload() {
+        if (rscriptfile == null) {
+            DataUtils.updateMsg("Error", "R script file is empty");
+            return null;
+        }
+
+        if (undefineddatafile == null) {
+            DataUtils.updateMsg("Error", "The data file is empty");
+            return null;
+        }
+
+        try {
+
+            setDataType("conc");
+            setAnaltype("stat");
+            setDataFile(undefineddatafile);
+            sb.initNaviTree(analtype);
+            String result = handleFileUpload();
+
+            return result;
+
+            // Call the R function that reads the R script
+        } catch (Exception e) {
+            LOGGER.error("handleMetWorkbenchData-roc", e);
+            return null;
+        }
+        
+    }
+
+
 }

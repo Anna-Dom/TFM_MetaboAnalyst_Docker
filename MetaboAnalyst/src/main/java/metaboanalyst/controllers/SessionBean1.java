@@ -35,11 +35,15 @@ import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 import org.omnifaces.util.Faces;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 @SessionScoped
 @Named("sessionBean1")
 @JsonIgnoreProperties(ignoreUnknown = true)
 
 public class SessionBean1 implements Serializable {
+    private static final Logger LOGGER = LogManager.getLogger(SessionBean1.class);
 
     @JsonIgnore
     private static final long serialVersionUID = 3520685098167757691L;
@@ -560,6 +564,7 @@ public class SessionBean1 implements Serializable {
 
     public void initNaviTree(String type) {
         if (!naviType.equals(type)) {
+            LOGGER.info("Updating navigation tree: " + type);
             naviType = type;
             naviTree = NaviUtils.createNaviTree(type);
         }

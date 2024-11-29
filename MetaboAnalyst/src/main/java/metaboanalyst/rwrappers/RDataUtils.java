@@ -512,6 +512,12 @@ public class RDataUtils {
         }
     }
 
+    //     public static String readRScript(RConnection RC, String fileName) {
+    //     try {
+    //         String rCommand = ""
+    //     }
+    // }
+
     public static boolean getMetabolomicsWorkbenchData(RConnection RC, String StudyID) {
         try {
             String rCommand = "GetNMDRStudy(NA, \"" + StudyID + "\");";

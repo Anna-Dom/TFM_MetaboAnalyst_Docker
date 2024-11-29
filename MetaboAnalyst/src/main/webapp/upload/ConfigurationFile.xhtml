@@ -5,7 +5,7 @@
     xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui"
     template="#{applicationBean1.templateUrl}/_anal_template.xhtml">
     <ui:define name="metaInfo">
-        <f:event type="preRenderView" listener="#{sessionBean1.initNaviTree('config')}"/>
+        <f:event type="preRenderView" listener="#{sessionBean1.initNaviTree('config')}" />
     </ui:define>
     <ui:define name="rightpaneout" />
     <ui:define name="content">
@@ -17,14 +17,21 @@
                     <p:outputLabel style="font-size:13px; font-weight: bold" value="Choose a file to upload:" />
                     <p:spacer />
                     <h:panelGrid columns="1" style="width:560px; padding: 10px">
-                        <!-- File Upload Field -->
-                        <p:fileUpload value="#{uploader.dataFile}" mode="simple" label="Select File" />
+                        <!-- Label for R Script File -->
+                        <p:outputLabel style="font-size:13px; font-weight: bold" value="R Script File:" />
+                        <p:fileUpload value="#{uploader.rscriptfile}" skinSimple="true" mode="simple"
+                            style="line-height: 18px" />
+
+                        <p:outputLabel style="font-size:13px; font-weight: bold" value="Data File:" />
+                        <p:fileUpload value="#{uploader.undefineddatafile}" skinSimple="true" mode="simple"
+                            style="line-height: 18px" />
+
                     </h:panelGrid>
 
                     <!-- Submit Button -->
                     <h:panelGrid style="padding: 20px">
                         <p:commandButton value="Submit" ajax="false" onclick="PF('statusDialog').show()"
-                            oncomplete="PF('statusDialog').hide()" action="#{uploader.handleFileUpload()}" />
+                            oncomplete="PF('statusDialog').hide()" action="#{uploader.handleRScriptUpload()}" />
                     </h:panelGrid>
                 </h:panelGrid>
             </h:panelGrid>
