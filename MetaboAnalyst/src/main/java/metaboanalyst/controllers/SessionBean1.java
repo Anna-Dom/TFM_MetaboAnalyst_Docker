@@ -153,6 +153,23 @@ public class SessionBean1 implements Serializable {
         this.privileged = privileged;
     }
 
+    public boolean doPartialLogin() {
+        if (!ab.isCompiled()) {
+            ab.compileRScripts("config");
+        }
+
+        if (currentUser != null) {
+            if (RC != null) {
+                RC.close();
+            }
+            currentUser = null;
+        }
+
+        currentUser = DataUtils.createTempUser(ab.getRealUserHomePath());
+
+        return true;
+    }
+
     /*
      * Log in and out
      * dataType: list, conc, specbin, pktable, nmrpeak, mspeak, msspec

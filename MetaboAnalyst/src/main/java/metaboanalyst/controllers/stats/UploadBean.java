@@ -6,6 +6,7 @@
 package metaboanalyst.controllers.stats;
 
 import java.io.File;
+import org.rosuda.REngine.RList;
 import java.io.Serializable;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Named;
@@ -570,6 +571,24 @@ public class UploadBean implements Serializable {
         }
 
         try {
+            // Compile R utils because this is always the first step
+            // but we are not ready to do the Login yet
+            if (sb.doPartialLogin()) {
+                LOGGER.error(sb.getCurrentUser());
+            }
+            
+            
+            
+
+            String fileName = DataUtils.uploadFile(rscriptfile, sb.getCurrentUser().getHomeDir(), null, ab.isOnPublicServer());
+            if (fileName == null) {
+                return null;
+            }
+            
+            RConnection RC = sb.getRConnection();
+            // Call the function that will run the RScript to proccess RHistory
+            RList rconfiguration = RDataUtils.processConfigFile(RC, fileName);
+            LOGGER.error(rconfiguration);
 
             setDataType("conc");
             setAnaltype("stat");

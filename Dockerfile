@@ -104,13 +104,13 @@ RUN chmod +x /run.sh
 ### SET UP PAYARA ###
 #####################
 
-ENV PAYARA_PATH = /opt/payara
-ENV PAYARA_PKG = https://nexus.payara.fish/repository/payara-community/fish/payara/extras/payara-micro/5.194/payara-micro-5.194.jar
-ENV PAYARA_VERSION = 181
-ENV PKG_FILE_NAME = payara-micro.jar
-ENV AUTODEPLOY_DIR = $PAYARA_PATH/deployments
-ENV PAYARA_MICRO_JAR = $PAYARA_PATH/$PKG_FILE_NAME
-ENV DEPLOY_DIR = $PAYARA_PATH/deployments
+ENV PAYARA_PATH="/opt/payara"
+ENV PAYARA_PKG=https://nexus.payara.fish/repository/payara-community/fish/payara/extras/payara-micro/5.194/payara-micro-5.194.jar
+ENV PAYARA_VERSION=181
+ENV PKG_FILE_NAME=payara-micro.jar
+ENV AUTODEPLOY_DIR=$PAYARA_PATH/deployments
+ENV PAYARA_MICRO_JAR=$PAYARA_PATH/$PKG_FILE_NAME
+ENV DEPLOY_DIR=$PAYARA_PATH/deployments
 
 # Install and configure Payara Micro
 RUN mkdir -p $PAYARA_PATH/deployments && \

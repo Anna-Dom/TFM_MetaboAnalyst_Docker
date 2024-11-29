@@ -2393,5 +2393,18 @@ public class RDataUtils {
     }
 
     
+    public static RList processConfigFile(RConnection RC, String filePath) {
+        try {
+            String rCommand = "Read.RHistoryFile(\"" + filePath + "\");";
+
+            return RC.eval(rCommand).asList();
+
+        } catch (Exception rse) {
+            LOGGER.error("processConfigFile", rse);
+            return null;
+        }
+    }
+
+    
 
 }

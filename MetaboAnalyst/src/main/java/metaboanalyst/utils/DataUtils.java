@@ -593,7 +593,7 @@ public class DataUtils {
 
         String fileName = file.getFileName();
 
-        if (fileName.endsWith(".csv") | fileName.endsWith(".txt") | fileName.endsWith(".zip") | fileName.endsWith(".mzTab") | fileName.endsWith(".mztab")) {
+        if (fileName.endsWith(".csv") | fileName.endsWith(".txt") | fileName.endsWith(".zip") | fileName.endsWith(".mzTab") | fileName.endsWith(".mztab") | fileName.contains("R")) {
             try {
                 OutputStream out;
                 try (InputStream in = file.getInputStream()) {
