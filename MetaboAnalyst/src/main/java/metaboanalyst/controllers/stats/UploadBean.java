@@ -585,18 +585,78 @@ public class UploadBean implements Serializable {
                 RConnection RC = sb.getRConnection();
 
                 // Call the function that will run the RScript to proccess RHistory
-                RList rconfiguration = RDataUtils.processConfigFile(RC, fileName);
-                LOGGER.error(rconfiguration);
+                String[] rconfiguration = RDataUtils.processConfigFile(RC, fileName);
+
+                // if nothing comes up from the configuration, we finish the process here
+                if (rconfiguration == null) {
+                    DataUtils.updateMsg("Error", "Failed to process RScript.");
+                    return null;
+                }
+                // Use the first two elements of the configuration
+                String dataType = rconfiguration[0].replaceAll("^\"|\"$", "");
+                String analType = rconfiguration[1].replaceAll("^\"|\"$", "");
+                String dataFormat = rconfiguration[3].replaceAll("^\"|\"$", "");
+                // Boolean paired;
+
+                // // To set up the paired value, we need to check if the value is TRUE or FALSE
+                // if (rconfiguration[2] == "TRUE") {
+                //     Boolean paired = true;
+                // } else {
+                //     Boolean paired = false;
+                // }
+
+                LOGGER.error("Parsed config: dataType=" + dataType + ", analType=" + analType);
+
+                // No we set data type, data format and anal type
+                setDataType(dataType);
+                setAnaltype(analType);
+                setDataFormat(dataFormat);
+
+                // Set up correct navi tree for the anal type
+                sb.initNaviTree(analType);
+
+                // Use if/else to set what function we need to run to correctly set up the data
+                if (analType.equals("stat")) {
+
+                    if (dataType.equals("mztab")) {
+                        // Set the correct mztabfile
+                        setMzTabFile(undefineddatafile);
+                        // call the correct function 
+                        String result = handleMzTabUpload();
+
+                        return result;
+
+                    } else if (dataType.equals("nmrpeak") || dataType.equals("mrpeak")) {
+                        // set correct data type variable
+                        setZipDataType(dataType);
+                        setZipFile(undefineddatafile);
+                        String result = handleZipFileUpload();
+
+                        return result;
+                        
+                    } else if (dataType.equals("conc") || dataType.equals("specbin")|| dataType.equals("pktable")) {
+                        // if not mxtab then we are conc
+                        // Set the correct data file
+                        setDataFile(undefineddatafile);
+
+                        // Call the correct function 
+                        String result = handleFileUpload();
+
+                        return result;
+
+                    } else {
+                        DataUtils.updateMsg("Error", "Type of analysis not yet supported");
+                        return null;
+                    }
+
+                } else {
+                    DataUtils.updateMsg("Error", "Type of analysis not yet supported");
+                    return null;
+                }
 
             }
-            
-            setDataType("conc");
-            setAnaltype("stat");
-            setDataFile(undefineddatafile);
-            sb.initNaviTree(analtype);
-            String result = handleFileUpload();
 
-            return result;
+            return null;
 
             // Call the R function that reads the R script
         } catch (Exception e) {

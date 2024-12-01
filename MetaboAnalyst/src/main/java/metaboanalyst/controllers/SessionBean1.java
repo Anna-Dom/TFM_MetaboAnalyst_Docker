@@ -154,10 +154,13 @@ public class SessionBean1 implements Serializable {
     }
 
     public boolean doPartialLogin() {
+        // Check if R scripts are compiled, if they are not, we compile them
+        //  only compile them for configuration needs
         if (!ab.isCompiled()) {
             ab.compileRScripts("config");
         }
 
+        //  If the currentUser variable is already assigned, we set it to null
         if (currentUser != null) {
             if (RC != null) {
                 RC.close();
@@ -165,7 +168,23 @@ public class SessionBean1 implements Serializable {
             currentUser = null;
         }
 
+        // create a new user
         currentUser = DataUtils.createTempUser(ab.getRealUserHomePath());
+
+        // Get R connection
+        RC = RCenter.getRConnection(currentUser.getHomeDir(), ab.getRscriptLoaderPath(), "config");
+        
+        // Check R connection was successfull
+        if (RC == null) {
+            DataUtils.updateMsg("Error", "Cannot connect to Rserve, please start your Rserver with the right permission!");
+            return false;
+        }
+
+        //  Get full path
+        String bashPath = RCenter.getBashFullPath(RC);
+        // Set home for R
+        String rScriptHome = ab.getRscriptsPath();
+        DataUtils.performResourceCleaning(bashPath, rScriptHome);
 
         return true;
     }

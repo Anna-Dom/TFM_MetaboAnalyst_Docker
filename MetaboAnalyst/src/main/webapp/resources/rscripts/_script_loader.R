@@ -61,7 +61,7 @@ LoadRscripts <- function(module.nm = "stat"){
     file.sources <- c(general_files, metapath_files, mummichog_files, general_stat_files, general_anot_files, "stats_univariates");
   }else if(module.nm == "covid"){
     file.sources <- c(general_files, "covid_utils");
-  } else if (module.nm){  
+  } else if (module.nm == 'config'){  
     file.sources <- c(general_files);
   }else{
     print(paste("Unknown module code: ", module.nm));

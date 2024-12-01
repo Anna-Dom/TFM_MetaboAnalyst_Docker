@@ -15,6 +15,7 @@ import metaboanalyst.controllers.SessionBean1;
 import metaboanalyst.models.SampleBean;
 import org.rosuda.REngine.REXPMismatchException;
 import org.rosuda.REngine.REngineException;
+import org.rosuda.REngine.REXP;
 import org.rosuda.REngine.RList;
 import org.rosuda.REngine.Rserve.RConnection;
 import org.rosuda.REngine.Rserve.RserveException;
@@ -2393,12 +2394,15 @@ public class RDataUtils {
     }
 
     
-    public static RList processConfigFile(RConnection RC, String filePath) {
+    public static String[] processConfigFile(RConnection RC, String filePath) {
         try {
             String rCommand = "Read.RHistoryFile(\"" + filePath + "\");";
             LOGGER.error(rCommand);
 
-            return RC.eval(rCommand).asList();
+            // Evaluate the R command
+            REXP result = RC.eval(rCommand);
+
+            return result.asStrings();
 
         } catch (Exception rse) {
             LOGGER.error("processConfigFile", rse);
