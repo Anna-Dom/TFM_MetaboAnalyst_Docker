@@ -21,4 +21,18 @@ metanr_packages <- function(){
 
 metanr_packages()
 
-install.packages(c("plotly","Cairo", "ggplot2"))
+install.packages(c(
+  "plotly", "Cairo", 
+  "ggplot2", "randomForest", 
+  "ellipse", "rjson", 
+  "RJSONIO", "RColorBrewer",
+  "xtable", "fitdistrplus", 
+  "som", "ROCR", "gplots", 
+  "e1071", "caTools", "igraph",
+  "pls", "pheatmap", "lattice", 
+  "rmarkdown", "knitr", "data.table", 
+  "pROC", "Rcpp", "caret", 
+  "scatterplot3d", "lars", "tidyverse", 
+  "Hmisc", "reshape", "plyr", "car"
+  )
+)
