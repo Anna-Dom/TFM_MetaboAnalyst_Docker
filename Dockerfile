@@ -31,13 +31,12 @@ RUN echo "en_US.UTF-8 UTF-8" >> /etc/locale.gen \
     && /usr/sbin/update-locale LANG=en_US.UTF-8
 
 # set up env
-ENV LC_ALL=en_US.UTF-8
-ENV LANG=en_US.UTF-8
-ENV DEBIAN_FRONTEND=noninteractive 
+ENV LC_ALL=en_US.UTF-8 \
+    LANG=en_US.UTF-8 \
+    DEBIAN_FRONTEND=noninteractive 
 
 RUN apt-get update && \
     apt-get install -y software-properties-common sudo apt-transport-https apt-utils openjdk-11-jdk 
-    # && update-java-alternatives --jre-headless --jre --set java-1.8.0-openjdk-amd64
 
 # Install dependencies for R and other libraries
 RUN apt-get update && \
@@ -83,9 +82,6 @@ COPY Rinstall.R /tmp/Rinstall.R
 
 # Run the R script to install the packages
 RUN Rscript /tmp/Rinstall.R
-
-# # Install all R packages from CRAN
-# RUN install2.r RColorBrewer xtable fitdistrplus som ROCR RJSONIO gplots e1071 caTools igraph randomForest Cairo pls pheatmap lattice rmarkdown knitr data.table pROC Rcpp caret ellipse scatterplot3d lars tidyverse Hmisc reshape plyr car
 
 # # Install all R packages from Bioconductor 
 # RUN R -e 'BiocManager::install(c("impute", "pcaMethods", "siggenes", "globaltest", "GlobalAncova", "Rgraphviz", "KEGGgraph", "preprocessCore", "genefilter", "SSPA", "sva", "limma", "mzID", "xcms"))'
@@ -137,7 +133,8 @@ EXPOSE 4848 8009 8080 8181 6311
 # Copy the WAR file from the build stage into the Payara Micro deployments directory
 RUN mv /target/MetaboAnalyst-5.0.war $DEPLOY_DIR/MetaboAnalyst.war
 
-# COPY ./target/*.war $DEPLOY_DIR/
+# Remove unused files
+RUN rm -r ./src ./target
 
 # # Set the entrypoint to start Payara Micro
 ENTRYPOINT ["/run.sh"]
