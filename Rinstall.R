@@ -22,7 +22,7 @@ metanr_packages <- function(){
 metanr_packages()
 
 install.packages(c(
-  "plotly", "Cairo", 
+  "plotly", "Cairo", "plotly",
   "ggplot2", "randomForest", 
   "ellipse", "rjson", 
   "RJSONIO", "RColorBrewer",

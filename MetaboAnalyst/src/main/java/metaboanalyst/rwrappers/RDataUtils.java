@@ -2397,7 +2397,7 @@ public class RDataUtils {
     public static String[] processConfigFile(RConnection RC, String filePath) {
         try {
             String rCommand = "Read.RHistoryFile(\"" + filePath + "\");";
-            LOGGER.error(rCommand);
+            System.out.println(rCommand);
 
             // Evaluate the R command
             REXP result = RC.eval(rCommand);
@@ -2407,6 +2407,39 @@ public class RDataUtils {
         } catch (Exception rse) {
             LOGGER.error("processConfigFile", rse);
             return null;
+        }
+    }
+
+    public static boolean runConfigFile(RConnection RC, String fileContents) {
+        try {
+            // Split the string into lines
+            String[] lines = fileContents.split("\\r?\\n");
+
+            // Process each line
+            for (String line : lines) {
+                // Trim whitespace and skip empty lines or comments
+                line = line.trim();
+
+                if (!line.isEmpty() && !line.startsWith("#")) {
+                    // Escape the double quotes within the string
+                    String escapedCommand = line.replace("\"", "\\\"");
+                    // Replace mSet <- for nothing
+                    String fixedCommand = escapedCommand.replace("mSet<-", "");
+                    // Compose the R command
+                    String rCommand = "RunConfigAnalysis(\"" + fixedCommand + "\");";
+                    // Print it
+                    System.out.println("Executing: " + fixedCommand);
+                    // Record it
+                    RCenter.recordRCommand(RC, fixedCommand, false);
+                    // Evaluate it
+                    RC.eval(rCommand);
+                }
+            }
+
+            return true;
+        } catch (Exception rse) {
+            LOGGER.error("runConfigFile", rse);
+            return false;
         }
     }
 

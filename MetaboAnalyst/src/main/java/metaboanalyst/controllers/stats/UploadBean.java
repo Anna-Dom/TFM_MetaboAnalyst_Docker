@@ -574,9 +574,8 @@ public class UploadBean implements Serializable {
             // Compile R utils because this is always the first step
             // but we are not ready to do the Login yet
             if (sb.doPartialLogin()) {
-                LOGGER.error(sb.getCurrentUser());
+                System.out.println("Partial Login with user:" + sb.getCurrentUser());
                 String fileName = DataUtils.uploadFile(rscriptfile, sb.getCurrentUser().getHomeDir(), null, ab.isOnPublicServer());
-                LOGGER.error(fileName);
 
                 if (fileName == null) {
                     return null;
@@ -586,6 +585,7 @@ public class UploadBean implements Serializable {
 
                 // Call the function that will run the RScript to proccess RHistory
                 String[] rconfiguration = RDataUtils.processConfigFile(RC, fileName);
+                System.out.println(rconfiguration);
 
                 // if nothing comes up from the configuration, we finish the process here
                 if (rconfiguration == null) {
@@ -596,6 +596,7 @@ public class UploadBean implements Serializable {
                 String dataType = rconfiguration[0].replaceAll("^\"|\"$", "");
                 String analType = rconfiguration[1].replaceAll("^\"|\"$", "");
                 String dataFormat = rconfiguration[3].replaceAll("^\"|\"$", "");
+                String rhistoryContents = rconfiguration[4];
                 // Boolean paired;
 
                 // // To set up the paired value, we need to check if the value is TRUE or FALSE
@@ -605,7 +606,7 @@ public class UploadBean implements Serializable {
                 //     Boolean paired = false;
                 // }
 
-                LOGGER.error("Parsed config: dataType=" + dataType + ", analType=" + analType);
+                System.out.println("Parsed config: dataType=" + dataType + ", analType=" + analType);
 
                 // No we set data type, data format and anal type
                 setDataType(dataType);
@@ -624,15 +625,13 @@ public class UploadBean implements Serializable {
                         // call the correct function 
                         String result = handleMzTabUpload();
 
-                        return result;
-
                     } else if (dataType.equals("nmrpeak") || dataType.equals("mrpeak")) {
                         // set correct data type variable
                         setZipDataType(dataType);
                         setZipFile(undefineddatafile);
                         String result = handleZipFileUpload();
 
-                        return result;
+                        // return result;
                         
                     } else if (dataType.equals("conc") || dataType.equals("specbin")|| dataType.equals("pktable")) {
                         // if not mxtab then we are conc
@@ -642,12 +641,17 @@ public class UploadBean implements Serializable {
                         // Call the correct function 
                         String result = handleFileUpload();
 
-                        return result;
+                        // return result;
 
                     } else {
                         DataUtils.updateMsg("Error", "Type of analysis not yet supported");
                         return null;
                     }
+
+                    // // call the function to run the rest of the analyses
+                    RDataUtils.runConfigFile(sb.getRConnection(), rhistoryContents);
+
+                    return "Download";
 
                 } else {
                     DataUtils.updateMsg("Error", "Type of analysis not yet supported");
