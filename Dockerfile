@@ -100,20 +100,19 @@ RUN chmod +x /run.sh
 ### SET UP PAYARA ###
 #####################
 
-ENV PAYARA_PATH="/opt/payara"
-ENV PAYARA_PKG=https://nexus.payara.fish/repository/payara-community/fish/payara/extras/payara-micro/5.194/payara-micro-5.194.jar
-ENV PAYARA_VERSION=181
-ENV PKG_FILE_NAME=payara-micro.jar
-ENV AUTODEPLOY_DIR=$PAYARA_PATH/deployments
-ENV PAYARA_MICRO_JAR=$PAYARA_PATH/$PKG_FILE_NAME
-ENV DEPLOY_DIR=$PAYARA_PATH/deployments
+ENV PAYARA_PATH="/opt/payara" \
+    PAYARA_PKG=https://nexus.payara.fish/repository/payara-community/fish/payara/extras/payara-micro/5.194/payara-micro-5.194.jar \
+    PAYARA_VERSION=181 \
+    PKG_FILE_NAME=payara-micro.jar \
+    AUTODEPLOY_DIR=$PAYARA_PATH/deployments \
+    PAYARA_MICRO_JAR=$PAYARA_PATH/$PKG_FILE_NAME \
+    DEPLOY_DIR=$PAYARA_PATH/deployments 
 
 # Install and configure Payara Micro
 RUN mkdir -p $PAYARA_PATH/deployments && \
     useradd -d $PAYARA_PATH payara && echo payara:payara | chpasswd && \
-    chown -R payara:payara /opt
-
-RUN wget --quiet -O $PAYARA_PATH/$PKG_FILE_NAME $PAYARA_PKG
+    chown -R payara:payara /opt && \
+    wget --quiet -O $PAYARA_PATH/$PKG_FILE_NAME $PAYARA_PKG
 
 
 ###########################
@@ -131,10 +130,9 @@ RUN mvn clean package -DskipTests
 EXPOSE 4848 8009 8080 8181 6311
 
 # Copy the WAR file from the build stage into the Payara Micro deployments directory
-RUN mv /target/MetaboAnalyst-5.0.war $DEPLOY_DIR/MetaboAnalyst.war
-
-# Remove unused files
-RUN rm -r ./src ./target
+RUN mv /target/MetaboAnalyst-5.0.war $DEPLOY_DIR/MetaboAnalyst.war && \
+    # Remove unused files
+    rm -rf ./src ./target
 
 # # Set the entrypoint to start Payara Micro
 ENTRYPOINT ["/run.sh"]
