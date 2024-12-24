@@ -2410,7 +2410,7 @@ public class RDataUtils {
         }
     }
 
-    public static boolean runConfigFile(RConnection RC, String fileContents) {
+    public static boolean runConfigFile(SessionBean1 sb, RConnection RC, String fileContents) {
         try {
             // Split the string into lines
             String[] lines = fileContents.split("\\r?\\n");
@@ -2421,18 +2421,27 @@ public class RDataUtils {
                 line = line.trim();
 
                 if (!line.isEmpty() && !line.startsWith("#")) {
-                    // Escape the double quotes within the string
-                    String escapedCommand = line.replace("\"", "\\\"");
+                    
                     // Replace mSet <- for nothing
-                    String fixedCommand = escapedCommand.replace("mSet<-", "");
+                    String fixedCommand = line.replace("mSet<-", "");
+                    // Escape the double quotes within the string
+                    String escapedCommand = fixedCommand.replace("\"", "\\\"");
                     // Compose the R command
-                    String rCommand = "RunConfigAnalysis(\"" + fixedCommand + "\");";
+                    String rCommand = "RunConfigAnalysis(\"" + escapedCommand + "\");";
                     // Print it
-                    System.out.println("Executing: " + fixedCommand);
-                    // Record it
-                    RCenter.recordRCommand(RC, fixedCommand, false);
-                    // Evaluate it
-                    RC.eval(rCommand);
+                    System.out.println("Executing: " + escapedCommand);
+                    
+                    // The plots are not executed instantaneously, but are added to a matrix
+                    if (line.contains("Plot")) {
+                        RCenter.recordRCommand(RC, fixedCommand);
+                        sb.addGraphicsCMD(line, fixedCommand);
+                        RC.voidEval(fixedCommand);
+                    } else {
+                        // Record it
+                        RCenter.recordRCommand(RC, fixedCommand);
+                        // Evaluate it
+                        RC.eval(rCommand);
+                    }
                 }
             }
 
