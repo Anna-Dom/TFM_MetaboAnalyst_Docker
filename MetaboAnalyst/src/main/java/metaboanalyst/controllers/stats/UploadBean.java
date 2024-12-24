@@ -649,7 +649,7 @@ public class UploadBean implements Serializable {
                     }
 
                     // // call the function to run the rest of the analyses
-                    RDataUtils.runConfigFile(sb.getRConnection(), rhistoryContents);
+                    RDataUtils.runConfigFile(sb, sb.getRConnection(), rhistoryContents);
 
                     return "Download";
 
