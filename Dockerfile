@@ -48,6 +48,13 @@ RUN apt-get install -y \
     libxt-dev \ 
     libssl-dev \
     gfortran \
+    libharfbuzz0b \ 
+    libharfbuzz-dev \ 
+    libfribidi-dev \
+    libfreetype6-dev \ 
+    libpng-dev \ 
+    libtiff5-dev \ 
+    libjpeg-dev \
     littler && \
     # clean up
     rm -rf /tmp/downloaded_packages/ /tmp/*.rds && \
@@ -69,8 +76,10 @@ RUN apt update && apt install -y r-base-core r-base r-base-dev r-recommended&& \
 
 RUN R -e 'install.packages("Rserve",,"http://rforge.net/",type="source")' && \
     R -e 'install.packages("XML", repos = "http://www.omegahat.net/R")' && \
-    install2.r -s BiocManager RColorBrewer xtable fitdistrplus som ROCR RJSONIO ggplot2 e1071 caTools igraph randomForest Cairo pls pheatmap lattice rmarkdown knitr data.table pROC Rcpp caret ellipse scatterplot3d lars tidyverse Hmisc reshape plyr car plotly rjson && \
-    R -e 'BiocManager::install(c("impute", "pcaMethods", "globaltest", "GlobalAncova", "Rgraphviz", "preprocessCore", "genefilter", "sva", "limma", "KEGGgraph", "siggenes","BiocParallel", "MSnbase", "multtest","RBGL","edgeR","fgsea","devtools","crmn","httr","qs"))'
+    install2.r -s BiocManager RColorBrewer xtable fitdistrplus som ROCR RJSONIO ggplot2 e1071 caTools igraph randomForest Cairo pls pheatmap lattice rmarkdown knitr data.table pROC Rcpp caret ellipse scatterplot3d lars tidyverse Hmisc reshape plyr car plotly rjson vegan && \
+    R -e 'BiocManager::install(c("impute", "pcaMethods", "globaltest", "GlobalAncova", "Rgraphviz", "preprocessCore", "genefilter", "sva", "limma", "KEGGgraph", "siggenes","BiocParallel", "MSnbase", "multtest","RBGL","edgeR","fgsea","devtools","crmn","httr","qs"))' && \
+    R -e 'install.packages("devtools"); library(devtools); devtools::install_github("xia-lab/XiaLab_CppLib")'
+
 
 ############################
 ### ADD FILES FOR SERVER ###
@@ -119,6 +128,7 @@ EXPOSE 4848 8009 8080 8181 6311
 RUN mv /target/MetaboAnalyst-5.0.war $DEPLOY_DIR/MetaboAnalyst.war && \
     # Remove unused files
     rm -rf ./src ./target
+
 
 # # Set the entrypoint to start Payara Micro
 ENTRYPOINT ["/run.sh"]
