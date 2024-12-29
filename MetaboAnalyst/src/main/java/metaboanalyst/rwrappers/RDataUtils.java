@@ -1293,16 +1293,14 @@ public class RDataUtils {
 
     public static int updateData(RConnection RC, String[] featVec, String[] smplVec, String[] useVec, String ordGrp) {
         try {
-            String featCmd = "feature.nm.vec <- " + DataUtils.createStringVector(featVec);
-            RCenter.recordRCommand(RC, featCmd);
-            String smplCmd = "smpl.nm.vec <- " + DataUtils.createStringVector(smplVec);
-            RCenter.recordRCommand(RC, smplCmd);
-            String grpCmd = "grp.nm.vec <- " + DataUtils.createStringVector(useVec);
-            RCenter.recordRCommand(RC, grpCmd);
-            String updateCmd = "UpdateData(NA, " + ordGrp +")";
+            String featCmd = DataUtils.createStringVector(featVec);
+            String smplCmd = DataUtils.createStringVector(smplVec);
+            String grpCmd = DataUtils.createStringVector(useVec);
+            String updateCmd = "UpdateData(NA, " + ordGrp +", " + featCmd + "," + smplCmd + "," + grpCmd + ")";
+
             RCenter.recordRCommand(RC, updateCmd);
-            String rcmd = featCmd + "; " + smplCmd + "; " + grpCmd + ";" + updateCmd;
-            return RC.eval(rcmd).asInteger();
+
+            return RC.eval(updateCmd).asInteger();
         } catch (Exception e) {
             LOGGER.error("updateData", e);
         }
@@ -2401,6 +2399,7 @@ public class RDataUtils {
 
             // Evaluate the R command
             REXP result = RC.eval(rCommand);
+            System.out.println(result);
 
             return result.asStrings();
 
@@ -2424,26 +2423,38 @@ public class RDataUtils {
                     
                     // Replace mSet <- for nothing
                     String fixedCommand = line.replace("mSet<-", "");
+                    // Replace mSet for NA
+                    String fixedCommand2 = fixedCommand.replace("(mSet", "(NA");
                     // Escape the double quotes within the string
-                    String escapedCommand = fixedCommand.replace("\"", "\\\"");
+                    String escapedCommand = fixedCommand2.replace("\"", "\\\"");
                     // Compose the R command
                     String rCommand = "RunConfigAnalysis(\"" + escapedCommand + "\");";
                     // Print it
                     System.out.println("Executing: " + escapedCommand);
+
+                    Boolean executed = false;
                     
                     // The plots are not executed instantaneously, but are added to a matrix
                     if (line.contains("Plot")) {
-                        RCenter.recordRCommand(RC, fixedCommand);
-                        sb.addGraphicsCMD(line, fixedCommand);
-                        RC.voidEval(fixedCommand);
+                        sb.addGraphicsCMD(line, fixedCommand2);
+                        RC.voidEval(fixedCommand2);
+                        executed = true;
                     } else {
-                        // Record it
-                        RCenter.recordRCommand(RC, fixedCommand);
                         // Evaluate it
-                        RC.eval(rCommand);
+                        REXP result = RC.eval(rCommand);
+                        executed = result.asInteger() == 1;
+
+                    }
+
+                    // if it has been execute it we record it
+                    if (executed) {
+                        RCenter.recordRCommand(RC, fixedCommand2);
                     }
                 }
             }
+
+            // once finished we can set the data as normalized so we can perfrom other analysis
+            sb.setDataNormed(true);
 
             return true;
         } catch (Exception rse) {
