@@ -1,4 +1,0 @@
-docker build -t metaboanalyst-builder ./MetaboAnalyst/
-docker run --rm -v $(pwd)/target:/app/target metaboanalyst-builder
-cp target/metaboanalyst.war 
-
