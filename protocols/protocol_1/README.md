@@ -9,14 +9,14 @@ MetaboAnalyst accepts multiple file types, pre-processed or not depending on the
 5.	**Data Integrity Check**. This is performed to ensure that the data meets the basic requirements for the downstream analyses. The results indicate that 17.7% of the data values in this data set are missing, in this case no action will be taken. Click “Proceed” to continue. 
 6.	**Low quality data filtering**. The purpose of this step is to remove noise or non-informative variables. Select “Interquantile Range (IQR)” as the mechanism to perform data filtering, click "Submit". Click “Proceed” to move to the next step.
 7.	**Data Normalization**. Aims reduce systematic bias and to improve overall data consistency. Select “Normalization by sum” and “Auto scaling”, keep “None” for data transformation. Click “Normalize” to start the process. Once it has finished click “View results” to view a graphical summary of the effect of data normalization. Click “Proceed”.
-8.	**Data Overview and Outlier detection**. Will use PCA to perform this step. Click “Principal Component Analysis (PCA)” under the title "Chemometrics Analysis", this should show the PCA results in mutli-tab panels. Click the “2D Scores Plot” tab to view the score plot between PC1 and PC2 and check “Display sample names” and click “Update”. Sample C004 might be an outlier, and further investigation should be performed and will be removed from the dataset.
+8.	**Data Overview and Outlier detection**. Will use PCA to perform this step. Click “Principal Component Analysis (PCA)” under the title "Chemometrics Analysis", this should show the PCA results in mutli-tab panels. Click the “2D Scores Plot” tab to view the score plot between PC1 and PC2 and check “Display sample names” and click “Update”. Sample C004 might be an outlier, it will be removed from the dataset.
 9.	**Data Editor**. In the left side bar, expand “Processing” moneu and click “Data Editor”. Move to the “Edit Samples” tab and locate the sample C004, select it and click the button with the right arrow (add) to move it to the exclude list. Click “Submit”. 
 10. Perfrom steps 7 and 8 again to show that the sample has been removed.
 11.	**Data Download**. Click the “Download” hyperlink on the bottom of navigation bar. Here you can download all the elements produced in the analysis by clicking in "Donwload.zip", save it. Click "Logout" to complete the session.
 
 ## Re-use the R History file to reproduce the analysis
 
-The R History file used in this part of the protocol can be the one you have downloaded from the previous analysis or you can use the one located in this folder called `Rhistory_P1`.
+The R History file used in this part of the protocol can be the one you have downloaded from the previous analysis or you can use the one located in this folder called `Rhistory_P1.R`.
 
 1.	Move to the Module Selection page by clicking “Click here to start”
 2.	Click on “Re-use R Script” to move to the “Data Upload” page

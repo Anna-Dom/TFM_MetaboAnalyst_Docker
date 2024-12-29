@@ -555,7 +555,7 @@ public class UniVarTests {
     public static String plotCmpdSummary(SessionBean1 sb, String cmpdName, String meta, int ver, String format, String dpi) {
         try {
             RConnection RC = sb.getRConnection();
-            String rCommand = "PlotCmpdSummary(NA" + ", \"" + cmpdName + "\",\"" + meta + "\", " + ver + ", \"" + format + "\", " + dpi + ", width=NA)";
+            String rCommand = "PlotCmpdSummary(NA" + ", \"" + cmpdName + "\", meta=\"" + meta + "\",  meta2 = " + ver + ", format = \"" + format + "\", dpi = " + dpi + ", width=NA)";
             RCenter.recordRCommand(RC, rCommand);
             sb.addGraphicsCMD("cmpd", rCommand);
             return RC.eval(rCommand).asString();

@@ -1,4 +1,4 @@
-# PID of current job: 432
+# PID of current job: 430
 mSet<-InitDataObjects("nmrpeak", "stat", FALSE)
 UnzipUploadedFile("nmr_peaks.zip", "upload");
 mSet<-Read.PeakList(mSet, "upload");
@@ -36,5 +36,4 @@ mSet<-PlotPCALoading(mSet, "pca_loading_0_", "png", 72, width=NA, 1,2);
 mSet<-PlotPCABiplot(mSet, "pca_biplot_0_", "png", 72, width=NA, 1,2)
 mSet<-PlotPCA3DScore(mSet, "pca_score3d_0_", "json", 1,2,3)
 mSet<-PlotPCA3DLoading(mSet, "pca_loading3d_0_", "json", 1,2,3)
-mSet<-PlotPCA2DScore(mSet, "pca_score2d_2_", "png", 72, width=NA, 1,2,0.95,1,0)
 mSet<-SaveTransformedData(mSet)

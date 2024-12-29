@@ -2409,7 +2409,7 @@ public class RDataUtils {
         }
     }
 
-    public static boolean runConfigFile(SessionBean1 sb, RConnection RC, String fileContents) {
+    public static boolean runRHistoryFile(SessionBean1 sb, RConnection RC, String fileContents) {
         try {
             // Split the string into lines
             String[] lines = fileContents.split("\\r?\\n");
@@ -2428,7 +2428,7 @@ public class RDataUtils {
                     // Escape the double quotes within the string
                     String escapedCommand = fixedCommand2.replace("\"", "\\\"");
                     // Compose the R command
-                    String rCommand = "RunConfigAnalysis(\"" + escapedCommand + "\");";
+                    String rCommand = "RunRHistoryAnalysis(\"" + escapedCommand + "\");";
                     // Print it
                     System.out.println("Executing: " + escapedCommand);
 
@@ -2458,7 +2458,7 @@ public class RDataUtils {
 
             return true;
         } catch (Exception rse) {
-            LOGGER.error("runConfigFile", rse);
+            LOGGER.error("runRHistoryFile", rse);
             return false;
         }
     }

@@ -101,7 +101,7 @@ public class GraphBean implements Serializable {
                     DataUtils.updateMsg("Error", "No command found for plotting the image!");
                     return;
                 }
-                imgName = UniVarTests.plotCmpdSummary(sb, cmpdName, "NA", 100, formatOpt, mydpi + "");
+                imgName = UniVarTests.plotCmpdSummary(sb, cmpdName, "NA", 100, formatOpt, mydpi);
                 break;
             }
             case "roc.univ": {

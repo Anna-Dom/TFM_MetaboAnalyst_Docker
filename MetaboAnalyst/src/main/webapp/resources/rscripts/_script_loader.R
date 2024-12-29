@@ -61,7 +61,7 @@ LoadRscripts <- function(module.nm = "stat"){
     file.sources <- c(general_files, metapath_files, mummichog_files, general_stat_files, general_anot_files, "stats_univariates");
   }else if(module.nm == "covid"){
     file.sources <- c(general_files, "covid_utils");
-  } else if (module.nm == 'config'){  
+  } else if (module.nm == 'rhistory'){  
     file.sources <- c(general_files);
   }else{
     print(paste("Unknown module code: ", module.nm));
@@ -100,7 +100,7 @@ LoadReporter <- function(module.nm = "stat"){
     file.sources <- c(general_files, "sweave_report_meta_analysis");
   }else if(module.nm == "raw"){
     file.sources <- c(general_files, "sweave_report_raw_spectra");
-  } else if (module.nm == "config"){
+  } else if (module.nm == "rhistory"){
     file.sources <- c(general_files);
   }else{
     print(paste("Unknown module code: ", module.nm));

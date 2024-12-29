@@ -135,7 +135,7 @@ public class ApplicationBean1 implements Serializable {
         if (!compiled) {
             if (analType.equals("raw") && shouldUseScheduler()) {
                 compiled = RCenter.compileRScripts(raw_spec_folder, realPath + "/rscripts/_script_loader.R");
-            } else if (analType.equals("config")) {
+            } else if (analType.equals("rhistory")) {
                 // we don't mark it as compiled so the next "correct" module can compile them
                 RCenter.compileRScripts(realPath + usr_home, realPath + "/rscripts/_script_loader.R");
             } else {

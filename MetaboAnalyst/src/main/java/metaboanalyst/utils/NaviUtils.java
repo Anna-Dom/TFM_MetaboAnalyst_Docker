@@ -37,7 +37,7 @@ public class NaviUtils {
             TreeNode upNode = new DefaultTreeNode("Upload", naviTree);
             //upNode.setSelectable(false);
             
-            if (type.equalsIgnoreCase("config")) {
+            if (type.equalsIgnoreCase("rhistory")) {
                 // we add nothing
             }
             else if (type.startsWith("mummichog")) {

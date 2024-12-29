@@ -155,9 +155,9 @@ public class SessionBean1 implements Serializable {
 
     public boolean doPartialLogin() {
         // Check if R scripts are compiled, if they are not, we compile them
-        //  only compile them for configuration needs
+        //  only compile them for rhistory needs
         if (!ab.isCompiled()) {
-            ab.compileRScripts("config");
+            ab.compileRScripts("rhistory");
         }
 
         //  If the currentUser variable is already assigned, we set it to null
@@ -172,7 +172,7 @@ public class SessionBean1 implements Serializable {
         currentUser = DataUtils.createTempUser(ab.getRealUserHomePath());
 
         // Get R connection
-        RC = RCenter.getRConnection(currentUser.getHomeDir(), ab.getRscriptLoaderPath(), "config");
+        RC = RCenter.getRConnection(currentUser.getHomeDir(), ab.getRscriptLoaderPath(), "rhistory");
         
         // Check R connection was successfull
         if (RC == null) {

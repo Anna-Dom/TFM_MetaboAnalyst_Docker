@@ -584,21 +584,21 @@ public class UploadBean implements Serializable {
                 RConnection RC = sb.getRConnection();
 
                 // Call the function that will run the RScript to proccess RHistory
-                String[] rconfiguration = RDataUtils.processConfigFile(RC, fileName);
-                System.out.println(rconfiguration.length);
+                String[] rhistory = RDataUtils.processConfigFile(RC, fileName);
+                System.out.println(rhistory.length);
 
-                // if nothing comes up from the configuration, we finish the process here
-                if (rconfiguration == null) {
+                // if nothing comes up from the rhistory, we finish the process here
+                if (rhistory == null) {
                     DataUtils.updateMsg("Error", "Failed to process RScript.");
                     return null;
                 }
-                // Use the first two elements of the configuration
-                String dataType = rconfiguration[0].replaceAll("^\"|\"$", "");
-                String analType = rconfiguration[1].replaceAll("^\"|\"$", "");
-                String dataFormat = rconfiguration[3].replaceAll("^\"|\"$", "");
-                String rhistoryContents = rconfiguration[4];
+                // Use the first two elements of the rhistory
+                String dataType = rhistory[0].replaceAll("^\"|\"$", "");
+                String analType = rhistory[1].replaceAll("^\"|\"$", "");
+                String dataFormat = rhistory[3].replaceAll("^\"|\"$", "");
+                String rhistoryContents = rhistory[4];
 
-                System.out.println("Parsed config: dataType=" + dataType + ", analType=" + analType);
+                System.out.println("Parsed rhistory: dataType=" + dataType + ", analType=" + analType);
 
                 // No we set data type, data format and anal type
                 setDataType(dataType);
@@ -641,7 +641,7 @@ public class UploadBean implements Serializable {
                     }
 
                     // // call the function to run the rest of the analyses
-                    RDataUtils.runConfigFile(sb, sb.getRConnection(), rhistoryContents);
+                    RDataUtils.runRHistoryFile(sb, sb.getRConnection(), rhistoryContents);
 
                     return "Download";
 

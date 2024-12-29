@@ -280,7 +280,7 @@ public class GenericControllers implements Serializable {
                 url1 = "/upload/PowerUploadView.xhtml";
                 break;
             case 11:
-                url1 = "/upload/ConfigurationFile.xhtml";
+                url1 = "/upload/RHistoryUpload.xhtml";
                 break;
             default:
                 url1 = "/upload/StatUploadView.xhtml";
