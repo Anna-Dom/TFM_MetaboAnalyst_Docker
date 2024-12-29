@@ -585,7 +585,7 @@ public class UploadBean implements Serializable {
 
                 // Call the function that will run the RScript to proccess RHistory
                 String[] rconfiguration = RDataUtils.processConfigFile(RC, fileName);
-                System.out.println(rconfiguration);
+                System.out.println(rconfiguration.length);
 
                 // if nothing comes up from the configuration, we finish the process here
                 if (rconfiguration == null) {
@@ -597,14 +597,6 @@ public class UploadBean implements Serializable {
                 String analType = rconfiguration[1].replaceAll("^\"|\"$", "");
                 String dataFormat = rconfiguration[3].replaceAll("^\"|\"$", "");
                 String rhistoryContents = rconfiguration[4];
-                // Boolean paired;
-
-                // // To set up the paired value, we need to check if the value is TRUE or FALSE
-                // if (rconfiguration[2] == "TRUE") {
-                //     Boolean paired = true;
-                // } else {
-                //     Boolean paired = false;
-                // }
 
                 System.out.println("Parsed config: dataType=" + dataType + ", analType=" + analType);
 
