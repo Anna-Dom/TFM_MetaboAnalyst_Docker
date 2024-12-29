@@ -109,6 +109,9 @@ public class ChemoMetrics {
             //tmp-test-js; sb.addGraphicsCMD("pca_score3d", rCommand_png);
             //System.out.println("============pca_score3d: " + rCommand_png);
             //tmp-test-js; RCenter.recordRCommand(RC, rCommand_png);
+            
+            sb.addGraphicsCMD("pca_score3d", rCommand);
+            RCenter.recordRCommand(RC, rCommand);
             RC.voidEval(rCommand);
         } catch (RserveException rse) {
             System.out.println(rse);
