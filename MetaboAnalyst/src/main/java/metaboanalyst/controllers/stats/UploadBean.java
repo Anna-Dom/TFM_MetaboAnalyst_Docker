@@ -645,7 +645,18 @@ public class UploadBean implements Serializable {
 
                     return "Download";
 
-                } else {
+                } else if (analType.equals("roc")) {
+                    setDataFile(undefineddatafile);
+                    String result = uploadRocData();
+                    
+                    // // call the function to run the rest of the analyses
+                    RDataUtils.runRHistoryFile(sb, sb.getRConnection(), rhistoryContents);
+
+                    return "Download";
+
+                }
+                
+                else {
                     DataUtils.updateMsg("Error", "Type of analysis not yet supported");
                     return null;
                 }
