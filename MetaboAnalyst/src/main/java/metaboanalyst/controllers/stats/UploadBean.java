@@ -649,11 +649,19 @@ public class UploadBean implements Serializable {
                     setDataFile(undefineddatafile);
                     String result = uploadRocData();
                     
-                    // // call the function to run the rest of the analyses
+                    // call the function to run the rest of the analyses
                     RDataUtils.runRHistoryFile(sb, sb.getRConnection(), rhistoryContents);
 
                     return "Download";
 
+                } else if (analType.equals("power")) {
+                    setDataFile(undefineddatafile);
+                    String result = uploadPilotData();
+
+                    // call the function to run the rest of the analyses
+                    RDataUtils.runRHistoryFile(sb, sb.getRConnection(), rhistoryContents);
+
+                    return "Download";
                 }
                 
                 else {
