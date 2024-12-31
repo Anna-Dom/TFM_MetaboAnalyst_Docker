@@ -41,8 +41,8 @@ docker logs metabo-app -f
 2. Download the image and run it directly
 
 ```sh
-docker pull annadom/tfm-metaboanalyst5.0:tagname
-docker run --rm -p 8080:8080 --name metabo-app -d annadom/tfm-metaboanalyst5.0:tagname
+docker pull annadom/tfm-metaboanalyst5.0:latest
+docker run --rm -p 8080:8080 --name metabo-app -d annadom/tfm-metaboanalyst5.0:latest
 ```
 
 Once the docker is running, MetaboAnalyst Webapp can be access at http://localhost:8080/MetaboAnalyst/. Notice that after running the image it might take a couple of seconds before the web application is available in this address.
