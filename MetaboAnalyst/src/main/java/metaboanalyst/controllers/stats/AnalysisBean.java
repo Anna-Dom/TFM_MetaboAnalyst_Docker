@@ -241,7 +241,7 @@ public class AnalysisBean implements Serializable {
     }
 
     private void doDefaultSVM() {
-        Classifying.initSVMAnal(sb, "10");
+        Classifying.initSVMAnal(sb, "10", 0.6, 0);
         Classifying.plotSVMClassification(sb, sb.getCurrentImage("svm_cls"), "png", 72);
         Classifying.plotSVMSigCmpds(sb, sb.getCurrentImage("svm_imp"), "png", 72);
     }

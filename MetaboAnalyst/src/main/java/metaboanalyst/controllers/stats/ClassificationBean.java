@@ -123,8 +123,29 @@ public class ClassificationBean implements Serializable {
         this.validationOpt = validationOpt;
     }
 
+    private Double trainingSize = 0.6;
+
+	public Double getTrainingSize() {
+		return trainingSize;
+	}
+
+	public void setTrainingSize(Double trainingSize) {
+		this.trainingSize = trainingSize;
+	}
+
+    private Integer numFolds = 0;
+
+	public Integer getNumFolds() {
+		return numFolds;
+	}
+
+	public void setNumFolds(Integer numFolds) {
+		this.numFolds = numFolds;
+	}
+
+
     public String svmBn_action() {
-        Classifying.initSVMAnal(sb, validationOpt);
+        Classifying.initSVMAnal(sb, validationOpt, trainingSize, numFolds);
         Classifying.plotSVMClassification(sb, sb.getNewImage("svm_cls"), "png", 72);
         Classifying.plotSVMSigCmpds(sb, sb.getNewImage("svm_imp"), "png", 72);
         PrimeFaces.current().scrollTo("ac:form1:sumPane");

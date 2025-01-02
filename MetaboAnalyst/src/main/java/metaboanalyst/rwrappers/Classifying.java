@@ -175,13 +175,15 @@ public class Classifying {
     }
 
     //-------------R-SVM-----------methods
-    public static void initSVMAnal(SessionBean1 sb, String cvType) {
+    public static void initSVMAnal(SessionBean1 sb, String cvType, Double trainingSize, Integer numFolds) {
         try {
             RConnection RC = sb.getRConnection();
             String rCommand;
             if (cvType.equals("LOO") || cvType.equals("bootstrape")) { //10 fold validation
-                rCommand = "RSVM.Anal(NA" + ", \"" + cvType + "\")";
-            } else {
+                rCommand = "RSVM.Anal(NA" + ", \"" + cvType + "\", CVnum=" + numFolds + ")";
+            } else if (cvType.equals("carlo")) {
+                rCommand = "RSVM.Anal(NA" + ", \"" + cvType + "\", tsize = " + trainingSize + ", CVnum=" + numFolds + ")";
+            }else {
                 rCommand = "RSVM.Anal(NA" + ", " + 10 + ")";
             }
             RCenter.recordRCommand(RC, rCommand);
