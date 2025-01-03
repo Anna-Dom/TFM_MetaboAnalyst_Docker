@@ -1,4 +1,4 @@
-# PID of current job: 430
+# PID of current job: 520
 mSet<-InitDataObjects("nmrpeak", "stat", FALSE)
 UnzipUploadedFile("nmr_peaks.zip", "upload");
 mSet<-Read.PeakList(mSet, "upload");
@@ -36,4 +36,11 @@ mSet<-PlotPCALoading(mSet, "pca_loading_0_", "png", 72, width=NA, 1,2);
 mSet<-PlotPCABiplot(mSet, "pca_biplot_0_", "png", 72, width=NA, 1,2)
 mSet<-PlotPCA3DScore(mSet, "pca_score3d_0_", "json", 1,2,3)
 mSet<-PlotPCA3DLoading(mSet, "pca_loading3d_0_", "json", 1,2,3)
+mSet<-PlotPCA2DScore(mSet, "pca_score2d_2_", "png", 72, width=NA, 1,2,0.95,1,0)
+mSet<-RSVM.Anal(mSet, 10)
+mSet<-PlotRSVM.Classification(mSet, "svm_cls_0_", "png", 72, width=NA)
+mSet<-PlotRSVM.Cmpd(mSet, "svm_imp_0_", "png", 72, width=NA)
+mSet<-RSVM.Anal(mSet, "carlo", tsize = 0.6, CVnum=700)
+mSet<-PlotRSVM.Classification(mSet, "svm_cls_1_", "png", 72, width=NA)
+mSet<-PlotRSVM.Cmpd(mSet, "svm_imp_1_", "png", 72, width=NA)
 mSet<-SaveTransformedData(mSet)
