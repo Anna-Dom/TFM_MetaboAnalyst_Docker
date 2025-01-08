@@ -1,15 +1,29 @@
 ## MetaboAnalyst - UOC TFM
 
-This repository contains the source code for running the MetaboAnalyst web application version 5.0.0 locally. The original code was obtained from the ZIP file provided [here](https://www.metaboanalyst.ca/docs/About.xhtml) for the WebApp. The primary repositories from the original authors are:
+This repository contains the source code for running the MetaboAnalyst web application version 5.0.0 locally using Docker. The original code was obtained from the ZIP file provided [here](https://www.metaboanalyst.ca/docs/About.xhtml) for the WebApp. The primary repositories from the original authors are:
 
 - [https://github.com/xia-lab/MetaboAnalystR](MetaboAnalystR)
 - [MetaboAnalyst Docker](https://github.com/xia-lab/MetaboAnalyst_Docker)
 
-The original work was developed by *Xia Lab @ McGill*. This repository includes minor modifications to some functionalities of the original application, implemented as part of a Final Master's Project. The key updates are:
+The original work was developed by *Xia Lab @ McGill*. This repository includes several modifications to some functionalities of the original application, implemented as part of a Final Master's Project. The key updates are:
 
-1. Updated Dockerfile: Upgraded to use a newer version of Java and JDK.
-2. Support for Version 5.0.0: Modified the Dockerfile to enable compatibility with the 5.0.0 release of the MetaboAnalyst web application.
-3. Enhanced Configuration Management: Added functionality to upload an R script as a configuration file to re-run or restore a previously conducted analysis.
+1. Updated Dockerfile to support MetaboAnalyst 5.0: 
+
+    - Upgraded to use a newer version of Java and JDK.
+    - Upgraded R version and all the necessary dependencies.
+    - Added `run.sh` to start the R server and Paraya server directly.
+    - Added the WAR file build steps
+
+2. New module to re-use R History obtained from previous MetaboAnalyst analysis: 
+
+    - The new module can be accessed through the module selection page.
+    - The re-use only works for analysis made with the modules: Statistical Analysis [one factor], Biomarker Analysis and Power Analysis
+    - In the folder `/protocols` there are 5 protocols that can be followed to test and learn about how the new module works
+
+3. Added Monte Carlo Cross Validation in the R-SVM analysis
+
+    - The parameter "carlo" can be now passed as a CVType in the RSVM.Anal function
+    - The change has also been implemented in the UI where users can now choose this type of CV in the R-SVM analysis
 
 ### LICENSE
 
